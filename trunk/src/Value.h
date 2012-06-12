@@ -1,21 +1,26 @@
 #ifndef VALUE_H_
 #define VALUE_H_
 
-
 /**
-@file Valur.h
+@file Value.h
 */
+
+#include <stdexcept>
+#include <boost/optional.hpp>
+
+#include "Operand.h"
+
 
 /**
 @class Value 
 @brief Класс, предназначенный для хранения значения переменной или константы в коде. Содержит в себе значение, его тип, права доступа.
 */
 
-class Value
+class Value: public Operand
 {
 	public:
 
-/** @enum Value::ValyeType  
+/** 
 @brief Перечисление типов данных значений. Используется для обозначения типа данных объектов Value.
 */
 
@@ -52,33 +57,43 @@ class Value
 Конструктор от значения. Переменная инициализируется указанным значением, её типом становится минимальных тип, покрывающий
 это значение. Отсутсвует доступ на чтение и запись.
 @param val - параметр, указывающий значение.
+@throw std::runtime_error - в случае выхода параметра val за границы всех типов
 */
-		Value(long long val);
+		Value(long long val) throw(std::runtime_error);
 
 /**
 Конструктор от значения и прав доступа.
 @param val - параметр, указывающий значение
 @param readable - есть ли право на чтение?
 @param writeable - есть ли право на запись?
+@throw std::runtime_error - в случае выхода параметра val за границы всех типов
 */
-		Value(long long val, bool readable, bool writeble);
+		Value(long long val, bool readable, bool writeable) throw(std::runtime_error);
 
 /**
 Конструктор от значения, типа и прав доступа .
 @param val - параметр, указывающий значение
-@param type - тип конструируемой переменной
+@param type - тип конструируемого значения
 @param readable - есть ли право на чтение?
 @param writeable - есть ли право на запись?
 */
 		Value(long long val, ValueType type, bool readable, bool writeable);
 
 /**
+Виртуальный деструктор
+*/
+		virtual ~Value();
+
+
+/**
 Возвращаемое значение указывает, есть ли право на чтение значения.
+@return право на чтение
 */
 		bool isReadable() const;
 
 /**
 Возвращаемое значение указывает, есть ли право на запись значения.
+@return право на запись
 */
 		bool isWriteable() const;
 
@@ -108,30 +123,43 @@ class Value
 
 /**
 Получения значения в виде long long
-@return long long ячейка, содержащая значение
+@return long long ячейку, содержащую значение
+@throws std::runtime_error
 */
-		long long getValue(ValyeType toType = NO_TYPE) const;
+		long long getValue(ValueType toType = NO_TYPE) const throw(std::runtime_error);
 
 /**
 Установка значения из long long. При этом производится его приведение к типу объекта если он определён.
 В противном случае он становится минимальным возможных для хранения указанного значения.
+@param val - устанавливаемое значение
+@throw std::runtime_error - в случае выхода параметра val за границы всех типов при неустановленом типе объекта
 */
 
-		void setValue(long long);
+		void setValue(long long val) throw(std::runtime_error);
 
 	private:
-		long long 		m_val;
-		ValueType		m_type;
-		bool			isReadable;
-		bool			isWriteable;
+		boost::optional<long long> 		m_val;
+		ValueType						m_type;
+		bool							m_isReadable;
+		bool							m_isWriteable;
 
 
 /**
-Определяет минимальный тип, достаточных для хранения значения 
+Определяет минимальный тип, достаточных для хранения значения. Если значение не помещается ни в один из возможных типов
+возвращает Value::NO_TYPE;
 @param val - значение
-@return - минимальный тип
+@return минимальный тип
 */
 		static ValueType minTypeForValue(long long val);
+
+/**
+Осуществляет приведение значения в ячейке long long к указанному типу
+@param val - значение
+@param type - требуемый тип
+@return значение, приведённое к типу
+@throws std::runtime_error в случае приведения к типу Value::NO_TYPE
+*/
+		static long long longlongToType(long long val, ValueType type) throw(std::runtime_error);
 };
 
 #endif
