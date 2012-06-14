@@ -24,7 +24,10 @@ Label::~Label()
 
 void Label::setLabelName(const std::string &name)
 {
-	m_labelName = name;
+	if(Label::checkLabelName(name))
+		m_labelName = name;
+	else
+		throw std::logic_error("Incorrect label name");
 }
 
 

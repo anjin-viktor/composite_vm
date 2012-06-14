@@ -13,9 +13,14 @@
 @brief Набор модульных тестов для класса Value
 */
 
+
+BOOST_AUTO_TEST_SUITE(VALUE_TEST_SUITE);
+
 /**
 Тест конструктора по умолчанию
 */
+
+
 BOOST_AUTO_TEST_CASE(testValueDefaultConstructor)
 {
 	Value val;
@@ -154,3 +159,5 @@ BOOST_AUTO_TEST_CASE(testValue_SET_GET_Value)
 }
 
 
+
+BOOST_AUTO_TEST_SUITE_END();

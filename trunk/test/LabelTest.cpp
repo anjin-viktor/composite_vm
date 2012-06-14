@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE COMPOZIT_VM_LABEL
-
 #include <stdexcept>
 #include <ctime>
 
@@ -13,6 +11,10 @@
 @brief Набор модульных тестов для класса Label
 */
 
+
+BOOST_AUTO_TEST_SUITE(LABEL_TEST_SUITE);
+
+
 /**
 Тест функций Label::setLabelName, Label::getLabelName
 */
@@ -24,6 +26,10 @@ BOOST_AUTO_TEST_CASE(testLabel_SetGetName)
 
 	lbl.setLabelName("new_name");
 	BOOST_CHECK_EQUAL(lbl.getLabelName(), "new_name");
+
+	BOOST_CHECK_THROW(lbl.setLabelName(".test"), std::logic_error);
+	BOOST_CHECK_THROW(lbl.setLabelName("1lbl"), std::logic_error);
+
 }
 
 
@@ -39,3 +45,7 @@ BOOST_AUTO_TEST_CASE(testLabel_CheckLabelName)
 	BOOST_CHECK_EQUAL(Label::checkLabelName("1label"), false);
 	BOOST_CHECK_EQUAL(Label::checkLabelName("L1"), true);
 }
+
+
+
+BOOST_AUTO_TEST_SUITE_END();
