@@ -3,7 +3,7 @@
 
 
 /**
-@file Label.h
+@file LabelOperand.h
 */
 
 #include <string>
@@ -12,29 +12,29 @@
 #include "Operand.h"
 
 /**
-@class Label 
-@brief Класс предназначенный для хранения и работы с метками.
+@class LabelOperand 
+@brief Класс предназначенный для хранения и работы с метками. Используется как операнд класса Command
 */
 
-class Label: public Operand
+class LabelOperand: public Operand
 {
 	public:
 /**
 Конструктор по-умолчанию.
 */
-		Label();
+		LabelOperand();
 
 /**
 Конструктор от имени метки.
 @param label_name - имя метки.
 */
-		Label(const std::string &label_name);
+		LabelOperand(const std::string &label_name);
 
 
 /**
 Виртуальный деструктор.
 */
-		virtual ~Label();
+		virtual ~LabelOperand();
 
 /**
 Установка имени метки. Используется на первой стадии трансляции. После анализа всего модуля по имени устанавливается

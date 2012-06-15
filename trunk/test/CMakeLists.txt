@@ -7,8 +7,12 @@ project (${PROJECT})
 set (SOURCES
 	../src/Value.cpp
 	ValueTest.cpp
-	../src/Label.cpp
-	LabelTest.cpp
+	../src/LabelOperand.cpp
+	LabelOperandTest.cpp
+	../src/VarOperand.cpp
+	VarOperandTest.cpp
+	../src/Command.cpp
+	CommandTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

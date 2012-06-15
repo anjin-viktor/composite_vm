@@ -1,6 +1,6 @@
 #include "Value.h"
 
-Value::Value(): Operand()
+Value::Value()
 {
 	m_val.reset();
 	m_type = NO_TYPE;
@@ -11,7 +11,7 @@ Value::Value(): Operand()
 
 
 
-Value::Value(long long val) throw(std::runtime_error): Operand()
+Value::Value(long long val) throw(std::runtime_error)
 {
 	m_val = val;
 	m_type = Value::minTypeForValue(val);
@@ -24,7 +24,7 @@ Value::Value(long long val) throw(std::runtime_error): Operand()
 
 
 
-Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_error): Operand()
+Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_error)
 {
 	m_val = val;
 	m_type = Value::minTypeForValue(val);
@@ -38,7 +38,7 @@ Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_er
 
 
 
-Value::Value(long long val, ValueType type, bool readable, bool writeable): Operand()
+Value::Value(long long val, ValueType type, bool readable, bool writeable)
 {
 	m_type = type;
 	m_isReadable = readable;

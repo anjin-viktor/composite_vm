@@ -23,6 +23,11 @@ class Operand
 Виртуальный дестркутор
 */
 		virtual ~Operand() {};
+
+/**
+Оператор присвоения
+*/
+		virtual Operand operator =(const Operand &) {};
 };
 
 #endif
