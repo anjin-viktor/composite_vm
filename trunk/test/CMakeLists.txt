@@ -11,7 +11,7 @@ set (SOURCES
 	../src/Command.cpp
 	../src/VarTranslator.cpp
 	../src/ParseError.cpp
-
+	../src/Array.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -19,6 +19,7 @@ set (SOURCES
 	CommandTest.cpp
 	VarTranslatorTest.cpp
 	ParseErrorTest.cpp
+	ArrayTest.cpp
 	)
  
 set (BOOST_COMPONENTS 
