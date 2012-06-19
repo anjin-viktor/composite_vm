@@ -13,6 +13,8 @@ set (SOURCES
 	VarOperandTest.cpp
 	../src/Command.cpp
 	CommandTest.cpp
+	VarTranslatorTest.cpp
+	../src/VarTranslator.cpp
 	)
  
 set (BOOST_COMPONENTS 

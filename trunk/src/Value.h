@@ -7,6 +7,7 @@
 
 #include <stdexcept>
 #include <boost/optional.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "Operand.h"
 
@@ -137,11 +138,22 @@ class Value
 
 		void setValue(long long val) throw(std::runtime_error);
 
+
+/**
+Преобразует запись сипа в виде строки к виду Value::ValueType
+@param str - строковое представление типа
+@return тип
+*/
+		static ValueType strToValueType(const std::string &str);
+
 	private:
-		boost::optional<long long> 		m_val;
-		ValueType						m_type;
-		bool							m_isReadable;
-		bool							m_isWriteable;
+/**
+Если значение не инициализировано указатель 
+*/
+		boost::shared_ptr<long long>						m_pval;
+		ValueType											m_type;
+		bool												m_isReadable;
+		bool												m_isWriteable;
 
 
 /**
@@ -160,6 +172,7 @@ class Value
 @throws std::runtime_error в случае приведения к типу Value::NO_TYPE
 */
 		static long long longlongToType(long long val, ValueType type) throw(std::runtime_error);
+
 };
 
 #endif

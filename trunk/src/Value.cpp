@@ -2,7 +2,7 @@
 
 Value::Value()
 {
-	m_val.reset();
+	m_pval.reset();
 	m_type = NO_TYPE;
 	m_isReadable = m_isWriteable = false;
 }
@@ -11,9 +11,11 @@ Value::Value()
 
 
 
+
 Value::Value(long long val) throw(std::runtime_error)
 {
-	m_val = val;
+	m_pval = (boost::shared_ptr<long long>)(new long long);
+	*m_pval = val;
 	m_type = Value::minTypeForValue(val);
 	m_isReadable = m_isWriteable = false;
 
@@ -26,7 +28,8 @@ Value::Value(long long val) throw(std::runtime_error)
 
 Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_error)
 {
-	m_val = val;
+	m_pval = (boost::shared_ptr<long long>)(new long long);
+	*m_pval = val;
 	m_type = Value::minTypeForValue(val);
 	m_isReadable = readable;
 	m_isWriteable = writeable;
@@ -40,10 +43,11 @@ Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_er
 
 Value::Value(long long val, ValueType type, bool readable, bool writeable)
 {
+	m_pval = (boost::shared_ptr<long long>)(new long long);
 	m_type = type;
 	m_isReadable = readable;
 	m_isWriteable = writeable;
-	m_val = Value::longlongToType(val, type);
+	*m_pval = Value::longlongToType(val, type);
 }
 
 
@@ -90,8 +94,8 @@ void Value::setWriteable(bool writeable)
 
 void Value::setType(ValueType type)
 {
-	if(m_val)
-		m_val = Value::longlongToType(*m_val, type);
+	if(m_pval.use_count() > 0)
+		*m_pval = Value::longlongToType(*m_pval, type);
 	m_type = type;
 }
 
@@ -108,12 +112,12 @@ Value::ValueType Value::getType() const
 
 long long Value::getValue(ValueType type) const throw(std::runtime_error)
 {
-	if(m_val)
+	if(m_pval != NULL)
 	{
 		if(type = Value::NO_TYPE)
-			return *m_val;
+			return *m_pval;
 		else
-			return Value::longlongToType(*m_val, type);
+			return Value::longlongToType(*m_pval, type);
 	}
 	else
 		throw std::runtime_error("Value::getValue: value does not initialize");
@@ -125,11 +129,14 @@ long long Value::getValue(ValueType type) const throw(std::runtime_error)
 
 void Value::setValue(long long val) throw(std::runtime_error)
 {
+	if(m_pval == NULL)
+		m_pval = (boost::shared_ptr<long long>)(new long long);
 
 	if(m_type == Value::NO_TYPE)
 		m_type = minTypeForValue(val);
 
-	m_val = longlongToType(val, m_type);
+
+	*m_pval = longlongToType(val, m_type);
 }
 
 
@@ -200,4 +207,30 @@ long long Value::longlongToType(long long val, ValueType type) throw(std::runtim
 		case Value::NO_TYPE:
 			throw std::runtime_error("Value::longlongToType: don`t can fetch valut to type NO_TYPE");
 	};
+}
+
+
+
+
+
+Value::ValueType Value::strToValueType(const std::string &str)
+{
+	if(str == "uchar")
+		return Value::UNSIGNED_CHAR;
+	else if(str == "schar")
+		return Value::SIGNED_CHAR;
+	else if(str == "mod8")
+		return Value::MOD8;
+	else if(str == "ushort")
+		return Value::UNSIGNED_SHORT;
+	else if(str == "sshort")
+		return Value::SIGNED_SHORT;
+	else if(str == "mod16")
+		return Value::MOD16;
+	else if(str == "uint")
+		return Value::UNSIGNED_INT;
+	else if(str == "sing")
+		return Value::SIGNED_INT;
+	else if(str == "mod32")
+		return Value::MOD32;
 }
