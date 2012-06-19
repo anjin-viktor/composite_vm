@@ -14,6 +14,7 @@
 
 
 #include "Value.h"
+#include "ParseError.h"
 
 namespace qi = boost::spirit::qi;
 
@@ -74,7 +75,6 @@ class VarTranslator
             	type %= -(const_ >> +qi::space) >> simple_type;
             	comment %= qi::char_(';') >> *qi::char_;
             }
-
 
 /**
 Установка указателя на имя обрабатываемой переменной. Все изменения имени будут происходить со значением по указателю.
@@ -160,14 +160,9 @@ class VarTranslator
            	Value   		*m_pval;
 		};
 
-
-            typedef std::string     str_t;
-            typedef str_t::iterator str_t_it;
-            typedef std::string::const_iterator iterator;
-
 		std::string 							m_valName;
 		Value 									m_val;
-		VarGrammar<str_t_it>					m_grammar;
+		VarGrammar<std::string::iterator>		m_grammar;
 };
 
 

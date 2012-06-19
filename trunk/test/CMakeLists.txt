@@ -6,15 +6,19 @@ project (${PROJECT})
  
 set (SOURCES
 	../src/Value.cpp
-	ValueTest.cpp
 	../src/LabelOperand.cpp
-	LabelOperandTest.cpp
 	../src/VarOperand.cpp
-	VarOperandTest.cpp
 	../src/Command.cpp
+	../src/VarTranslator.cpp
+	../src/ParseError.cpp
+
+
+	ValueTest.cpp
+	LabelOperandTest.cpp
+	VarOperandTest.cpp
 	CommandTest.cpp
 	VarTranslatorTest.cpp
-	../src/VarTranslator.cpp
+	ParseErrorTest.cpp
 	)
  
 set (BOOST_COMPONENTS 
