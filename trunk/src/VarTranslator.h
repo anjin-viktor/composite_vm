@@ -21,6 +21,8 @@ namespace qi = boost::spirit::qi;
 
 
 
+#include <iostream>
+
 
 
 /**
@@ -119,6 +121,7 @@ class VarTranslator
         m_parr = NULL;
         m_pval = NULL;
         m_pname = NULL;
+        m_flagArrElementNoWriteable = false;
         m_type = NoneExpr;
         expression %= var_expression[boost::bind(&(VarGrammar::setExprType), this, VariableExpr)] | 
                       arr_expression[boost::bind(&(VarGrammar::setExprType), this, ArrayExpr)] | 
@@ -139,15 +142,16 @@ class VarTranslator
        	) [boost::bind(&(VarGrammar::setValType), this, _1)];
 
        	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
-       	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
-       	var_type %= -(const_ >> +qi::space) >> (simple_type | str_type);
+//       	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
+       	var_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)] >> +qi::space) >> (simple_type | str_type);
        	comment %= qi::char_(';') >> *qi::char_;
 
 
+        arr_element_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setArrElementNoWriteable), this)] >> +qi::space) >> (simple_type | str_type);
 
         arr_expression %= *qi::space >> -(arr_const >> +qi::space) >> 
                         (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
-                        var_type >> +qi::space >>
+                        arr_element_type >> +qi::space >>
                         name >> +qi::space >> 
                         arr_size >> *(+qi::space >> arr_val) >>
                         *qi::space >> -comment;
@@ -158,7 +162,7 @@ class VarTranslator
 
         str_expression %= (*qi::space >> -(arr_const >> +qi::space) >> 
                         (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
-                        var_type >> +qi::space >> 
+                        arr_element_type >> +qi::space >> 
                         str_name >> +qi::space >>
                         str_init_val >>
                         *qi::space >> -comment
@@ -220,6 +224,7 @@ class VarTranslator
           *m_parr = Array();
         m_lstVal.clear();
         m_tmpStr = "";
+        m_flagArrElementNoWriteable = false;
       }
 
 
@@ -266,10 +271,16 @@ class VarTranslator
 			{
         if(m_pval)
 	   			m_pval -> setWriteable(false);
-		    if(m_parr)
-          m_parr -> setWriteableAll(false);
     	}
 
+
+
+/**
+*/
+      void setArrElementNoWriteable()
+      {
+        m_flagArrElementNoWriteable = true;
+      }
 
 /**
 Добавляет символ к имени обрабатываемой переменной. Используется как семантическое действие грамматики.
@@ -350,7 +361,6 @@ class VarTranslator
         m_lstVal.push_back(val);
       }
 
-
 /**
 Осуществляет инициализацию массива набором накопленных значения.
 */
@@ -363,13 +373,18 @@ class VarTranslator
           for(int i=0; i<m_parr->size(); i++)
           {
             m_parr -> operator[](i).setValue(*itr);
+
             itr++;
             if(itr == m_lstVal.end())
               itr = m_lstVal.begin();
           }
-
+          m_parr -> setReadableAll(true);
         }
 
+        if(m_flagArrElementNoWriteable)
+          m_parr -> setWriteableAll(false);
+        else
+          m_parr -> setWriteableAll(true);
       }
 
 /**
@@ -384,7 +399,7 @@ class VarTranslator
 
      	qi::rule<Iterator> expression, var_expression, arr_expression, str_expression, comment_expression, var_type, 
         const_, comment, simple_type, var_value, name, var, size, arr_const, arr_size, arr_val, str_type, str_init_val,
-        str_name;
+        str_name, arr_element_type;
 
       ExpressionType        m_type;
       std::string           m_tmpStr;
@@ -392,6 +407,7 @@ class VarTranslator
      	Value   		          *m_pval;
       Array                 *m_parr;
       std::list<long long>  m_lstVal;
+      bool                  m_flagArrElementNoWriteable;
 		};
 
 		std::string 						            m_name;

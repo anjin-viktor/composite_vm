@@ -33,7 +33,6 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_true)
 	BOOST_CHECK_EQUAL(translator.getValue().getType(), Value::UNSIGNED_CHAR);
 	BOOST_CHECK_EQUAL(translator.getValue().getValue(), 125);
 
-
 	translator.translate("const mod8 ch_ 512");
 	BOOST_CHECK_EQUAL(translator.isVariable(), true);
 	BOOST_CHECK_EQUAL(translator.isArray(), false);
@@ -42,7 +41,6 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_true)
 	BOOST_CHECK_EQUAL(translator.getValue().isWriteable(), false);
 	BOOST_CHECK_EQUAL(translator.getValue().getType(), Value::MOD8);
 	BOOST_CHECK_EQUAL(translator.getValue().getValue(), 0);
-
 
 	translator.translate("schar ch__");
 	BOOST_CHECK_EQUAL(translator.isVariable(), true);
@@ -100,6 +98,8 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_arrTrue)
 	BOOST_CHECK_EQUAL(translator.getArray()[2].getValue(), 3);
 	BOOST_CHECK_EQUAL(translator.getArray()[3].getValue(), 4);
 	BOOST_CHECK_EQUAL(translator.getArray()[4].getValue(), 5);
+	BOOST_CHECK_EQUAL(translator.getArray()[4].isReadable(), true);
+	BOOST_CHECK_EQUAL(translator.getArray()[4].isWriteable(), false);
 
 	translator.translate("array mod8 arr_ 0");
 	BOOST_CHECK_EQUAL(translator.isVariable(), false);
@@ -107,6 +107,7 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_arrTrue)
 	BOOST_CHECK_EQUAL(translator.getName(), "arr_");
 	BOOST_CHECK_EQUAL(translator.getArray().isWriteable(), true);
 	BOOST_CHECK_EQUAL(translator.getArray().size(), 0);
+
 
 	translator.translate("array mod8 arr 1");
 	BOOST_CHECK_EQUAL(translator.isVariable(), false);
@@ -116,6 +117,12 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_arrTrue)
 	BOOST_CHECK_EQUAL(translator.getArray().size(), 1);
 	BOOST_CHECK_EQUAL(translator.getArray()[0].getType(), Value::MOD8);
 	BOOST_CHECK_EQUAL(translator.getArray()[0].isReadable(), false);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isWriteable(), true);
+
+	translator.translate("const array mod8 arr 1 1");
+	BOOST_CHECK_EQUAL(translator.getArray().isWriteable(), false);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isReadable(), true);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isWriteable(), true);
 }
 
 /**
@@ -138,7 +145,6 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_arrFalse)
 
 BOOST_AUTO_TEST_CASE(VarTranslatorTest_strTrue)
 {
-	std::cerr << "\n\n\n";
 	VarTranslator translator;
 	translator.translate("const array mod8 str \"val\"");
 	BOOST_CHECK_EQUAL(translator.getName(), "str");
@@ -147,9 +153,24 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_strTrue)
 	BOOST_CHECK_EQUAL(translator.getArray().isWriteable(), false);
 	BOOST_CHECK_EQUAL(translator.getArray().size(), 3);
 	BOOST_CHECK_EQUAL(translator.getArray()[0].getValue(), 'v');
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isReadable(), true);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isWriteable(), true);
 	BOOST_CHECK_EQUAL(translator.getArray()[1].getValue(), 'a');
 	BOOST_CHECK_EQUAL(translator.getArray()[2].getValue(), 'l');
 	BOOST_CHECK_EQUAL(translator.getArray()[2].getType(), Value::MOD8);
+
+	translator.translate("array const uchar name \"vv\"");
+	BOOST_CHECK_EQUAL(translator.getName(), "name");
+	BOOST_CHECK_EQUAL(translator.isVariable(), false);
+	BOOST_CHECK_EQUAL(translator.isArray(), true);
+	BOOST_CHECK_EQUAL(translator.getArray().isWriteable(), true);
+	BOOST_CHECK_EQUAL(translator.getArray().size(), 2);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].getValue(), 'v');
+	BOOST_CHECK_EQUAL(translator.getArray()[1].getValue(), 'v');
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isReadable(), true);
+	BOOST_CHECK_EQUAL(translator.getArray()[1].isReadable(), true);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].isWriteable(), false);
+	BOOST_CHECK_EQUAL(translator.getArray()[1].isWriteable(), false);
 }
 
 
