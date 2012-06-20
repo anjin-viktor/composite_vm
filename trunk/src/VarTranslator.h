@@ -14,6 +14,7 @@
 
 
 #include "Value.h"
+#include "Array.h"
 #include "ParseError.h"
 
 namespace qi = boost::spirit::qi;
@@ -39,9 +40,43 @@ class VarTranslator
 /**
 Осуществляет транслирование строки.
 @param str - транслируемая строка.
-@return Пара имя-переменная.
 */
-		std::pair<std::string, Value> translate(std::string str);
+	 void translate(std::string str);
+
+
+/**
+Функция отвечает на вопрос, является ли разобранная строка определением массива переменных.
+@return разобранная строка есть определение массива?
+*/
+   bool isArray() const;
+
+/**
+Функция отвечает на вопрос, является ли разобранная строка определением переменной.
+@return разобранная строка есть определение переменной?
+*/
+
+   bool isVariable() const;
+
+
+/**
+Предназначена для получения имени переменной или массива, определённых в разобранной строке.
+@return имя.
+*/
+   std::string getName() const;
+
+/**
+Получение переменной определённой в строке, переданной фунцкии VarTranslator::translate(std::string).
+@return переменная.
+*/
+
+   Value getValue() const;
+
+/**
+Получение массива, пределённого в строке, переданной фунцкии VarTranslator::translate(std::string).
+@return массив.
+*/
+
+   Array getArray() const;
 
 	private:
 
@@ -52,75 +87,145 @@ class VarTranslator
 	template <typename Iterator>
 	class VarGrammar: public qi::grammar<Iterator>
 	{
-		public:
+    private:
+/**
+@brief Перечисление, задающее тип разбираемого выражения
+*/
+	   enum ExpressionType
+     {
+/**
+Массив
+*/
+      ArrayExpr = 1,
+/**
+Переменная  
+*/
+      VariableExpr,
+/**
+Пустое выражение
+*/
+      NoneExpr
+     };
+  	public:
 /**
 Конструктор. Определяет грамматику.
 */
-    	    VarGrammar(): VarGrammar::base_type(expression)
-        	{
-            	expression %= *qi::space >> type >> +qi::space >> var_name >> -(+qi::space >> var_value) >> *qi::space >> -comment;
-            	var_name %= qi::char_("_a-zA-Z")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)] >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)];
+    	VarGrammar(): VarGrammar::base_type(expression)
+      {
+        m_parr = NULL;
+        m_pval = NULL;
+        m_pname = NULL;
+        m_type = NoneExpr;
+        expression %= var_expression[boost::bind(&(VarGrammar::setExprType), this, VariableExpr)] | arr_expression[boost::bind(&(VarGrammar::setExprType), this, ArrayExpr)];
+       	var_expression %= *qi::space >> var_type >> +qi::space >> name >> -(+qi::space >> var_value) >> *qi::space >> -comment;
+       	name %= qi::char_("_a-zA-Z")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)] >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)];
 
-            	VarGrammar *tmp = this;
+       	VarGrammar *tmp = this;
 
-            	simple_type %= (
-            		qi::string("mod8") | 
-            		qi::string("uchar") | 
-            		qi::string("schar")
-            	) [boost::bind(&(VarGrammar::setValType), this, _1)];
+       	simple_type %= (
+       		qi::string("mod8") | 
+       		qi::string("uchar") | 
+       		qi::string("schar")
+       	) [boost::bind(&(VarGrammar::setValType), this, _1)];
 
-            	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
+       	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
+       	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
+       	var_type %= -(const_ >> +qi::space) >> simple_type;
+       	comment %= qi::char_(';') >> *qi::char_;
 
-            	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
-            	type %= -(const_ >> +qi::space) >> simple_type;
-            	comment %= qi::char_(';') >> *qi::char_;
-            }
+      
+        arr_expression %= *qi::space >> -(arr_const >> +qi::space) >> 
+                        (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
+                        var_type >> +qi::space >>
+                        name >> +qi::space >> 
+                        arr_size >> *(+qi::space >> arr_val);
+
+        arr_size %= qi::uint_[boost::bind(&(VarGrammar::setArrSize), this, _1)];
+        arr_const %= qi::string("const")[boost::bind(&(VarGrammar::setArrConst), this)];
+        arr_val %= qi::int_[boost::bind(&(VarGrammar::addInitVal), this, _1)];
+      }
 
 /**
 Установка указателя на имя обрабатываемой переменной. Все изменения имени будут происходить со значением по указателю.
 @param pname - указатель на имя обрабатываемого значения.
 */
-            void setNamePtr(std::string *pname)
-            {
-  				m_pname = pname;
-            }
+      void setNamePtr(std::string *pname)
+      {
+  	    m_pname = pname;
+      }
 
 
 /**
-Установка указателя переменную. В ходе синтаксического анализа значение по указателю будет изменятся.
+Установка указателя на переменную. В ходе синтаксического анализа значение по указателю будет изменятся.
 @param pval - указатель на обрабатываемое значение.
 */
-            void setValuePtr(Value *pval)
-            {
-  				m_pval = pval;
-            }
+      void setValuePtr(Value *pval)
+      {
+      	m_pval = pval;
+      }
 
 /**
-Очистка параметров переменной и её имени. Используется между разбором различных строк.
+Установка указателя на массив. В ходе синтаксического анализа будет изменяться значение по указателю.
+@param parr - указатель на массив.
 */
-            void clearValue()
-            {
-            	if(m_pval)
-            	{
-        			*m_pval = Value();
-  					m_pval -> setWriteable(true);
-  				}
 
-  				if(m_pname)
-	  				*m_pname= "";
-            }
+      void setArrayPtr(Array *parr)
+      {
+        m_parr = parr;
+      }
+
+/**
+Очистка параметров массива, переменной и имени. Используется между разбором различных строк.
+*/
+      void clear()
+      {
+       	if(m_pval)
+       	{
+    		  *m_pval = Value();
+  	    	m_pval -> setWriteable(true);
+  	    }
+		    if(m_pname)
+          *m_pname= "";
+        if(m_parr)
+          *m_parr = Array();
+        m_lstVal.clear();
+      }
 
 
+/**
+Указывает является ли обработанная строка определением переменной.
+@return В ходе анализа разобрано определение переменной?
+*/
+      bool isVariableDefinition() const
+      {
+        return m_type == VariableExpr;
+      }
 
-        private:
+
+/**
+Указывает является ли обработанная строка определением массива переменных.
+@return В ходе анализа разобрано определение массива?
+*/
+      bool isArrayDefinition() const
+      {
+        return m_type == ArrayExpr;
+      }
+
+
+    private:
 /**Устанавливает тип обрабатываемой переменной  из переданной cтроки. Используется как семантическое действие грамматики.
 @param type - строковое представление типа.
 */
-			void setValType(std::string type)
+    	void setValType(std::string type)
 			{
-				m_pval -> setReadable(false);
-				m_pval -> setType(Value::strToValueType(type));
-			}
+        if(m_pval)
+			  {
+      	  m_pval -> setReadable(false);
+				  m_pval -> setType(Value::strToValueType(type));
+        }
+        if(m_parr)
+          m_parr -> setType(Value::strToValueType(type));
+      }
 
 
 /**
@@ -128,8 +233,11 @@ class VarTranslator
 */
 			void setNoWriteable()
 			{
-				m_pval -> setWriteable(false);
-			}
+        if(m_pval)
+	   			m_pval -> setWriteable(false);
+		    if(m_parr)
+          m_parr -> setWriteableAll(false);
+    	}
 
 
 /**
@@ -150,18 +258,91 @@ class VarTranslator
 
 			void setValue(long long val)
 			{
-				m_pval -> setValue(val);
-				m_pval -> setReadable(true);
-			}
+        if(m_pval)
+        {
+				  m_pval -> setValue(val);
+				  m_pval -> setReadable(true);
+			  }
+      }
 
-           	qi::rule<Iterator> expression, type, const_, comment, simple_type, var_value, var_name;
+/**
+Устанавливает размер обрабатываемого в ходе анализа массива. Используется как семантическое действие грамматики.
+@param size - устанавливаемый размер.
+*/
+      void setArrSize(std::size_t size)
+      {
+        if(m_parr)
+          m_parr -> resize(size);
 
-           	std::string		*m_pname;
-           	Value   		*m_pval;
+      }
+/**
+Устанавливает обрабатываемый парсеровм массив в константу. Используется как семантическое действие грамматики.
+*/
+
+      void setArrConst()
+      {
+        if(m_parr)
+          m_parr -> setWriteable(false);
+      }
+
+
+/**
+Устанавливает тип разбираемого выражения (переменная или массив). В случае если тип - массив осуществляется вызов функции для
+инициализации его значений. Используется как семантическое действие грамматики. 
+@param type - устанавливаемый тип.
+*/
+      void setExprType(VarGrammar::ExpressionType type)
+      {
+        m_type = type;
+        if(type == VarGrammar::ArrayExpr)
+          setArrayValues();
+      }
+
+/**
+Добавляет значение к набору для инициализации массива. Используется как семантическое действие грамматики.
+@param val - значение инициализации
+*/
+      void addInitVal(long long val)
+      {
+        m_lstVal.push_back(val);
+      }
+
+
+/**
+Осуществляет инициализацию массива набором накопленных значения.
+*/
+      void setArrayValues() 
+      {
+        if(m_lstVal.size())
+        {
+          std::list<long long>::iterator itr = m_lstVal.begin();
+
+          for(int i=0; i<m_parr->size(); i++)
+          {
+            m_parr -> operator[](i).setValue(*itr);
+            itr++;
+            if(itr == m_lstVal.end())
+              itr = m_lstVal.begin();
+          }
+
+        }
+
+      }
+
+
+     	qi::rule<Iterator> expression, var_expression, arr_expression, var_type, const_, comment, simple_type, var_value, name;
+      qi::rule<Iterator> var, size, arr_const, arr_size, arr_val;
+
+      ExpressionType        m_type;
+     	std::string		        *m_pname;
+     	Value   		          *m_pval;
+      Array                 *m_parr;
+      std::list<long long>  m_lstVal;
 		};
 
-		std::string 							m_valName;
-		Value 									m_val;
+		std::string 						            m_name;
+    Array                               m_arr;
+		Value 								            	m_val;
 		VarGrammar<std::string::iterator>		m_grammar;
 };
 
