@@ -138,16 +138,23 @@ class VarTranslator
        	simple_type %= (
        		qi::string("mod8") | 
        		qi::string("uchar") | 
-       		qi::string("schar")
+       		qi::string("schar") |
+          qi::string("mod16") |
+          qi::string("ushort") |
+          qi::string("short") |
+          qi::string("mod32") |
+          qi::string("uint") |
+          qi::string("sint")
        	) [boost::bind(&(VarGrammar::setValType), this, _1)];
 
        	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
 //       	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
-       	var_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)] >> +qi::space) >> (simple_type | str_type);
+       	var_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)] >> +qi::space) >> simple_type;
        	comment %= qi::char_(';') >> *qi::char_;
 
 
-        arr_element_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setArrElementNoWriteable), this)] >> +qi::space) >> (simple_type | str_type);
+        arr_element_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setArrElementNoWriteable), this)] >> +qi::space) >> simple_type;
+        str_element_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setArrElementNoWriteable), this)] >> +qi::space) >> str_type;
 
         arr_expression %= *qi::space >> -(arr_const >> +qi::space) >> 
                         (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
@@ -162,7 +169,7 @@ class VarTranslator
 
         str_expression %= (*qi::space >> -(arr_const >> +qi::space) >> 
                         (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
-                        arr_element_type >> +qi::space >> 
+                        str_element_type >> +qi::space >> 
                         str_name >> +qi::space >>
                         str_init_val >>
                         *qi::space >> -comment
@@ -399,7 +406,7 @@ class VarTranslator
 
      	qi::rule<Iterator> expression, var_expression, arr_expression, str_expression, comment_expression, var_type, 
         const_, comment, simple_type, var_value, name, var, size, arr_const, arr_size, arr_val, str_type, str_init_val,
-        str_name, arr_element_type;
+        str_name, arr_element_type, str_element_type;
 
       ExpressionType        m_type;
       std::string           m_tmpStr;

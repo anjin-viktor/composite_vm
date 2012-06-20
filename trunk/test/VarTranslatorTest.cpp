@@ -176,6 +176,17 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_strTrue)
 
 
 
+BOOST_AUTO_TEST_CASE(VarTranslatorTest_strFalse)
+{
+	VarTranslator translator;
+	BOOST_CHECK_THROW(translator.translate("array uchar name"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("array  name \"\""), ParseError);
+	BOOST_CHECK_THROW(translator.translate("array  name const \"\""), ParseError);
+	BOOST_CHECK_THROW(translator.translate("const array uint name \"\""), ParseError);
+
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END();
 
