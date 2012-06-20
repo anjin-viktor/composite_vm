@@ -102,6 +102,10 @@ class VarTranslator
 */
       VariableExpr,
 /**
+Комментарий
+*/
+      CommentExpr,
+/**
 Пустое выражение
 */
       NoneExpr
@@ -116,11 +120,17 @@ class VarTranslator
         m_pval = NULL;
         m_pname = NULL;
         m_type = NoneExpr;
-        expression %= var_expression[boost::bind(&(VarGrammar::setExprType), this, VariableExpr)] | arr_expression[boost::bind(&(VarGrammar::setExprType), this, ArrayExpr)];
+        expression %= var_expression[boost::bind(&(VarGrammar::setExprType), this, VariableExpr)] | 
+                      arr_expression[boost::bind(&(VarGrammar::setExprType), this, ArrayExpr)] | 
+                      str_expression[boost::bind(&(VarGrammar::setExprType), this, ArrayExpr)] |
+                      comment_expression[boost::bind(&(VarGrammar::setExprType), this, CommentExpr)];
+
+
+        comment_expression = *qi::space >> comment;
+
        	var_expression %= *qi::space >> var_type >> +qi::space >> name >> -(+qi::space >> var_value) >> *qi::space >> -comment;
        	name %= qi::char_("_a-zA-Z")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)] >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)];
 
-       	VarGrammar *tmp = this;
 
        	simple_type %= (
        		qi::string("mod8") | 
@@ -130,19 +140,39 @@ class VarTranslator
 
        	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
        	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
-       	var_type %= -(const_ >> +qi::space) >> simple_type;
+       	var_type %= -(const_ >> +qi::space) >> (simple_type | str_type);
        	comment %= qi::char_(';') >> *qi::char_;
 
-      
+
+
         arr_expression %= *qi::space >> -(arr_const >> +qi::space) >> 
                         (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
                         var_type >> +qi::space >>
                         name >> +qi::space >> 
-                        arr_size >> *(+qi::space >> arr_val);
+                        arr_size >> *(+qi::space >> arr_val) >>
+                        *qi::space >> -comment;
 
         arr_size %= qi::uint_[boost::bind(&(VarGrammar::setArrSize), this, _1)];
         arr_const %= qi::string("const")[boost::bind(&(VarGrammar::setArrConst), this)];
         arr_val %= qi::int_[boost::bind(&(VarGrammar::addInitVal), this, _1)];
+
+        str_expression %= (*qi::space >> -(arr_const >> +qi::space) >> 
+                        (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 
+                        var_type >> +qi::space >> 
+                        str_name >> +qi::space >>
+                        str_init_val >>
+                        *qi::space >> -comment
+                        )[boost::bind(&(VarGrammar::setStrSizeAndName), this)];
+
+        str_type %= (
+          qi::string("mod8") | 
+          qi::string("uchar") | 
+          qi::string("schar")
+        )[boost::bind(&(VarGrammar::setValType), this, _1)];
+
+        str_name %= qi::char_("_a-zA-Z")[boost::bind(&(VarGrammar::addCharToVarNameForStr), this, _1)] >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(VarGrammar::addCharToVarNameForStr), this, _1)];
+        str_init_val %= qi::char_("\"") >> *(qi::print - '\"')[boost::bind(&(VarGrammar::addInitVal), this, _1)] >> qi::char_("\"");
+
       }
 
 /**
@@ -189,6 +219,7 @@ class VarTranslator
         if(m_parr)
           *m_parr = Array();
         m_lstVal.clear();
+        m_tmpStr = "";
       }
 
 
@@ -244,10 +275,22 @@ class VarTranslator
 Добавляет символ к имени обрабатываемой переменной. Используется как семантическое действие грамматики.
 @param ch - добавляемый символ.
 */
+
 			void addCharToVarName(char ch)
 			{
 				*m_pname += ch;
 			}
+
+
+/**
+Добавляет символ к имени обрабатываемого массива, хранящемся во временной переменной. Используется как семантическое действие грамматики.
+@param ch - добавляемый символ.
+*/
+
+      void addCharToVarNameForStr(char ch)
+      {
+        m_tmpStr += ch;
+      }
 
 
 
@@ -329,11 +372,22 @@ class VarTranslator
 
       }
 
+/**
+Устанавливает размер массива-строки исходя из размера строки инициализации, и имя массива-строки. Используется как семантическое действие грамматики
+*/
+      void setStrSizeAndName()
+      {
+        m_parr -> resize(m_lstVal.size());
+        *m_pname = m_tmpStr;
+      }
 
-     	qi::rule<Iterator> expression, var_expression, arr_expression, var_type, const_, comment, simple_type, var_value, name;
-      qi::rule<Iterator> var, size, arr_const, arr_size, arr_val;
+
+     	qi::rule<Iterator> expression, var_expression, arr_expression, str_expression, comment_expression, var_type, 
+        const_, comment, simple_type, var_value, name, var, size, arr_const, arr_size, arr_val, str_type, str_init_val,
+        str_name;
 
       ExpressionType        m_type;
+      std::string           m_tmpStr;
      	std::string		        *m_pname;
      	Value   		          *m_pval;
       Array                 *m_parr;

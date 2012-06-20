@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <ctime>
+#include <iostream>
 
 #include <boost/test/unit_test.hpp>
 #include "../src/VarTranslator.h"
@@ -130,6 +131,30 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_arrFalse)
 	BOOST_CHECK_THROW(translator.translate("array uchar name"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("Array mod8 name 1"), ParseError);
 }
+
+
+
+
+
+BOOST_AUTO_TEST_CASE(VarTranslatorTest_strTrue)
+{
+	std::cerr << "\n\n\n";
+	VarTranslator translator;
+	translator.translate("const array mod8 str \"val\"");
+	BOOST_CHECK_EQUAL(translator.getName(), "str");
+	BOOST_CHECK_EQUAL(translator.isVariable(), false);
+	BOOST_CHECK_EQUAL(translator.isArray(), true);
+	BOOST_CHECK_EQUAL(translator.getArray().isWriteable(), false);
+	BOOST_CHECK_EQUAL(translator.getArray().size(), 3);
+	BOOST_CHECK_EQUAL(translator.getArray()[0].getValue(), 'v');
+	BOOST_CHECK_EQUAL(translator.getArray()[1].getValue(), 'a');
+	BOOST_CHECK_EQUAL(translator.getArray()[2].getValue(), 'l');
+	BOOST_CHECK_EQUAL(translator.getArray()[2].getType(), Value::MOD8);
+}
+
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END();
 
