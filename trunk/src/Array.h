@@ -35,7 +35,7 @@ class Array
 		Array(std::size_t size);
 
 /**
-Конструктор от числа элементов массива и их типа
+Конструктор от числа элементов массива и их типа.
 */
 		Array(std::size_t size, Value::ValueType type);
 
@@ -70,7 +70,7 @@ class Array
 		void setReadableAll(bool readable);
 
 /**
-Установление право на запись для элементов массива
+Установление право на запись для элементов массива.
 @param writeable - право на запись
 */
 		void setWriteableAll(bool writeable);

@@ -10,7 +10,7 @@
 
 /**
 @file DataKeeperTest.cpp
-@brief Набор модульных тестов для класса DataKeeper
+@brief Набор модульных тестов для класса DataKeeper.
 */
 
 
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE(DATAKEEPER_TEST_SUITE);
 
 
 /**
-Тест функций DataKeeper::addVar, DataKeeper::addArray
+Тест функций DataKeeper::addVar, DataKeeper::addArray.
 */
 
 
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(testDataKeeper_addVar_Arr)
 
 
 /**
-Проверка функции isExists, isVar, isArr
+Проверка функции isExists, isVar, isArr.
 */
 
 
@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(testDataKeeper_isExists_isVar_isArray)
 
 
 /**
-Проверка функций add/getVar/Array
+Проверка функций add/getVar/Array.
 */
 BOOST_AUTO_TEST_CASE(testDataKeeper_add_get_Var_Array)
 {
@@ -102,6 +102,29 @@ BOOST_AUTO_TEST_CASE(testDataKeeper_add_get_Var_Array)
 	BOOST_CHECK_THROW(keeper.getArray("not_exists_arr"), std::runtime_error);
 	BOOST_CHECK_THROW(keeper.getVarValue("not_exists_var"), std::runtime_error);
 }
+
+
+
+
+/**
+Проверка функции clear.
+*/
+BOOST_AUTO_TEST_CASE(testDataKeeper_clear)
+{
+	DataKeeper keeper;
+	keeper.addVar(Value(1), "val_name");
+	keeper.addArray(Array(), "arr_name");
+
+	BOOST_CHECK_EQUAL(keeper.isExists("val_name"), true);
+	BOOST_CHECK_EQUAL(keeper.isExists("arr_name"), true);
+
+	keeper.clear();
+
+	BOOST_CHECK_EQUAL(keeper.isExists("val_name"), false);
+	BOOST_CHECK_EQUAL(keeper.isExists("arr_name"), false);
+}
+
+
 
 
 

@@ -16,6 +16,7 @@
 #include "Value.h"
 #include "Array.h"
 #include "ParseError.h"
+#include "DataKeeper.h"
 
 namespace qi = boost::spirit::qi;
 
@@ -27,7 +28,8 @@ namespace qi = boost::spirit::qi;
 
 /**
 @class VarTranslator
-@brief Класс, транслирующий объявление переменных и констант в секции .var в мнемокоде архитектуры.
+@brief Класс, транслирующий объявление переменных и констант в секции .var в мнемокоде архитектуры. Осуществляет обработку построчно.
+Изменяет объект класса DataKeeper. По завершению транслирования пользователь получает его.
 */
 
 class VarTranslator
@@ -41,9 +43,22 @@ class VarTranslator
 
 /**
 Осуществляет транслирование строки.
-@param str - транслируемая строка.
+@param str - транслируемая строка
 */
 	 void translate(std::string str);
+
+
+
+/**
+Сброс параметров. Применяется перед началом трансляции секции новой функции.
+*/
+    void clear();
+
+
+/**
+Получение результата трансляции в виде объекта DataKeeper, хранящего в себе все обработанные определения и объявления.
+*/
+    DataKeeper getDataKeeper() const;
 
 
 /**
@@ -62,20 +77,20 @@ class VarTranslator
 
 /**
 Предназначена для получения имени переменной или массива, определённых в разобранной строке.
-@return имя.
+@return имя
 */
    std::string getName() const;
 
 /**
 Получение переменной определённой в строке, переданной фунцкии VarTranslator::translate(std::string).
-@return переменная.
+@return переменная
 */
 
    Value getValue() const;
 
 /**
 Получение массива, пределённого в строке, переданной фунцкии VarTranslator::translate(std::string).
-@return массив.
+@return массив
 */
 
    Array getArray() const;
@@ -114,7 +129,7 @@ class VarTranslator
      };
   	public:
 /**
-Конструктор. Определяет грамматику.
+Конструктор. Определяет грамматику
 */
     	VarGrammar(): VarGrammar::base_type(expression)
       {
@@ -141,7 +156,7 @@ class VarTranslator
        		qi::string("schar") |
           qi::string("mod16") |
           qi::string("ushort") |
-          qi::string("short") |
+          qi::string("sshort") |
           qi::string("mod32") |
           qi::string("uint") |
           qi::string("sint")
@@ -188,7 +203,7 @@ class VarTranslator
 
 /**
 Установка указателя на имя обрабатываемой переменной. Все изменения имени будут происходить со значением по указателю.
-@param pname - указатель на имя обрабатываемого значения.
+@param pname - указатель на имя обрабатываемого значения
 */
       void setNamePtr(std::string *pname)
       {
@@ -198,7 +213,7 @@ class VarTranslator
 
 /**
 Установка указателя на переменную. В ходе синтаксического анализа значение по указателю будет изменятся.
-@param pval - указатель на обрабатываемое значение.
+@param pval - указатель на обрабатываемое значение
 */
       void setValuePtr(Value *pval)
       {
@@ -207,7 +222,7 @@ class VarTranslator
 
 /**
 Установка указателя на массив. В ходе синтаксического анализа будет изменяться значение по указателю.
-@param parr - указатель на массив.
+@param parr - указатель на массив
 */
 
       void setArrayPtr(Array *parr)
@@ -257,7 +272,7 @@ class VarTranslator
 
     private:
 /**Устанавливает тип обрабатываемой переменной  из переданной cтроки. Используется как семантическое действие грамматики.
-@param type - строковое представление типа.
+@param type - строковое представление типа
 */
     	void setValType(std::string type)
 			{
@@ -283,6 +298,7 @@ class VarTranslator
 
 
 /**
+Устанавливает в константу элемент массива. Используется как семантическое действие грамматики.
 */
       void setArrElementNoWriteable()
       {
@@ -291,7 +307,7 @@ class VarTranslator
 
 /**
 Добавляет символ к имени обрабатываемой переменной. Используется как семантическое действие грамматики.
-@param ch - добавляемый символ.
+@param ch - добавляемый символ
 */
 
 			void addCharToVarName(char ch)
@@ -302,7 +318,7 @@ class VarTranslator
 
 /**
 Добавляет символ к имени обрабатываемого массива, хранящемся во временной переменной. Используется как семантическое действие грамматики.
-@param ch - добавляемый символ.
+@param ch - добавляемый символ
 */
 
       void addCharToVarNameForStr(char ch)
@@ -314,7 +330,7 @@ class VarTranslator
 
 /**
 Устанавливает числовое значение обрабатываемого объекта класса Value. Используется как семантическое действие грамматики.
-@param val - значение.
+@param val - значение
 */
 
 			void setValue(long long val)
@@ -328,7 +344,7 @@ class VarTranslator
 
 /**
 Устанавливает размер обрабатываемого в ходе анализа массива. Используется как семантическое действие грамматики.
-@param size - устанавливаемый размер.
+@param size - устанавливаемый размер
 */
       void setArrSize(std::size_t size)
       {
@@ -350,7 +366,7 @@ class VarTranslator
 /**
 Устанавливает тип разбираемого выражения (переменная или массив). В случае если тип - массив осуществляется вызов функции для
 инициализации его значений. Используется как семантическое действие грамматики. 
-@param type - устанавливаемый тип.
+@param type - устанавливаемый тип
 */
       void setExprType(VarGrammar::ExpressionType type)
       {
@@ -395,7 +411,7 @@ class VarTranslator
       }
 
 /**
-Устанавливает размер массива-строки исходя из размера строки инициализации, и имя массива-строки. Используется как семантическое действие грамматики
+Устанавливает размер массива-строки исходя из размера строки инициализации, и имя массива-строки. Используется как семантическое действие грамматики.
 */
       void setStrSizeAndName()
       {
@@ -421,6 +437,7 @@ class VarTranslator
     Array                               m_arr;
 		Value 								            	m_val;
 		VarGrammar<std::string::iterator>		m_grammar;
+    DataKeeper                          m_data;
 };
 
 

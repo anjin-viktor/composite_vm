@@ -8,7 +8,7 @@
 
 /**
 @file ParseErrorTest.cpp
-@brief Набор модульных тестов для класса ParseError
+@brief Набор модульных тестов для класса ParseError.
 */
 
 
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE(PARSEERROR_TEST_SUITE);
 
 
 /**
-Функция для тестирования конструктора, методов ParseError::what и ParseError::msg
+Функция для тестирования конструктора, методов ParseError::what и ParseError::msg.
 */
 
 BOOST_AUTO_TEST_CASE(ParseErrorTest)

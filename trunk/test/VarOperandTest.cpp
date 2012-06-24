@@ -8,7 +8,7 @@
 
 /**
 @file VarOperandTest.cpp
-@brief Набор модульных тестов для класса VarOperand
+@brief Набор модульных тестов для класса VarOperand.
 */
 
 
@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_SUITE(VAROPERAND_TEST_SUITE);
 
 
 /**
-Тест функций VarOperand::setType
+Тест функций VarOperand::setType.
 */
 
 BOOST_AUTO_TEST_CASE(VarOperandTest)

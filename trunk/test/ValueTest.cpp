@@ -10,14 +10,14 @@
 
 /**
 @file ValueTest.cpp
-@brief Набор модульных тестов для класса Value
+@brief Набор модульных тестов для класса Value.
 */
 
 
 BOOST_AUTO_TEST_SUITE(VALUE_TEST_SUITE);
 
 /**
-Тест конструктора по умолчанию
+Тест конструктора по умолчанию.
 */
 
 
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(testValueDefaultConstructor)
 }
 
 /**
-Тест конструктора Value::Value(long long val)
+Тест конструктора Value::Value(long long val).
 */
 
 BOOST_AUTO_TEST_CASE(tastValueConstructor1)
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(tastValueConstructor1)
 
 
 /**
-Тест конструктора Value::Value(long long val, bool readable, bool writeable)
+Тест конструктора Value::Value(long long val, bool readable, bool writeable).
 */
 
 BOOST_AUTO_TEST_CASE(testValueConstructor2)
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(testValueConstructor2)
 
 
 /**
-Тест конструктора Value::Value(long long val, Value::ValueType type, bool readable, bool writeable)
+Тест конструктора Value::Value(long long val, Value::ValueType type, bool readable, bool writeable).
 */
 
 BOOST_AUTO_TEST_CASE(testValueConstructor3)
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(testValueConstructor3)
 
 
 /**
-Тест функций set/getReadable/Writeable
+Тест функций set/getReadable/Writeable.
 */
 
 BOOST_AUTO_TEST_CASE(testValuePermissions)
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(testValuePermissions)
 
 
 /**
-Тест функций set/getValue
+Тест функций set/getValue.
 */
 
 BOOST_AUTO_TEST_CASE(testValue_SET_GET_Value)
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(testValue_SET_GET_Value)
 
 
 /**
-Тест функций set/getType
+Тест функций set/getType.
 */
 
 
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(testValue_SET_GET_TYPE)
 
 
 /**
-Тест взятия значения по ссылки и не по ссылке
+Тест взятия значения по ссылке и не по ссылке.
 */
 
 

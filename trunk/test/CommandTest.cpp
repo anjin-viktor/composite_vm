@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_SUITE(COMMAND_TEST_SUITE);
 
 
 /**
-Тест функций VarOperand::setType
+Тест функции VarOperand::setType.
 */
 
 BOOST_AUTO_TEST_CASE(CommandTest_GetSetType)

@@ -35,7 +35,7 @@ class ParseError: public std::exception
 		virtual const char *what() const  throw();
 
 /**
-Функций для установки сообщения
+Функций для установки сообщения.
 @param msg - устанавливаемое сообщения
 */
 		void setMsg(const std::string &msg);

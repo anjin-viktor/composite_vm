@@ -8,7 +8,7 @@
 
 /**
 @file LabelOperandTest.cpp
-@brief Набор модульных тестов для класса LabelOperand
+@brief Набор модульных тестов для класса LabelOperand.
 */
 
 
@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_SUITE(LABELOPERAND_TEST_SUITE);
 
 
 /**
-Тест функций LabelOperand::setLabelName, Label::getLabelName
+Тест функций LabelOperand::setLabelName, Label::getLabelName.
 */
 
 BOOST_AUTO_TEST_CASE(testLabelOperand_SetGetName)
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(testLabelOperand_SetGetName)
 
 
 /**
-Тест функции LabelOperand::checkLabelName()
+Тест функции LabelOperand::checkLabelName().
 */
 
 BOOST_AUTO_TEST_CASE(testLabelOperand_CheckLabelName)

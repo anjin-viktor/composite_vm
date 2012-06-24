@@ -87,7 +87,7 @@ class DataKeeper
 
 /**
 Взятие константноый ссылки на значении переменной с указанным именем.
-@apram name - имя требуемой переменной
+@param name - имя требуемой переменной
 @return константная ссылка на искомую переменную
 @throw std::runtime_error - в случае несуществования переменной с требуемым именем
 */
@@ -110,6 +110,11 @@ class DataKeeper
 */
 		const Array &getArray(const std::string &name) const throw(std::runtime_error);
 
+
+/**
+Очистка объекта.
+*/
+		void clear();
 
 	private:
 		std::map<std::string, Value>		m_vars;

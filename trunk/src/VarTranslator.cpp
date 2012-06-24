@@ -20,6 +20,16 @@ void VarTranslator::translate(std::string str)
 
     if(!success || begin != end)
 		throw ParseError("stopped at: " + std::string(begin, end));
+
+    std::string name = getName();
+
+    if(m_data.isExists(name))
+    	throw ParseError("Variable or array with name + " + name + " already exists");
+
+   	if(isArray())
+   		m_data.addArray(getArray(), name);
+   	else if(isVariable())
+   		m_data.addVar(getValue(), name);
 }
 
 
@@ -59,4 +69,20 @@ Value VarTranslator::getValue() const
 Array VarTranslator::getArray() const
 {
 	return m_arr;
+}
+
+
+
+
+void VarTranslator::clear()
+{
+	m_data.clear();
+}
+
+
+
+
+DataKeeper VarTranslator::getDataKeeper() const
+{
+	return m_data;
 }

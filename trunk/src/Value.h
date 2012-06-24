@@ -72,7 +72,7 @@ class Value
 		Value(long long val, bool readable, bool writeable) throw(std::runtime_error);
 
 /**
-Конструктор от значения, типа и прав доступа .
+Конструктор от значения, типа и прав доступа.
 @param val - параметр, указывающий значение
 @param type - тип конструируемого значения
 @param readable - есть ли право на чтение?
@@ -83,7 +83,7 @@ class Value
 
 
 /**
-Виртуальный деструктор
+Виртуальный деструктор.
 */
 		virtual ~Value();
 
@@ -107,7 +107,7 @@ class Value
 */
 		void setReadable(bool readable);
 /**
-Функция устанавливает право на запись
+Функция устанавливает право на запись.
 @param writeable - есть ли право на чтение?
 */
 		void setWriteable(bool writeable);
@@ -125,7 +125,7 @@ class Value
 		ValueType getType() const;
 
 /**
-Получения значения в виде long long
+Получения значения в виде long long.
 @return long long ячейку, содержащую значение
 @throws std::runtime_error
 */
@@ -150,7 +150,7 @@ return копию переменной
 
 
 /**
-Преобразует запись сипа в виде строки к виду Value::ValueType
+Преобразует запись сипа в виде строки к виду Value::ValueType.
 @param str - строковое представление типа
 @return тип
 */
@@ -160,7 +160,6 @@ return копию переменной
 /**
 Если значение не инициализировано указатель 
 */
-public:
 		boost::shared_ptr<long long>						m_pval;
 		ValueType											m_type;
 		bool												m_isReadable;
@@ -169,14 +168,14 @@ public:
 
 /**
 Определяет минимальный тип, достаточных для хранения значения. Если значение не помещается ни в один из возможных типов
-возвращает Value::NO_TYPE;
+возвращает Value::NO_TYPE.
 @param val - значение
 @return минимальный тип
 */
 		static ValueType minTypeForValue(long long val);
 
 /**
-Осуществляет приведение значения в ячейке long long к указанному типу
+Осуществляет приведение значения в ячейке long long к указанному типу.
 @param val - значение
 @param type - требуемый тип
 @return значение, приведённое к типу

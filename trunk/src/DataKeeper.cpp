@@ -111,3 +111,12 @@ const Array &DataKeeper::getArray(const std::string &name) const throw(std::runt
 
 	return itr -> second;
 }
+
+
+
+
+void DataKeeper::clear()
+{
+	m_arrs.clear();
+	m_vars.clear();
+}

@@ -15,7 +15,7 @@
 
 /**
 @class Command
-@brief Класс, предназначенный для представления команды
+@brief Класс, предназначенный для представления команды.
 */
 
 
@@ -23,7 +23,7 @@ class Command
 {
 	public:
 /** 
-@brief Перечисление типов комманд
+@brief Перечисление типов комманд.
 */
 	enum Operation
 	{
@@ -37,42 +37,42 @@ class Command
 	};
 
 /**
-Конструктор по умолчанию
+Конструктор по умолчанию.
 */
 		Command();
 
 
 /**
-Конструктор от типа команды
+Конструктор от типа команды.
 */
 		Command(Command::Operation operation);
 
 
 /**
-Деструктор
+Деструктор.
 */
 		~Command();
 
 
 /**
-Установка типа команды
+Установка типа команды.
 */
 		void setOperationType(Command::Operation operation);
 
 /**
-Получение типа команды
+Получение типа команды.
 */
 		Command::Operation getOperationType() const;
 
 
 /**
-Установка первого операдна комадны
+Установка первого операдна комадны.
 */
 		void setFirstOperand(const Operand &operand);
 
 
 /**
-Установка второго операдна комадны
+Установка второго операдна комадны.
 */
 		void setSecondOperand(const Operand &operand);
 

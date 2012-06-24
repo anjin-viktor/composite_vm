@@ -231,7 +231,7 @@ Value::ValueType Value::strToValueType(const std::string &str)
 		return Value::MOD16;
 	else if(str == "uint")
 		return Value::UNSIGNED_INT;
-	else if(str == "sing")
+	else if(str == "sint")
 		return Value::SIGNED_INT;
 	else if(str == "mod32")
 		return Value::MOD32;
