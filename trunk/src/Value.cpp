@@ -53,9 +53,11 @@ Value::Value(long long val, ValueType type, bool readable, bool writeable)
 
 
 
+
 Value::~Value()
 {
 }
+
 
 
 
@@ -233,4 +235,26 @@ Value::ValueType Value::strToValueType(const std::string &str)
 		return Value::SIGNED_INT;
 	else if(str == "mod32")
 		return Value::MOD32;
+}
+
+
+
+
+
+Value Value::createNoLink() const
+{
+	Value val;
+	val.m_type = m_type;
+	val.m_isReadable = m_isReadable;
+	val.m_isWriteable = m_isWriteable;
+
+	if(m_pval.use_count() > 0)
+	{
+		val.m_pval = (boost::shared_ptr<long long>)(new long long);
+		*val.m_pval = *m_pval;
+	}
+	else
+		val.m_pval.reset();
+
+	return val;
 }

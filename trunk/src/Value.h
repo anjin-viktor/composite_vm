@@ -80,6 +80,8 @@ class Value
 */
 		Value(long long val, ValueType type, bool readable, bool writeable);
 
+
+
 /**
 Виртуальный деструктор
 */
@@ -139,6 +141,14 @@ class Value
 		void setValue(long long val) throw(std::runtime_error);
 
 
+
+/**
+Создание копии переменной, не являющейся на неё ссылкой для значения.
+return копию переменной
+*/
+		Value createNoLink() const;
+
+
 /**
 Преобразует запись сипа в виде строки к виду Value::ValueType
 @param str - строковое представление типа
@@ -150,6 +160,7 @@ class Value
 /**
 Если значение не инициализировано указатель 
 */
+public:
 		boost::shared_ptr<long long>						m_pval;
 		ValueType											m_type;
 		bool												m_isReadable;

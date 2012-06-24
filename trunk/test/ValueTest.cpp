@@ -24,10 +24,10 @@ BOOST_AUTO_TEST_SUITE(VALUE_TEST_SUITE);
 BOOST_AUTO_TEST_CASE(testValueDefaultConstructor)
 {
 	Value val;
-//	BOOST_CHECK_EQUAL(val.isReadable(), false);
-//	BOOST_CHECK_EQUAL(val.isWriteable(), false);
-//	BOOST_CHECK_EQUAL(val.getType(), Value::NO_TYPE);
-//	BOOST_CHECK_THROW(val.getValue(), std::runtime_error);
+	BOOST_CHECK_EQUAL(val.isReadable(), false);
+	BOOST_CHECK_EQUAL(val.isWriteable(), false);
+	BOOST_CHECK_EQUAL(val.getType(), Value::NO_TYPE);
+	BOOST_CHECK_THROW(val.getValue(), std::runtime_error);
 }
 
 /**
@@ -178,6 +178,34 @@ BOOST_AUTO_TEST_CASE(testValue_SET_GET_TYPE)
 	BOOST_CHECK_THROW(val.getValue(), std::runtime_error);
 
 
+}
+
+
+
+
+/**
+Тест взятия значения по ссылки и не по ссылке
+*/
+
+
+BOOST_AUTO_TEST_CASE(testValue_LINK)
+{
+	Value val(5);
+	Value n_val = val;
+	n_val.setValue(1);
+
+	BOOST_CHECK_EQUAL(val.getValue(), 1);
+
+	Value a;
+	a = n_val;
+	a.setValue(2);
+
+	BOOST_CHECK_EQUAL(val.getValue(), 2);
+
+
+	Value c = val.createNoLink();
+	c.setValue(3);
+	BOOST_CHECK_EQUAL(val.getValue(), 2);
 }
 
 
