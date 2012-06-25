@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "Operand.h"
 
 
@@ -33,6 +35,16 @@ class Command
 		MUL,
 		DIV,
 		MOD,
+		JMP,
+		JL,
+		JE,
+		JG,
+		JNE,
+		OUT,
+		RSZ,
+		CALL,
+		RET,
+		NOP,
 		NONE
 	};
 
@@ -56,25 +68,38 @@ class Command
 
 /**
 Установка типа команды.
+@param operation - тип команды
 */
 		void setOperationType(Command::Operation operation);
 
 /**
 Получение типа команды.
+@return - тип команды
 */
 		Command::Operation getOperationType() const;
 
 
 /**
 Установка первого операдна комадны.
+@param operand - первый операнд команды
 */
 		void setFirstOperand(const Operand &operand);
 
 
 /**
-Установка второго операдна комадны.
+Установка второго операнда комадны.
+@param operand - второй операнд команды
 */
 		void setSecondOperand(const Operand &operand);
+
+
+/**
+Преобразование строковой записи команды в форму Command::Operation
+@param str - строковое представление команды
+@return представление команды в формате Command::Operation
+*/
+
+		static Command::Operation strToOperation(const std::string &str);
 
 	private:
 		Command::Operation 			m_opType;

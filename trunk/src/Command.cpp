@@ -54,3 +54,47 @@ void Command::setSecondOperand(const Operand &operand)
 {
 	m_operands[1] = operand;
 }
+
+
+
+
+Command::Operation Command::strToOperation(const std::string &str)
+{
+	std::string tmp = str;
+	boost::algorithm::to_lower(tmp);
+
+	if(tmp == "mov")
+		return Command::MOV;
+	else if(tmp == "add")
+		return Command::ADD;
+	else if(tmp == "sub")
+		return Command::SUB;
+	else if(tmp == "mul")
+		return Command::MUL;
+	else if(tmp == "div")
+		return Command::DIV;
+	else if(tmp == "mod")
+		return Command::MOD;
+	else if(tmp == "jmp")
+		return Command::JMP;
+	else if(tmp == "jl")
+		return Command::JL;
+	else if(tmp == "je")
+		return Command::JE;
+	else if(tmp == "jg")
+		return Command::JG;
+	else if(tmp == "jne")
+		return Command::JNE;
+	else if(tmp == "out")
+		return Command::OUT;
+	else if(tmp == "rsz")
+		return Command::RSZ;
+	else if(tmp == "call")
+		return Command::CALL;
+	else if(tmp == "ret")
+		return Command::RET;
+	else if(tmp == "nop")
+		return Command::NOP;
+	else 
+		return Command::NONE;
+}

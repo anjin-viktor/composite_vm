@@ -21,7 +21,7 @@ class ParseError: public std::exception
 	public:
 /**
 Конструктор от строки - сообщения об ошибке.
-@param msg - сообщение, описывающую произощедщую ошибку
+@param msg - сообщение, описывающую произошедщую ошибку
 */
 		ParseError(const std::string &msg);
 

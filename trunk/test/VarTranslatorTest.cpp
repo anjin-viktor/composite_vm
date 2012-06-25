@@ -406,4 +406,20 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_combined)
 }
 
 
+
+BOOST_AUTO_TEST_CASE(VarTranslatorTest_comment)
+{
+	VarTranslator translator;
+	translator.translate("uchar ch;comment");
+	BOOST_CHECK_EQUAL(translator.isVariable(), true);
+	BOOST_CHECK_EQUAL(translator.isArray(), false);
+
+	translator.translate(";comment");
+	BOOST_CHECK_EQUAL(translator.isVariable(), false);
+	BOOST_CHECK_EQUAL(translator.isArray(), false);
+
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END();
