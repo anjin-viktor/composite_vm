@@ -13,6 +13,8 @@ set (SOURCES
 	../src/ParseError.cpp
 	../src/Array.cpp
 	../src/DataKeeper.cpp
+	../src/Label.cpp
+	../src/CodeTranslator.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -22,6 +24,8 @@ set (SOURCES
 	ParseErrorTest.cpp
 	ArrayTest.cpp
 	DataKeeperTest.cpp
+	LabelTest.cpp
+	CodeTranslatorTest.cpp
 	)
  
 set (BOOST_COMPONENTS 
