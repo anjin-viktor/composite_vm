@@ -3,7 +3,7 @@
 
 CodeTranslator::CodeTranslator()
 {
-	m_grammar.setOperationPtr(&m_op);
+	m_grammar.setCommandPtr(&m_command);
 	m_grammar.setLabelNamesListPtr(&m_lbls);
 }
 
@@ -17,18 +17,11 @@ CodeTranslator::~CodeTranslator()
 
 
 
-void CodeTranslator::setDataKeeper(const DataKeeper &keeper)
+void CodeTranslator::setDataKeeperPtr(DataKeeper *pkeeper)
 {
-	m_data = keeper;
+	m_pdata = pkeeper;
 }
 
-
-
-
-DataKeeper CodeTranslator::getDataKeeper() const
-{
-	return m_data;
-}
 
 
 
@@ -42,7 +35,7 @@ void CodeTranslator::translate(std::string str)
     if(!success || begin != end)
     {
 		m_lbls.clear();
-		m_op = Command::NONE;
+		m_command.setOperationType(Command::NONE);
 		throw ParseError("stopped at: " + std::string(begin, end));
 	}
 }
@@ -52,7 +45,7 @@ void CodeTranslator::translate(std::string str)
 
 Command::Operation CodeTranslator::getOperation() const
 {
-	return m_op;
+	return m_command.getOperationType();
 }
 
 
@@ -60,4 +53,12 @@ Command::Operation CodeTranslator::getOperation() const
 std::list<std::string> CodeTranslator::getLabelsList() const
 {
 	return m_lbls;
+}
+
+
+
+
+Command CodeTranslator::getCommand() const
+{
+	return m_command;
 }

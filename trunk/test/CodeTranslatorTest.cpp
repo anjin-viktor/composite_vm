@@ -26,13 +26,11 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_true)
 	keeper.addVar(Value(), "name");
 
 	CodeTranslator translator;
-	translator.setDataKeeper(keeper);
+	translator.setDataKeeperPtr(&keeper);
 
-	DataKeeper keeper_ = translator.getDataKeeper();
-
-	BOOST_CHECK_EQUAL(keeper_.isExists("name"), true);
-	BOOST_CHECK_EQUAL(keeper_.isVar("name"), true);	
-	BOOST_CHECK_EQUAL(keeper_.isArray("name"), false);	
+	BOOST_CHECK_EQUAL(keeper.isExists("name"), true);
+	BOOST_CHECK_EQUAL(keeper.isVar("name"), true);	
+	BOOST_CHECK_EQUAL(keeper.isArray("name"), false);	
 }
 
 
@@ -175,5 +173,79 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_labelFalse)
 	BOOST_CHECK_THROW(translator.translate(".l:"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("l::"), ParseError);
 }
+
+
+
+/**
+Тест трансляции комманд-переходов и вызова модуля.
+*/
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_jump)
+{
+	CodeTranslator translator;
+	boost::shared_ptr<LabelOperand>  lblop;
+
+	translator.translate("jmp lbl");
+	lblop = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::JMP);
+	BOOST_CHECK_EQUAL(lblop -> getLabelName(), "lbl");
+
+
+	translator.translate("   je      label_    ");
+	lblop = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::JE);
+	BOOST_CHECK_EQUAL(lblop -> getLabelName(), "label_");
+
+
+	translator.translate("jne    l1");
+	lblop = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::JNE);
+	BOOST_CHECK_EQUAL(lblop -> getLabelName(), "l1");
+
+
+	translator.translate("jl l");
+	lblop = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::JL);
+	BOOST_CHECK_EQUAL(lblop -> getLabelName(), "l");
+
+
+
+	translator.translate("jg g");
+	lblop = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::JG);
+	BOOST_CHECK_EQUAL(lblop -> getLabelName(), "g");
+
+
+	translator.translate(" call  MODULE ");
+	lblop = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::CALL);
+	BOOST_CHECK_EQUAL(lblop -> getLabelName(), "MODULE");
+}
+
+
+
+/**
+Тест трансляции команд без операндов(ret, not)
+*/
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_zeroOperation)
+{
+	CodeTranslator translator;
+
+	translator.translate("  nop   ");
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::NOP);
+
+	translator.translate("ret");
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::RET);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END();

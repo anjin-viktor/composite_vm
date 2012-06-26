@@ -42,17 +42,34 @@ Command::Operation Command::getOperationType() const
 
 
 
-void Command::setFirstOperand(const Operand &operand)
+void Command::setFirstOperand(boost::shared_ptr<Operand> poperand)
 {
-	m_operands[0] = operand;
+	m_operands[0] = poperand;
 }
 
 
 
 
-void Command::setSecondOperand(const Operand &operand)
+void Command::setSecondOperand(boost::shared_ptr<Operand> poperand)
 {
-	m_operands[1] = operand;
+	m_operands[1] = poperand;
+}
+
+
+
+
+
+boost::shared_ptr<Operand> Command::getFirstOperand() const throw(std::out_of_range)
+{
+	return m_operands[0];
+}
+
+
+
+
+boost::shared_ptr<Operand> Command::getSecondOperand() const throw(std::out_of_range)
+{
+	return m_operands[1];
 }
 
 

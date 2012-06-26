@@ -17,6 +17,7 @@
 #include "Value.h"
 #include "Command.h"
 #include "DataKeeper.h"
+#include "LabelOperand.h"
 
 
 namespace qi = boost::spirit::qi;
@@ -41,16 +42,11 @@ class CodeTranslator
 		~CodeTranslator();
 
 /**
-Установка набора данных, полученных при трансляции секции .var.
-@param keeper - устанавливаемый набор
+Установка указателя на набор данных, полученных при трансляции секции .var.
+@param pkeeper - указатель на устанавливаемый набор
 */
-		void setDataKeeper(const DataKeeper &keeper);
+		void setDataKeeperPtr(DataKeeper *pkeeper);
 
-/**
-Получение набора данных. Используется после трансляции, в ходе которой он будет расширен константами в коде.
-@return объект, хранящий данные функции
-*/
-		DataKeeper getDataKeeper() const;
 
 /**
 Трансляция строки.
@@ -72,6 +68,13 @@ class CodeTranslator
 */
 		std::list<std::string> getLabelsList() const;
 
+
+/**
+Получение команды, определённой в оттранслированной строке
+*/
+
+		Command getCommand() const;
+
 	private:
 
 
@@ -91,7 +94,8 @@ class CodeTranslator
 */
 			CodeGrammar(): CodeGrammar::base_type(expression_operation)
 			{
-				m_pop = NULL;
+				m_pcommand = NULL;
+				m_plbls = NULL;
 
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
@@ -115,7 +119,8 @@ class CodeTranslator
                         qi::string("mod32")
                     ) >> *qi::space >> qi::char_(")");
                 rd_operand %= -(cast >> *qi::space) >> (wr_operand | qi::int_);
-                label_operand %= qi::char_("_a-zA-Z") >> *qi::char_("_a-zA-Z0-9");
+                label_operand %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)] >>
+                		*qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)];
                 zero_operation %= (qi::string("ret") | qi::string("nop"))[boost::bind(&(CodeGrammar::setOperation), this, _1)];
                 jump_operation %=    (
                                             qi::string("jmp") |
@@ -124,7 +129,8 @@ class CodeTranslator
                                             qi::string("call") |
                                             qi::string("je") |
                                             qi::string("jne")
-                                     )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> label_operand;
+                                     )[boost::bind(&(CodeGrammar::setOperation), this, _1)] 
+                                     >> +qi::space >> label_operand[boost::bind(&(CodeGrammar::saveJumpOperation), this)];
                 aout_operation %= qi::string("aout")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> array;
                 one_operation %= jump_operation | aout_operation;
                 two_operation %= arith_operation | cmp_operation;
@@ -136,9 +142,10 @@ class CodeTranslator
                                             qi::string("div") | 
                                             qi::string("mod")
                                     )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> wr_operand >> *qi::space >> qi::char_(',') >> *qi::space >> rd_operand;
-                cmp_operation %= qi::string("cmp")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> rd_operand >> *qi::space >> qi::char_(',') >> *qi::space >> rd_operand; 
+                cmp_operation %= qi::string("cmp")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> 
+                					+qi::space >> rd_operand >> *qi::space >> qi::char_(',') >> *qi::space >> rd_operand; 
                 label %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)]
-                	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)] >> qi::char_(':')/*[boost::bind(&(CodeGrammar::endLabelName), this)]*/;
+                	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)] >> qi::char_(':');
                 comment = qi::char_(';') >> *qi::char_;
 			}
 
@@ -147,25 +154,27 @@ class CodeTranslator
 */
 			void clear()
 			{
-				if(m_pop)
-					*m_pop = Command::NONE;
+				if(m_pcommand)
+					m_pcommand -> setOperationType(Command::NONE);
 
 				if(m_plbls)
 					m_plbls -> clear();
 
 				m_lbl = "";
+				m_labelOperand = "";
 
 				m_opExists = false;
 			}
 
 
+
 /**
-Устанавливает указатель на объект Command::Operation, в который будет сохранена информация о операции.
-@param pop - указатель на объект для сохранения при трансляции типа операции
+Устанавливает указатель на объект Command, в который будет сохранена информация о команде.
+@param pcomm - указатель на объект для сохранения информации при трансляции команды
 */
-			void setOperationPtr(Command::Operation *pop)
+			void setCommandPtr(Command *pcomm)
 			{
-				m_pop = pop;
+				m_pcommand = pcomm;
 			}
 
 /**
@@ -199,14 +208,36 @@ class CodeTranslator
 
 
 		private:
+
+/**
+Оформляет операцию пререхода и вызова модуля.
+*/
+
+			void saveJumpOperation()
+			{
+				if(m_pcommand)
+					m_pcommand -> setFirstOperand(boost::shared_ptr<Operand>(new LabelOperand(m_labelOperand)));
+			}
+
+
+/**
+Добавляет символ к имени метке - операнду. Используется как семантическое действие грамматики.
+@param ch - добавляемый символ
+*/
+			void addLabelOperandChar(char ch)
+			{
+				m_labelOperand += ch;
+			}
+
+
 /**
 Устанавливает тип операции. Используется как семантическое действие грамматики.
 @param str - строковое представление типа
 */
 			void setOperation(std::string str)
 			{
-				if(m_pop)
-					*m_pop = Command::strToOperation(str);
+				if(m_pcommand)
+					m_pcommand -> setOperationType(Command::strToOperation(str));
 			}
 /**
 Добавляет символ к метке. Используется как семантическое действие грамматики.
@@ -239,18 +270,20 @@ class CodeTranslator
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
             one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation;
 
-            Command::Operation 						*m_pop;
+            Command									*m_pcommand;
             std::list<std::string>					*m_plbls;
             bool									m_opExists;
             bool									m_labelExists;
 			std::string								m_lbl;
+			std::string								m_labelOperand;
 	};
 
 
-		Command::Operation 						m_op;
-		DataKeeper 								m_data;
+		Command 								m_command;
+		DataKeeper 								*m_pdata;
 		CodeGrammar<std::string::iterator> 		m_grammar;
 		std::list<std::string>					m_lbls;
+
 };
 
 

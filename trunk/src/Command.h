@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "Operand.h"
 
@@ -82,17 +83,33 @@ class Command
 
 /**
 Установка первого операдна комадны.
-@param operand - первый операнд команды
+@param poperand - указатель на первый операнд команды
 */
-		void setFirstOperand(const Operand &operand);
+		void setFirstOperand(boost::shared_ptr<Operand> poperand);
 
 
 /**
 Установка второго операнда комадны.
-@param operand - второй операнд команды
+@param poperand - второй операнд команды
 */
-		void setSecondOperand(const Operand &operand);
+		void setSecondOperand(boost::shared_ptr<Operand> poperand);
 
+
+/**
+Получение указателя на первый операнд команды.
+@return указатель на первый операнд команды
+@throw std::out_of_range при отсутствии первого операнда
+*/
+
+		boost::shared_ptr<Operand> getFirstOperand() const throw(std::out_of_range);
+/**
+Получение указателя на второй операнд команды.
+@return указатель на второй операнд команды
+@throw std::out_of_range при отсутствии второго операнда
+*/
+
+
+		boost::shared_ptr<Operand> getSecondOperand() const throw(std::out_of_range);
 
 /**
 Преобразование строковой записи команды в форму Command::Operation
@@ -103,8 +120,8 @@ class Command
 		static Command::Operation strToOperation(const std::string &str);
 
 	private:
-		Command::Operation 			m_opType;
-		std::vector<Operand>		m_operands;
+		Command::Operation 						 		m_opType;
+		std::vector<boost::shared_ptr<Operand> >		m_operands;
 };
 
 
