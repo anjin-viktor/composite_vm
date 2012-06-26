@@ -95,6 +95,8 @@ Command::Operation Command::strToOperation(const std::string &str)
 		return Command::RET;
 	else if(tmp == "nop")
 		return Command::NOP;
+	else if(tmp == "cmp")
+		return Command::CMP;
 	else 
 		return Command::NONE;
 }

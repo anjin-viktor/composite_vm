@@ -3,6 +3,8 @@
 
 CodeTranslator::CodeTranslator()
 {
+	m_grammar.setOperationPtr(&m_op);
+	m_grammar.setLabelNamesListPtr(&m_lbls);
 }
 
 
@@ -30,7 +32,32 @@ DataKeeper CodeTranslator::getDataKeeper() const
 
 
 
-void CodeTranslator::translate(const std::string &str)
+void CodeTranslator::translate(std::string str)
 {
+	m_grammar.clear();
+    std::string::iterator begin = str.begin(), end = str.end();
+
+    bool success = qi::parse(begin, end, m_grammar);
+
+    if(!success || begin != end)
+    {
+		m_lbls.clear();
+		m_op = Command::NONE;
+		throw ParseError("stopped at: " + std::string(begin, end));
+	}
 }
 
+
+
+
+Command::Operation CodeTranslator::getOperation() const
+{
+	return m_op;
+}
+
+
+
+std::list<std::string> CodeTranslator::getLabelsList() const
+{
+	return m_lbls;
+}

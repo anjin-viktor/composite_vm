@@ -45,6 +45,7 @@ class Command
 		CALL,
 		RET,
 		NOP,
+		CMP,
 		NONE
 	};
 
