@@ -18,6 +18,8 @@
 #include "Command.h"
 #include "DataKeeper.h"
 #include "LabelOperand.h"
+#include "VarOperand.h"
+
 
 
 namespace qi = boost::spirit::qi;
@@ -96,16 +98,21 @@ class CodeTranslator
 			{
 				m_pcommand = NULL;
 				m_plbls = NULL;
+				m_pdata = NULL;
 
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
                 						>> *qi::space >> -comment;
 		        operation = zero_operation | one_operation | two_operation;
 
-                var %= qi::char_("_a-zA-Z") >> *qi::char_("_a-zA-Z0-9");
-		        array %= qi::char_("_a-zA-Z") >> *qi::char_("_a-zA-Z0-9");
-                array_element %=  array >> *qi::space >> qi::char_('[') >> *qi::space >> qi::uint_ >> *qi::space >> qi::char_(']');
-                wr_operand %= array_element | var;
+                var %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)]
+                	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)];
+		        array %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addArrayNameChar), this, _1)]
+		        		 >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addArrayNameChar), this, _1)];
+                array_element %=  array >> *qi::space >> qi::char_('[') >> *qi::space 
+                					>> qi::uint_[boost::bind(&(CodeGrammar::setArrayElementIndex), this, _1)] >> *qi::space >> qi::char_(']');
+                wr_operand %= array_element[boost::bind(&(CodeGrammar::saveArrayElementOperand), this)] |
+                			var[boost::bind(&(CodeGrammar::saveVarOperand), this)];
                 cast %= qi::char_('(') >> *qi::space >> -(qi::string("const") >> +qi::space) >> 
                     (
                         qi::string("uchar") |
@@ -117,7 +124,7 @@ class CodeTranslator
                         qi::string("uint") |
                         qi::string("sint") |
                         qi::string("mod32")
-                    ) >> *qi::space >> qi::char_(")");
+                    )[boost::bind(&(CodeGrammar::setOperandType), this, _1)] >> *qi::space >> qi::char_(")");
                 rd_operand %= -(cast >> *qi::space) >> (wr_operand | qi::int_);
                 label_operand %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)] >>
                 		*qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)];
@@ -141,9 +148,13 @@ class CodeTranslator
                                             qi::string("mul") |
                                             qi::string("div") | 
                                             qi::string("mod")
-                                    )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> wr_operand >> *qi::space >> qi::char_(',') >> *qi::space >> rd_operand;
+                                    )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> 
+                                    wr_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >> 
+                                    *qi::space >> qi::char_(',') >> *qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)];
+
                 cmp_operation %= qi::string("cmp")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> 
-                					+qi::space >> rd_operand >> *qi::space >> qi::char_(',') >> *qi::space >> rd_operand; 
+                					+qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >>
+                					 *qi::space >> qi::char_(',') >> *qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)]; 
                 label %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)] >> qi::char_(':');
                 comment = qi::char_(';') >> *qi::char_;
@@ -162,6 +173,8 @@ class CodeTranslator
 
 				m_lbl = "";
 				m_labelOperand = "";
+				m_arrName = "";
+				m_varName = "";
 
 				m_opExists = false;
 			}
@@ -205,10 +218,120 @@ class CodeTranslator
 				return m_labelExists;
 			}
 
-
+/**
+Устанавливает указатель на набор данных. Набор данных потребуется при трансляции команд с переменными.
+@param pdata - указатель на набор данных
+*/
+			void setDataKeeperPtr(DataKeeper *pdata)
+			{
+				m_pdata = pdata;
+			}
 
 		private:
 
+/**
+Устанавливает тип, к которому приводится переменная.
+@param str - строковое представление типа
+*/
+			void setOperandType(std::string str)
+			{
+				m_currentVar.setConstancy(true);
+				m_currentVar.setType(Value::strToValueType(str));
+			}
+
+
+/**
+Сохраняет текущий строимый операнд как первый операнд. Используется как семантическое действие грамматики.
+*/
+			void saveFirstOperand()
+			{
+				if(m_pcommand)
+					m_pcommand -> setFirstOperand(boost::shared_ptr<Operand>(new VarOperand(m_currentVar)));
+
+				m_currentVar.setType(Value::NO_TYPE);
+				m_currentVar.setConstancy(false);
+			}
+
+
+/**
+Сохраняет текущий строимый операнд как второй операнд. Используется как семантическое действие грамматики.
+*/
+			void saveSecondOperand()
+			{
+				if(m_pcommand)
+					m_pcommand -> setSecondOperand(boost::shared_ptr<Operand>(new VarOperand(m_currentVar)));
+
+				m_currentVar.setType(Value::NO_TYPE);
+				m_currentVar.setConstancy(false);
+			}
+
+/**
+Оформляет элемент массива как операнд. Используется как семантическое действие грамматики.
+*/
+
+			void saveArrayElementOperand()
+			{
+				if(m_pdata)
+				{
+					if(m_pdata -> isArray(m_arrName) == false)
+						throw ParseError("array with name " + m_arrName + "not exists");
+
+					m_currentVar = VarOperand(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx, Value::NO_TYPE);
+					m_arrName = "";
+					m_arrName = "";
+				}
+			}
+
+
+/**
+Оформляет переменную как операнд. Используется как семантическое действие грамматики.
+*/
+			void saveVarOperand()
+			{
+				if(m_pdata)
+				{
+					if(m_pdata -> isVar(m_varName) == false)
+						throw ParseError("variable with name " + m_varName + "not exists");
+			
+					m_currentVar = VarOperand(&(m_pdata -> getVarValue(m_varName)));
+					m_varName = "";
+					m_arrName = "";
+				}
+			}
+
+
+
+/**
+Добавляет символ к имени переменной. Используется как семантическое действие грамматики.
+@param ch - добавляемый символ
+*/
+
+			void addVarNameChar(char ch)
+			{
+				m_varName += ch;
+			}
+
+
+/**
+Добавляет символ к имени массива. Используется как семантическое действие грамматики.
+@param ch - добавляемый символ
+*/
+			void addArrayNameChar(char ch)
+			{
+				m_arrName += ch;
+			}
+
+
+
+/**
+Устанавливает индекс смещения в массиве
+@param n - смещение
+*/
+
+			void setArrayElementIndex(int n)
+			{
+				m_arrElementIndx = n;
+			}
 /**
 Оформляет операцию пререхода и вызова модуля.
 */
@@ -272,10 +395,15 @@ class CodeTranslator
 
             Command									*m_pcommand;
             std::list<std::string>					*m_plbls;
+			DataKeeper	 							*m_pdata;
             bool									m_opExists;
             bool									m_labelExists;
 			std::string								m_lbl;
 			std::string								m_labelOperand;
+			std::string								m_varName;
+			std::string								m_arrName;
+			std::size_t								m_arrElementIndx;
+			VarOperand 								m_currentVar;
 	};
 
 

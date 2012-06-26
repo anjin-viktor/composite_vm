@@ -20,6 +20,7 @@ CodeTranslator::~CodeTranslator()
 void CodeTranslator::setDataKeeperPtr(DataKeeper *pkeeper)
 {
 	m_pdata = pkeeper;
+	m_grammar.setDataKeeperPtr(pkeeper);
 }
 
 

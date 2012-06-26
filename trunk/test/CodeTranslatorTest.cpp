@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_true)
 
 
 /**
-Тест правильности получение кода операции.
+Тест правильности получения кода операции.
 */
 
 BOOST_AUTO_TEST_CASE(CodeTranslatorTest_getOperation)
@@ -245,6 +245,146 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_zeroOperation)
 
 	translator.translate("ret");
 	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::RET);
+}
+
+
+
+
+/**
+Тест правильности транслирования операндов без приведения типов
+*/
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
+{
+	CodeTranslator translator;
+	boost::shared_ptr<VarOperand> op1, op2;
+
+	DataKeeper keeper;
+	keeper.addVar(Value(1, Value::MOD16, true, true), "var1");
+	keeper.addVar(Value(2, Value::MOD16, true, true), "var2");
+
+	Array array(3, Value::MOD16);
+	array[0] = 1;
+	array[1] = 2;
+	array[2] = 3;
+
+	keeper.addArray(array, "arr1");
+
+	array = Array(3, Value::MOD16);
+	array[0] = 256;
+	array[1] = 257;
+	array[2] = 258;
+
+	keeper.addArray(array, "arr2");
+
+	translator.setDataKeeperPtr(&keeper);
+
+	translator.translate("mov var1, var2");
+
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 1);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 2);
+
+	keeper.getVarValue("var1").setValue(3);
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 3);
+
+
+	translator.translate("  mul arr1[1]   ,   arr2[2] ");
+
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 2);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 258);
+
+	keeper.getArray("arr1")[1].setValue(5);
+	keeper.getArray("arr2")[2].setValue(6);
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 5);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 6);
+
+
+
+	translator.translate("  mul arr1[0]   ,   var2");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 1);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 2);
+
+	keeper.getArray("arr1")[0].setValue(0);
+	keeper.getVarValue("var2").setValue(10);
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 0);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 10);
+
+
+	translator.translate("  mul var1,arr2[0]");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 3);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 256);
+
+	keeper.getArray("arr2")[0].setValue(10);
+	keeper.getVarValue("var1").setValue(0);
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 0);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 10);
+
+
+	translator.translate("  cmp var1, arr2[0] ");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 0);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 10);
+
+	translator.translate("  cmp var1,var2");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 0);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 10);
+
+
+	BOOST_CHECK_THROW(translator.translate("mov var1, var3"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov var1, var3[0]"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov var1[0], var3[0]"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov arr1[1], var[3]"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov arr3[1], arr1[1]"), ParseError);
+
+}
+
+
+
+/**
+Проверка приведения типа.
+*/
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_castOperandTwoOperation)
+{
+	CodeTranslator translator;
+	boost::shared_ptr<VarOperand> op1, op2;
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, true, true), "var1");
+	keeper.addVar(Value(2, Value::UNSIGNED_CHAR, true, true), "var2");
+
+
+	translator.translate("add var1, (uint) var2");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> isConstant(), false);
+	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
+	BOOST_CHECK_EQUAL(op1 -> getType(), Value::NO_TYPE);
+	BOOST_CHECK_EQUAL(op2 -> getType(), Value::UNSIGNED_INT);
 }
 
 

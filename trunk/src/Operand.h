@@ -6,6 +6,7 @@
 @file Operand.h
 */
 
+
 /**
 @class Operand
 @brief Абстрактный класс, являющийся базовым для операндов команды.
@@ -28,6 +29,7 @@ class Operand
 Оператор присвоения.
 */
 		virtual Operand operator =(const Operand &) {};
+
 };
 
 #endif

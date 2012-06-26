@@ -1,23 +1,23 @@
 #include "VarOperand.h"
 
-VarOperand::VarOperand(): Operand()
+VarOperand::VarOperand(Value *pval, Value::ValueType type): Operand()
 {
+	m_pval = pval;
+	m_type = type;
+	m_parr = NULL;
+	m_indx = 0;
+	m_const = false;
 }
 
 
 
-
-VarOperand::VarOperand(const std::string &name) throw(std::runtime_error): Operand()
+VarOperand::VarOperand(Array *parr, std::size_t n, Value::ValueType type): Operand()
 {
-	setVarName(name);
-}
-
-
-
-
-VarOperand::VarOperand(long long value): Operand()
-{
-	setLongLongValue(value);
+	m_pval = NULL;
+	m_type = type;
+	m_parr = parr;
+	m_indx = n;
+	m_const = false;
 }
 
 
@@ -30,25 +30,64 @@ VarOperand::~VarOperand()
 
 
 
-void VarOperand::setVarName(const std::string &name) throw(std::runtime_error)
+void VarOperand::setValuePtr(Value *pval)
 {
-//если переменной с именем name нет - выкинуть исключение
-//установить m_pval на переменную с именем name 
+	m_pval = pval;
+	m_parr = NULL;
+	m_indx = 0;
 }
 
 
 
 
-void VarOperand::setLongLongValue(long long value)
+void VarOperand::setArrayElementPtr(Array *parr, std::size_t n)
 {
-//Если в рамках функции нет константы с этим именем - добавить
-//установить m_pval на переменную с этим значением
+	m_pval = NULL;
+	m_parr = parr;
+	m_indx = n;
 }
-
 
 
 
 void VarOperand::setType(Value::ValueType type)
 {
 	m_type = type;
+}
+
+
+
+
+long long VarOperand::getValue() const
+{
+	if(m_pval)
+		return m_pval -> getValue(m_type);
+	else if(m_parr)
+		return m_parr -> operator[](m_indx).getValue(m_type);
+	else
+		throw std::logic_error("getting value from NULL-object");
+
+}
+
+
+
+
+void VarOperand::setConstancy(bool constancy)
+{
+	m_const = constancy;
+}
+
+
+
+
+bool VarOperand::isConstant() const
+{
+	return m_const;
+}
+
+
+
+
+Value::ValueType VarOperand::getType() const
+{
+	return m_type;
 }

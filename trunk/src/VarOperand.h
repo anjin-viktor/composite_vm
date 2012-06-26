@@ -9,6 +9,7 @@
 
 #include "Operand.h"
 #include "Value.h"
+#include "Array.h"
 
 
 
@@ -22,47 +23,63 @@ class VarOperand: public Operand
 {
 	public:
 /**
-Конструктор по-умолчанию.
+Конструктор от указателя на переменную, связанную с операндом и типа, к которому она приводится.
+@param pval - указатель на переменную
+@param type - тип, к которой приводится переменная при выполнении
 */
-		VarOperand();
-	
-/**
-Конструктор от имени переменной.
-@param name - имя переменной
-@throw std::runtime_error - в случае несуществования переменной с таким именем
-*/
-
-		VarOperand(const std::string &name) throw(std::runtime_error);
-
+		VarOperand(Value *pval = NULL, Value::ValueType type = Value::NO_TYPE);
 
 /**
-Конструктор от числа. Если не существует значения с соответсвующим числовым значением в рамках функции - оно добавляется.
-@param value - числовое значения константы
+Конструктор от указателя на массив, индекса элемента и типа, к которому он приводится.
+@param parr - указатель на массив
+@param n - индекс элемента в массиве
+@param type - тип, к которой приводится переменная при выполнении
 */
 
-		VarOperand(long long value);
+		VarOperand(Array *parr, std::size_t n, Value::ValueType type);
+
 
 /**
 Виртуальный деструктор
 */
 		~VarOperand();
 
+/**
+Установка указателя на переменную, связанную с операндом
+@param pval - указатель на переменную
+*/
+		void setValuePtr(Value *pval);
 
-
+/**
+Получение значения операнда на текущий момент времени.
+@return значение операнда
+*/
+		long long getValue() const;
+	
 
 
 /**
-Указание что команда использует переменную с переданным именем. Переменная соответствует объекту Value с соответствующим именем.
-@param name - имя переменной
-@throw std::runtime_error - в случае несуществования переменной с таким именем
+Установка указателя на массив, связанный с операдном и индекса элемента в нём.
+@param parr - указатель на массив
+@param n - индект элемента
 */
-		void setVarName(const std::string &name) throw(std::runtime_error);
+		void setArrayElementPtr(Array *parr, std::size_t n);
+
 
 /**
-Установка значения . Если не существует значения с соответсвующим числовым значением в рамках функции - оно добавляется.
-@param value - числовое значения константы
+Установка константности операнда.
+@param constancy - устанавливаемое значение
 */
-		void setLongLongValue(long long value);
+		void setConstancy(bool constancy);
+
+
+/**
+Проверка операнда на константность.
+@return - true - операнд - константа, false - не константа
+*/
+
+		bool isConstant() const;
+
 
 /**
 Указание типа, к которому приводим значение переменной входе выполнения команды.
@@ -70,9 +87,19 @@ class VarOperand: public Operand
 */
 		void setType(Value::ValueType type);
 
+
+/**
+Получение типа, к которому осуществляется приведения значения входе выполнения операции.
+@return тип переменной
+*/
+		Value::ValueType getType() const;
+
 	private:
 		Value 				*m_pval;
 		Value::ValueType	m_type;
+		Array 				*m_parr;
+		std::size_t			m_indx;
+		bool				m_const;
 };
 
 

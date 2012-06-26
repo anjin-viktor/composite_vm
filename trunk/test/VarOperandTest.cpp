@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_SUITE(VAROPERAND_TEST_SUITE);
 
 BOOST_AUTO_TEST_CASE(VarOperandTest)
 {
-	VarOperand op;
+	VarOperand op(NULL, Value::NO_TYPE);
 	op.setType(Value::UNSIGNED_CHAR);
 }
 
