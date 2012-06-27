@@ -91,3 +91,11 @@ Value::ValueType VarOperand::getType() const
 {
 	return m_type;
 }
+
+
+
+
+bool VarOperand::isCast() const
+{
+	return m_type != Value::NO_TYPE;
+}

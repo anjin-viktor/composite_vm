@@ -352,6 +352,24 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 	BOOST_CHECK_EQUAL(op2 -> getValue(), 10);
 
 
+
+	translator.translate("  cmp var1,  1");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 0);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 1);
+
+
+	translator.translate("  cmp 512,  1");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> getValue(), 512);
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 1);
+
+
+
 	BOOST_CHECK_THROW(translator.translate("mov var1, var3"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var1, var3[0]"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var1[0], var3[0]"), ParseError);
@@ -385,6 +403,37 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_castOperandTwoOperation)
 	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
 	BOOST_CHECK_EQUAL(op1 -> getType(), Value::NO_TYPE);
 	BOOST_CHECK_EQUAL(op2 -> getType(), Value::UNSIGNED_INT);
+
+
+	translator.translate("  cmp var1,  1");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> isConstant(), false);
+	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
+	BOOST_CHECK_EQUAL(op1 -> getType(), Value::NO_TYPE);
+	BOOST_CHECK_EQUAL(op2 -> getType(), Value::NO_TYPE);
+
+
+
+	translator.translate("  cmp var1,  (uint)1");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> isConstant(), false);
+	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
+	BOOST_CHECK_EQUAL(op1 -> getType(), Value::NO_TYPE);
+	BOOST_CHECK_EQUAL(op2 -> getType(), Value::UNSIGNED_INT);
+
+
+	translator.translate("  cmp (ushort) 125,  (ushort)0");
+	op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getFirstOperand());
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op1 -> isConstant(), true);
+	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
+	BOOST_CHECK_EQUAL(op1 -> getType(), Value::UNSIGNED_SHORT);
+	BOOST_CHECK_EQUAL(op2 -> getType(), Value::UNSIGNED_SHORT);
 }
 
 

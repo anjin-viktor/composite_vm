@@ -47,7 +47,10 @@ Value::Value(long long val, ValueType type, bool readable, bool writeable)
 	m_type = type;
 	m_isReadable = readable;
 	m_isWriteable = writeable;
-	*m_pval = Value::longlongToType(val, type);
+	if(type != Value::NO_TYPE)
+		*m_pval = Value::longlongToType(val, type);
+	else
+		*m_pval = val;
 }
 
 
@@ -116,7 +119,7 @@ long long Value::getValue(ValueType type) const throw(std::runtime_error)
 {
 	if(m_pval != NULL)
 	{
-		if(type = Value::NO_TYPE)
+		if(type == Value::NO_TYPE)
 			return *m_pval;
 		else
 			return Value::longlongToType(*m_pval, type);

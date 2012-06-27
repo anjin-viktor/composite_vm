@@ -10,6 +10,7 @@
 
 #include <string>
 #include <list>
+#include <sstream>
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/bind.hpp>
@@ -125,7 +126,9 @@ class CodeTranslator
                         qi::string("sint") |
                         qi::string("mod32")
                     )[boost::bind(&(CodeGrammar::setOperandType), this, _1)] >> *qi::space >> qi::char_(")");
-                rd_operand %= -(cast >> *qi::space) >> (wr_operand | qi::int_);
+                rd_operand %= -(cast >> *qi::space) >> (wr_operand |
+                				 qi::long_[boost::bind(&(CodeGrammar::setNubmerOperand), this, _1)]);
+
                 label_operand %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)] >>
                 		*qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)];
                 zero_operation %= (qi::string("ret") | qi::string("nop"))[boost::bind(&(CodeGrammar::setOperation), this, _1)];
@@ -176,6 +179,7 @@ class CodeTranslator
 				m_arrName = "";
 				m_varName = "";
 
+				m_operandIsNum = false;
 				m_opExists = false;
 			}
 
@@ -228,6 +232,32 @@ class CodeTranslator
 			}
 
 		private:
+
+/**
+Установливает числовую константу - операнд операции. Используется как семантическое действие грамматики.
+@param n - устанавливаемое значение
+*/
+
+			void setNubmerOperand(long long n)
+			{
+				std::stringstream ss;
+				ss << n;
+				std::string valName = ss.str();
+
+				if(m_pdata)
+				{
+					if(m_pdata -> isExists(valName) == false)
+					{
+						Value val(n, Value::NO_TYPE, true, false);
+						m_pdata -> addVar(val, valName);
+					}
+
+					m_currentVar = VarOperand(&(m_pdata -> getVarValue(valName)));
+				}
+				m_currentVar.setConstancy(true);
+			}
+
+
 
 /**
 Устанавливает тип, к которому приводится переменная.
@@ -404,6 +434,8 @@ class CodeTranslator
 			std::string								m_arrName;
 			std::size_t								m_arrElementIndx;
 			VarOperand 								m_currentVar;
+			int 									m_numOperand;
+			bool									m_operandIsNum;
 	};
 
 
