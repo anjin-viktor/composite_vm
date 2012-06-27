@@ -20,6 +20,7 @@
 #include "DataKeeper.h"
 #include "LabelOperand.h"
 #include "VarOperand.h"
+#include "ArrayOperand.h"
 
 
 
@@ -141,9 +142,10 @@ class CodeTranslator
                                             qi::string("jne")
                                      )[boost::bind(&(CodeGrammar::setOperation), this, _1)] 
                                      >> +qi::space >> label_operand[boost::bind(&(CodeGrammar::saveJumpOperation), this)];
-                aout_operation %= qi::string("aout")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> array;
+                aout_operation %= qi::string("aout")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> 
+                				array[boost::bind(&(CodeGrammar::saveArrayOperand), this)];
                 one_operation %= jump_operation | aout_operation;
-                two_operation %= arith_operation | cmp_operation;
+                two_operation %= arith_operation | cmp_operation | arr_rsz_operation;
                 arith_operation %=  (
                                             qi::string("mov") |
                                             qi::string("add") |
@@ -154,6 +156,10 @@ class CodeTranslator
                                     )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> 
                                     wr_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >> 
                                     *qi::space >> qi::char_(',') >> *qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)];
+                arr_rsz_operation %= qi::string("rsz")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space 
+                					 >> array[boost::bind(&(CodeGrammar::saveArrayOperand), this)] >>  *qi::space >> 
+                					 qi::char_(',') >> *qi::space >>  rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)];;
+
 
                 cmp_operation %= qi::string("cmp")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> 
                 					+qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >>
@@ -179,7 +185,6 @@ class CodeTranslator
 				m_arrName = "";
 				m_varName = "";
 
-				m_operandIsNum = false;
 				m_opExists = false;
 			}
 
@@ -232,6 +237,28 @@ class CodeTranslator
 			}
 
 		private:
+
+
+/**
+Оформляет рассматриваемый массив как операнд функции
+*/
+
+			void saveArrayOperand()
+			{
+				ArrayOperand * op = new ArrayOperand();
+
+				if(m_pdata)
+					if(m_pdata -> isArray(m_arrName) == false)
+						throw ParseError("array with name " + m_arrName + "not exists");
+					else
+						op -> setArrayPtr(&m_pdata -> getArray(m_arrName));
+
+				if(m_pcommand)
+					m_pcommand -> setFirstOperand(boost::shared_ptr<Operand>(op));
+			}
+
+
+
 
 /**
 Установливает числовую константу - операнд операции. Используется как семантическое действие грамматики.
@@ -421,7 +448,7 @@ class CodeTranslator
 
 
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
-            one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation;
+            one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation;
 
             Command									*m_pcommand;
             std::list<std::string>					*m_plbls;
@@ -434,8 +461,6 @@ class CodeTranslator
 			std::string								m_arrName;
 			std::size_t								m_arrElementIndx;
 			VarOperand 								m_currentVar;
-			int 									m_numOperand;
-			bool									m_operandIsNum;
 	};
 
 

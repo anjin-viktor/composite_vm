@@ -102,8 +102,8 @@ Command::Operation Command::strToOperation(const std::string &str)
 		return Command::JG;
 	else if(tmp == "jne")
 		return Command::JNE;
-	else if(tmp == "out")
-		return Command::OUT;
+	else if(tmp == "aout")
+		return Command::AOUT;
 	else if(tmp == "rsz")
 		return Command::RSZ;
 	else if(tmp == "call")

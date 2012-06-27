@@ -15,6 +15,7 @@ set (SOURCES
 	../src/DataKeeper.cpp
 	../src/Label.cpp
 	../src/CodeTranslator.cpp
+	../src/ArrayOperand.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -26,6 +27,7 @@ set (SOURCES
 	DataKeeperTest.cpp
 	LabelTest.cpp
 	CodeTranslatorTest.cpp
+	ArrayOperandTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

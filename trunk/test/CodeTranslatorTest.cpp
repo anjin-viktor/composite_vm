@@ -81,6 +81,16 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_getOperation)
 
 	translator.translate("l1:l2:l3:call s");
 	BOOST_CHECK_EQUAL(translator.getOperation(), Command::CALL);
+
+
+	translator.translate("l1:   rsz arr,1");
+	BOOST_CHECK_EQUAL(translator.getOperation(), Command::RSZ);
+
+	translator.translate("rsz arr    ,    ch");
+	BOOST_CHECK_EQUAL(translator.getOperation(), Command::RSZ);
+
+	translator.translate("aout str");
+	BOOST_CHECK_EQUAL(translator.getOperation(), Command::AOUT);
 }
 
 
@@ -104,6 +114,9 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_operationError)
 	BOOST_CHECK_THROW(translator.translate("jmp l, r"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("ret r"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("nop 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("rsz arr, 1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("aout"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("rsz arr"), ParseError);
 }
 
 
@@ -278,6 +291,13 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 
 	keeper.addArray(array, "arr2");
 
+	Array arr(3, Value::MOD8);
+	arr[0] = 0;
+	arr[1] = 1;
+	arr[2] = 2;
+
+	keeper.addArray(arr, "arr");
+
 	translator.setDataKeeperPtr(&keeper);
 
 	translator.translate("mov var1, var2");
@@ -370,12 +390,29 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 
 
 
+	translator.translate("aout arr");
+	BOOST_CHECK_EQUAL(dynamic_cast<ArrayOperand*>(translator.getCommand().getFirstOperand().get()) -> getArrayPtr(), &(keeper.getArray("arr")));
+
+
+	translator.translate("rsz  arr, 15");
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+	BOOST_CHECK_EQUAL(dynamic_cast<ArrayOperand*>(translator.getCommand().getFirstOperand().get()) -> getArrayPtr(), &(keeper.getArray("arr")));
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 15);
+
+
+	translator.translate("rsz  arr, var1");
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+	BOOST_CHECK_EQUAL(dynamic_cast<ArrayOperand*>(translator.getCommand().getFirstOperand().get()) -> getArrayPtr(), &(keeper.getArray("arr")));
+	BOOST_CHECK_EQUAL(op2 -> getValue(), 0);
+
+
+
+	BOOST_CHECK_THROW(translator.translate("mov not_exists_array_name"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var1, var3"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var1, var3[0]"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var1[0], var3[0]"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov arr1[1], var[3]"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov arr3[1], arr1[1]"), ParseError);
-
 }
 
 
@@ -434,7 +471,17 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_castOperandTwoOperation)
 	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
 	BOOST_CHECK_EQUAL(op1 -> getType(), Value::UNSIGNED_SHORT);
 	BOOST_CHECK_EQUAL(op2 -> getType(), Value::UNSIGNED_SHORT);
+
+
+
+	translator.translate("rsz arr, (sshort) 155");
+	op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getSecondOperand());
+
+	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
+	BOOST_CHECK_EQUAL(op2 -> getType(), Value::SIGNED_SHORT);
+
 }
+
 
 
 BOOST_AUTO_TEST_SUITE_END();

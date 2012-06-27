@@ -41,7 +41,7 @@ class Command
 		JE,
 		JG,
 		JNE,
-		OUT,
+		AOUT,
 		RSZ,
 		CALL,
 		RET,
