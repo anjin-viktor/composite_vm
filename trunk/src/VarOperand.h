@@ -50,6 +50,14 @@ class VarOperand: public Operand
 */
 		void setValuePtr(Value *pval);
 
+
+/**
+Указывает связан ли с каким-либо значением этот операнд
+@return true - связан с некоторым значением.
+*/
+		bool hasValue() const;
+
+
 /**
 Получение значения операнда на текущий момент времени.
 @return значение операнда
@@ -81,6 +89,20 @@ class VarOperand: public Operand
 		bool isConstant() const;
 
 
+
+/**
+Возвращаемое значение указывает, есть ли право на чтение операнда.
+@return право на чтение
+*/
+		bool isReadable() const;
+
+/**
+Возвращаемое значение указывает, есть ли право на запись операнда.
+@return право на запись
+*/
+		bool isWriteable() const;
+
+
 /**
 Указание типа, к которому приводим значение переменной входе выполнения команды.
 @param type - указание целевого типа
@@ -96,9 +118,16 @@ class VarOperand: public Operand
 
 /**
 Получение типа, к которому осуществляется приведения значения входе выполнения операции.
-@return тип переменной
+@return тип к которому приводится переменная
 */
 		Value::ValueType getType() const;
+
+
+/**
+Полечение типа переменной после приведения.
+@return тип переменной
+*/
+		Value::ValueType getAfterCastType() const;
 
 	private:
 		Value 				*m_pval;

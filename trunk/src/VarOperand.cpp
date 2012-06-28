@@ -1,5 +1,9 @@
 #include "VarOperand.h"
 
+
+#include <iostream>
+
+
 VarOperand::VarOperand(Value *pval, Value::ValueType type): Operand()
 {
 	m_pval = pval;
@@ -39,12 +43,20 @@ void VarOperand::setValuePtr(Value *pval)
 
 
 
+bool VarOperand::hasValue() const
+{
+	return (m_pval != NULL || m_parr != NULL);
+}
+
+
+
 
 void VarOperand::setArrayElementPtr(Array *parr, std::size_t n)
 {
 	m_pval = NULL;
 	m_parr = parr;
 	m_indx = n;
+
 }
 
 
@@ -65,7 +77,6 @@ long long VarOperand::getValue() const
 		return m_parr -> operator[](m_indx).getValue(m_type);
 	else
 		throw std::logic_error("getting value from NULL-object");
-
 }
 
 
@@ -95,7 +106,52 @@ Value::ValueType VarOperand::getType() const
 
 
 
+Value::ValueType VarOperand::getAfterCastType() const
+{
+	if(m_type != Value::NO_TYPE)
+		return m_type;
+	
+	if(m_pval)
+		return m_pval -> getType();
+	else if(m_parr)
+		return m_parr -> getType();
+
+	return Value::NO_TYPE;
+}
+
+
+
+
 bool VarOperand::isCast() const
 {
 	return m_type != Value::NO_TYPE;
+}
+
+
+
+bool VarOperand::isReadable() const
+{
+	if(m_pval)
+		return m_pval -> isReadable();
+
+	if(m_parr)
+		return m_parr -> operator[](m_indx).isReadable();
+
+	return false;
+}
+
+
+bool VarOperand::isWriteable() const
+{
+	if(m_const == true)
+		return false;
+
+	if(m_pval)
+		return m_pval -> isWriteable();
+
+
+	if(m_parr)
+		return m_parr -> operator[](m_indx).isWriteable();
+
+	return false;
 }

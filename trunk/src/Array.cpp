@@ -53,6 +53,12 @@ void Array::setType(Value::ValueType type)
 
 
 
+Value::ValueType Array::getType() const
+{
+	return m_type;
+}
+
+
 
 void Array::resize(std::size_t size)
 {

@@ -52,6 +52,12 @@ class Array
 		void setType(Value::ValueType type);
 
 /**
+Возвращает тип элементов массива.
+@return - тип элементов массива
+*/
+		Value::ValueType getType() const;
+
+/**
 Изменяет размер массива. Значения элементов сохраняются.
 @param newSize - новый размер массива
 */

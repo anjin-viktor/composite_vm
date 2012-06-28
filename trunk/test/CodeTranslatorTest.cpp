@@ -278,23 +278,26 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 	keeper.addVar(Value(2, Value::MOD16, true, true), "var2");
 
 	Array array(3, Value::MOD16);
-	array[0] = 1;
-	array[1] = 2;
-	array[2] = 3;
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(2, Value::MOD16, true, true);
+	array[2] = Value(3, Value::MOD16, true, true);
 
 	keeper.addArray(array, "arr1");
 
 	array = Array(3, Value::MOD16);
-	array[0] = 256;
-	array[1] = 257;
-	array[2] = 258;
+	array[0].setValue(256);
+	array[1].setValue(257);
+	array[2].setValue(258);
+	array[2].setReadable(true);
+	array[1].setReadable(true);
+	array[0].setReadable(true);
 
 	keeper.addArray(array, "arr2");
 
 	Array arr(3, Value::MOD8);
-	arr[0] = 0;
-	arr[1] = 1;
-	arr[2] = 2;
+	arr[0].setValue(0);
+	arr[1].setValue(1);
+	arr[2].setValue(2);
 
 	keeper.addArray(arr, "arr");
 
@@ -483,5 +486,46 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_castOperandTwoOperation)
 }
 
 
+
+/**
+Тест генерирования иселючений вслучае нарушения прав доступа.
+*/
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_accessPermitionsFalse)
+{
+	CodeTranslator translator;
+
+	DataKeeper keeper;
+	keeper.addVar(Value(1, Value::MOD16, false, true), "var1");
+	keeper.addVar(Value(2, Value::MOD16, true, false), "var2");
+	keeper.addVar(Value(2, Value::MOD16, true, true), "var3");
+
+
+	Array array(3, Value::MOD16);
+	array[0] = 1;
+	array[1] = 2;
+	array[2] = 3;
+
+	keeper.addArray(array, "arr1");
+
+	array = Array(3, Value::MOD16);
+	array[0] = 256;
+	array[1] = 257;
+	array[1].setWriteable(false);
+	array[2] = Value();
+	keeper.addArray(array, "arr2");
+
+	translator.setDataKeeperPtr(&keeper);
+
+	BOOST_CHECK_THROW(translator.translate("add var2, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov var1, var1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov var2, var1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov var3, var1"), ParseError);
+
+	BOOST_CHECK_NO_THROW(translator.translate("mov var1, var2"));
+
+	BOOST_CHECK_THROW(translator.translate("mov arr2[1], 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("mov arr2[0], arr2[2]"), ParseError);
+}
 
 BOOST_AUTO_TEST_SUITE_END();

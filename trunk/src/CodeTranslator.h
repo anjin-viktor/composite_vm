@@ -113,8 +113,9 @@ class CodeTranslator
 		        		 >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addArrayNameChar), this, _1)];
                 array_element %=  array >> *qi::space >> qi::char_('[') >> *qi::space 
                 					>> qi::uint_[boost::bind(&(CodeGrammar::setArrayElementIndex), this, _1)] >> *qi::space >> qi::char_(']');
-                wr_operand %= array_element[boost::bind(&(CodeGrammar::saveArrayElementOperand), this)] |
-                			var[boost::bind(&(CodeGrammar::saveVarOperand), this)];
+                wr_operand %= (array_element[boost::bind(&(CodeGrammar::saveArrayElementOperand), this)] |
+                					var[boost::bind(&(CodeGrammar::saveVarOperand), this)]
+                				);
                 cast %= qi::char_('(') >> *qi::space >> -(qi::string("const") >> +qi::space) >> 
                     (
                         qi::string("uchar") |
@@ -127,8 +128,9 @@ class CodeTranslator
                         qi::string("sint") |
                         qi::string("mod32")
                     )[boost::bind(&(CodeGrammar::setOperandType), this, _1)] >> *qi::space >> qi::char_(")");
-                rd_operand %= -(cast >> *qi::space) >> (wr_operand |
-                				 qi::long_[boost::bind(&(CodeGrammar::setNubmerOperand), this, _1)]);
+                rd_operand %= (-(cast >> *qi::space) >> (wr_operand |
+                				 qi::long_[boost::bind(&(CodeGrammar::setNubmerOperand), this, _1)])
+                			  );
 
                 label_operand %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)] >>
                 		*qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)];
@@ -237,6 +239,27 @@ class CodeTranslator
 			}
 
 		private:
+
+/**
+Определяет имеет ли значение строемого операнда право быть записанными. Если операнд - константа генерируется исключение
+@throw ParseError - операнд не имеет право на запись.
+*/
+/*			void checkVarOperandForWriteable() const throw(ParseError)
+			{
+				if(m_currentVar.getValuePtr() && m_currentVar.getValuePtr() -> isWriteable() == false)
+					throw ParseError("variable does not have write permission");
+			}
+*/
+/**
+Определяет имеет ли значение строимого операнда право быть прочтённым. Если не - генерируется исключение
+@throw ParseError - операнд не имеет право на чтение.
+*/
+/*			void checkVarOperandForReadable() const throw(ParseError)
+			{
+				if(m_currentVar.getValuePtr() && m_currentVar.getValuePtr() -> isReadable() == false)
+					throw ParseError("variable does not have read permission");
+			}
+*/
 
 
 /**
@@ -462,6 +485,14 @@ class CodeTranslator
 			std::size_t								m_arrElementIndx;
 			VarOperand 								m_currentVar;
 	};
+
+
+/**
+Осуществляет проверка команды на корректность. Проверяются операнды, их права доступа, типы. Вслучае ошибки герерируется исключение
+@throw ParseError - в случае некорректной команды.
+*/
+
+		void checkCorrectness() const throw(ParseError);
 
 
 		Command 								m_command;
