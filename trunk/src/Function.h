@@ -9,9 +9,11 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include "Value.h"
 #include "Command.h"
+#include "Exception.h"
 
 
 /**
@@ -25,22 +27,45 @@ class Function
 /**
 Конструктор по-умолчанию.
 */
-//		Function();
+		Function();
 
 /**
 Деструктор.
 */
-//		~Function();
-
+		~Function();
 
 /**
 Установка имени функции. Заполняется при трансляции. Используется для поиска функции при вызове.
+@param name - имя функции
 */
-//		void setName(const std::string &);
+		void setName(const std::string &name);
+
 
 /**
-Установка набора данных функции. Используется при трансляции.
+Получение имени функции.
+@return имя функции
 */
-//		void setDataKeeper(const DataKeeper &);
+		std::string getName() const;
 
+/**
+Установка обработчика ислючительной ситуации.
+@param except - тип ислючительной ситуации, для которого устанавливается обработчик
+@param commands - вектор команд
+*/
+		void setExceptionHandler(Exception::Type except, const std::vector<Command> &commands);
+
+/**
+Установка массива команд функции.
+@param commands - устанавливаемый вектор команд
+*/
+		void setCommands(const std::vector<Command> &commands);
+
+
+	private:
+		std::string 										m_name;
+		std::map<Exception::Type, std::vector<Command> >	m_handlers;
+		std::vector<Command>								m_code;
 };
+
+
+#endif

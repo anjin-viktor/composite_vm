@@ -21,7 +21,7 @@
 
 /**
 @class CodeBlockTranslator
-@brien Используется для трансляции блоков кода. Блоками являются последовательности команд функций, 
+@brief Используется для трансляции блоков кода. Блоками являются последовательности команд функций, 
 обработчиков ислючительных ситуаций.
 */
 
@@ -39,8 +39,9 @@ class CodeBlockTranslator
 /**
 Конструктор от указателя на набор данных функции. Набор данных используется при встрече переменных или констант при транслировании
 кода.
+@param keeper - устанавливаемый набор данных
 */
-		CodeBlockTranslator(DataKeeper *);
+		CodeBlockTranslator(DataKeeper *keeper);
 
 
 /**
@@ -50,14 +51,16 @@ class CodeBlockTranslator
 
 /**
 Установка указателя на набор данных функций, блок которой транслируется.
+@param keeper - устанавливаемый набор данных
 */
-		void setDataKeeperPtr(DataKeeper *);
+		void setDataKeeperPtr(DataKeeper *keeper);
 
 
 /**
 Трансляция строки.
+@param str - транслируемая строка
 */
-		void translate(const std::string &);
+		void translate(const std::string &str);
 
 
 /**
@@ -78,7 +81,6 @@ class CodeBlockTranslator
 Устанавливает у операндов всех переходов смещение целевой команды 
 */
 		void processJmpCommands();
-
 
 		CodeTranslator 							m_codeTranslator;
 		std::vector<Command>					m_vcommands;
