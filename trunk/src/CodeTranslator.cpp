@@ -153,6 +153,7 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			break;
 		}
 
+
 		case Command::JMP:
 		case Command::JL:
 		case Command::JE:
@@ -163,20 +164,53 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			break;
 		}
 
+
+		case Command::RSZ:
+		{
+			boost::shared_ptr<ArrayOperand> op1;
+			boost::shared_ptr<VarOperand> op2;
+		
+			op1 = boost::dynamic_pointer_cast<ArrayOperand, Operand>(m_command.getFirstOperand());
+			op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getSecondOperand());
+
+			if(op1 -> hasValue() && op2 -> hasValue())
+			{
+
+				if(op1 -> getArrayPtr() -> isWriteable() == false)
+					throw ParseError("variable does not have write permission");
+
+
+				if(op2 -> isReadable() == false)
+					throw ParseError("variable does not have read permission");
+			}	
+			break;
+		}
+
+
+		case Command::AOUT:
+		{
+			boost::shared_ptr<ArrayOperand> op = boost::dynamic_pointer_cast<ArrayOperand, Operand>(m_command.getFirstOperand());
+
+			if(op -> hasValue())
+			{
+				Array *parr = op -> getArrayPtr();
+
+				if(parr -> size() && parr -> operator[](0).getType() != Value::MOD8 && parr -> operator[](0).getType() != Value::UNSIGNED_CHAR)
+					throw ParseError("can not write an array");
+
+				for(int i=0; i<parr -> size(); i++)
+					if(parr -> operator[](i).isReadable() == false)
+						throw ParseError("variable does not have read permission");
+			}
+			
+			break;
+		}
+
 /*
-		AOUT,
-		RSZ,
 		CALL,
 		RET,
 		NOP,
-		CMP,
 		NONE
-
 */
-
-
-
-
-
 	};
 }

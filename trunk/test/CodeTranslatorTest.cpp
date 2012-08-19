@@ -298,6 +298,9 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 	arr[0].setValue(0);
 	arr[1].setValue(1);
 	arr[2].setValue(2);
+	arr[2].setReadable(true);
+	arr[1].setReadable(true);
+	arr[0].setReadable(true);
 
 	keeper.addArray(arr, "arr");
 
@@ -393,8 +396,10 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 
 
 
-	translator.translate("aout arr");
-	BOOST_CHECK_EQUAL(dynamic_cast<ArrayOperand*>(translator.getCommand().getFirstOperand().get()) -> getArrayPtr(), &(keeper.getArray("arr")));
+	translator.translate("rsz arr2, 5");
+	BOOST_CHECK_EQUAL(dynamic_cast<ArrayOperand*>(translator.getCommand().getFirstOperand().get()) -> getArrayPtr(), &(keeper.getArray("arr2")));
+
+
 
 
 	translator.translate("rsz  arr, 15");
@@ -526,5 +531,53 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_accessPermitionsFalse)
 	BOOST_CHECK_THROW(translator.translate("mov arr2[1], 1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov arr2[0], arr2[2]"), ParseError);
 }
+
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_aout)
+{
+	CodeTranslator translator;
+	DataKeeper keeper;
+	translator.setDataKeeperPtr(&keeper);
+	keeper.addVar(Value(1, Value::MOD16, false, true), "var1");
+	keeper.addVar(Value(2, Value::UNSIGNED_INT, true, false), "var2");
+
+
+	Array array(3, Value::MOD8);
+	array[0].setValue(256);
+	array[1].setValue(257);
+	array[2].setValue(258);
+	array[2].setReadable(true);
+	array[1].setReadable(true);
+	array[0].setReadable(true);
+	array[0].setWriteable(true);
+	array[1].setWriteable(true);
+	array[2].setWriteable(true);
+
+	keeper.addArray(array, "str");
+
+	Array arr(3, Value::MOD16);
+	arr[0].setValue(256);
+	arr[1].setValue(257);
+	arr[2].setValue(258);
+	arr[2].setReadable(true);
+	arr[1].setReadable(true);
+	arr[0].setReadable(true);
+	keeper.addArray(arr, "arr");
+
+	translator.translate("aout str");
+	BOOST_CHECK_EQUAL(dynamic_cast<ArrayOperand*>(translator.getCommand().getFirstOperand().get()) -> getArrayPtr(), &(keeper.getArray("str")));
+	BOOST_CHECK_THROW(translator.translate("aout arr"), ParseError);
+
+	array[1].setReadable(false);
+	BOOST_CHECK_THROW(translator.translate("aout str"), ParseError);
+
+	translator.translate("rsz arr, 5");
+	translator.translate("rsz arr, var2");
+	BOOST_CHECK_THROW(translator.translate("rsa arr, var1"), ParseError);
+	arr.setWriteable(false);
+	BOOST_CHECK_THROW(translator.translate("rsa arr, 5"), ParseError);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END();

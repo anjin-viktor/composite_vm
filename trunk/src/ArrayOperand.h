@@ -43,6 +43,12 @@ class ArrayOperand: public Operand
 */
 		Array *getArrayPtr() const;
 
+/**
+Указывает, связан ли операнд с некоторым массивом.
+@return операнд связан с массивом?
+*/
+		bool hasValue() const;
+
 	private:
 		Array 		*m_parr;
 };

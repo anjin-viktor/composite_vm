@@ -28,3 +28,11 @@ Array *ArrayOperand::getArrayPtr() const
 {
 	return m_parr;
 }
+
+
+
+
+bool ArrayOperand::hasValue() const
+{
+	return m_parr != NULL;
+}
