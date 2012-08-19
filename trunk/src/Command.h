@@ -8,6 +8,7 @@
 */
 
 #include <vector>
+#include <cstddef>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/shared_ptr.hpp>
@@ -68,6 +69,7 @@ class Command
 		~Command();
 
 
+
 /**
 Установка типа команды.
 @param operation - тип команды
@@ -119,9 +121,22 @@ class Command
 
 		static Command::Operation strToOperation(const std::string &str);
 
+/**
+Установка положения строки команды в файле с исходным кодом. Используется при обработке ошибок.
+*/
+		void setLineNumber(std::size_t);
+
+
+/**
+Получение строки команды в файле исходного кода. Используется для сообщения об ошибках в обрабатываемой программе.
+*/
+		std::size_t getLineNumber() const;
+
+
 	private:
 		Command::Operation 						 		m_opType;
 		std::vector<boost::shared_ptr<Operand> >		m_operands;
+		std::size_t										m_numb;
 };
 
 

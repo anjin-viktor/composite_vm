@@ -521,7 +521,6 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_accessPermitionsFalse)
 	BOOST_CHECK_THROW(translator.translate("mov var1, var1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var2, var1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov var3, var1"), ParseError);
-
 	BOOST_CHECK_NO_THROW(translator.translate("mov var1, var2"));
 
 	BOOST_CHECK_THROW(translator.translate("mov arr2[1], 1"), ParseError);

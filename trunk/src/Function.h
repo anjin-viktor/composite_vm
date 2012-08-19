@@ -1,13 +1,14 @@
-#ifdnef FUNCTION_H_
+#ifndef FUNCTION_H_
 #define FUNCTION_H_
 
 
 
 /**
-@file Value.h
+@file Function.h
 */
 
 #include <map>
+#include <string>
 
 #include "Value.h"
 #include "Command.h"
@@ -20,5 +21,26 @@
 
 class Function
 {
+	public:
+/**
+Конструктор по-умолчанию.
+*/
+//		Function();
+
+/**
+Деструктор.
+*/
+//		~Function();
+
+
+/**
+Установка имени функции. Заполняется при трансляции. Используется для поиска функции при вызове.
+*/
+//		void setName(const std::string &);
+
+/**
+Установка набора данных функции. Используется при трансляции.
+*/
+//		void setDataKeeper(const DataKeeper &);
 
 };

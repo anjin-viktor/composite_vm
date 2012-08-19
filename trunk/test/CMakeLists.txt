@@ -16,6 +16,7 @@ set (SOURCES
 	../src/Label.cpp
 	../src/CodeTranslator.cpp
 	../src/ArrayOperand.cpp
+	../src/CodeBlockTranslator.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -28,6 +29,7 @@ set (SOURCES
 	LabelTest.cpp
 	CodeTranslatorTest.cpp
 	ArrayOperandTest.cpp
+	CodeBlockTranslatorTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

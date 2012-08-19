@@ -42,15 +42,17 @@ std::string LabelOperand::getLabelName() const
 
 
 
-void LabelOperand::setCommandPtr()
+void LabelOperand::setCommandOffset(std::size_t offset)
 {
+	m_offset = offset;
 }
 
 
 
 
-void LabelOperand::getCommandPtr()
+std::size_t LabelOperand::getCommandOffset() const
 {
+	return m_offset;
 }
 
 

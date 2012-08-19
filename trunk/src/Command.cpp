@@ -117,3 +117,18 @@ Command::Operation Command::strToOperation(const std::string &str)
 	else 
 		return Command::NONE;
 }
+
+
+
+
+void Command::setLineNumber(std::size_t numb)
+{
+	m_numb = numb;
+}
+
+
+
+std::size_t Command::getLineNumber() const
+{
+	return m_numb;
+}
