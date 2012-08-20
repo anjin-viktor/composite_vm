@@ -56,4 +56,52 @@ BOOST_AUTO_TEST_CASE(CommandTest_strToOperation)
 }
 
 
+/**
+Тест функций set/getOperationType()
+*/
+
+BOOST_AUTO_TEST_CASE(CommandTest_setGetOperationType)
+{
+	Command c1(Command::JL), c2;
+	BOOST_CHECK_EQUAL(c2.getOperationType(), Command::NONE);
+	c2.setOperationType(Command::JL);
+	BOOST_CHECK_EQUAL(c1.getOperationType(), c2.getOperationType());
+	BOOST_CHECK_EQUAL(c1.getOperationType(), Command::JL);
+}
+
+
+
+/**
+Тест функций работы с операндами
+*/
+
+BOOST_AUTO_TEST_CASE(CommandTest_operands)
+{
+	Command c;
+
+	BOOST_CHECK_EQUAL(c.getFirstOperand().get(), static_cast<Operand *>(NULL));
+	BOOST_CHECK_EQUAL(c.getSecondOperand().get(), static_cast<Operand *>(NULL));
+
+
+	Operand *pop1, *pop2;
+	pop1 = new Operand;
+	pop2 = new Operand;
+
+	c.setFirstOperand(boost::shared_ptr<Operand>(pop1));
+
+	BOOST_CHECK_EQUAL(c.getFirstOperand().get(), pop1);
+	BOOST_CHECK_EQUAL(c.getSecondOperand().get(), static_cast<Operand *>(NULL));
+
+	c.setSecondOperand(boost::shared_ptr<Operand>(pop2));
+
+	BOOST_CHECK_EQUAL(c.getFirstOperand().get(), pop1);
+	BOOST_CHECK_EQUAL(c.getSecondOperand().get(), pop2);
+
+	c.setFirstOperand(boost::shared_ptr<Operand>(static_cast<Operand *>(NULL)));
+	BOOST_CHECK_EQUAL(c.getFirstOperand().get(), static_cast<Operand *>(NULL));
+	BOOST_CHECK_EQUAL(c.getSecondOperand().get(), pop2);
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END();

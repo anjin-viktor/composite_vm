@@ -36,6 +36,7 @@ BOOST_AUTO_TEST_CASE(testDataKeeper_addVar_Arr)
 
 	keeper.addArray(arr1, "name3");
 	BOOST_CHECK_THROW(keeper.addArray(arr2, "name2"), std::runtime_error);
+	BOOST_CHECK_THROW(keeper.addArray(arr2, "name3"), std::runtime_error);
 }
 
 
@@ -101,6 +102,8 @@ BOOST_AUTO_TEST_CASE(testDataKeeper_add_get_Var_Array)
 
 	BOOST_CHECK_THROW(keeper.getArray("not_exists_arr"), std::runtime_error);
 	BOOST_CHECK_THROW(keeper.getVarValue("not_exists_var"), std::runtime_error);
+	BOOST_CHECK_THROW(keeper.getVarValue("arr_name"), std::runtime_error);
+	BOOST_CHECK_THROW(keeper.getArray("val_name"), std::runtime_error);
 }
 
 

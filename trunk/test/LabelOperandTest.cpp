@@ -47,5 +47,22 @@ BOOST_AUTO_TEST_CASE(testLabelOperand_CheckLabelName)
 }
 
 
+/**
+Тест функций setOffset(), getOffset()
+*/
+
+BOOST_AUTO_TEST_CASE(testLabelOperand_setGetOffset)
+{
+	LabelOperand lbl("lbl"), lbl1;
+	lbl.setCommandOffset(1);
+	lbl1.setCommandOffset(2);
+
+	BOOST_CHECK_EQUAL(lbl.getCommandOffset(), 1);
+	BOOST_CHECK_EQUAL(lbl1.getCommandOffset(), 2);
+
+	lbl.setCommandOffset(2);
+	BOOST_CHECK_EQUAL(lbl.getCommandOffset(), 2);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END();

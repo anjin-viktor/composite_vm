@@ -426,6 +426,40 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_simpleOperandTwoOperation)
 
 
 /**
+Проверка на верную работу при несоответствующем классе операндов
+*/
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_opClassError)
+{
+	CodeTranslator translator;
+	boost::shared_ptr<VarOperand> op1, op2;
+
+	DataKeeper keeper;
+	keeper.addVar(Value(1, Value::MOD16, true, true), "var1");
+	keeper.addVar(Value(2, Value::MOD8, true, true), "var2");
+
+	Array array(1, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+
+	keeper.addArray(array, "arr1");
+
+	translator.setDataKeeperPtr(&keeper);
+
+	BOOST_CHECK_THROW(translator.translate("mov arr1, var1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("cmp arr1, var1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("sub var1, arr1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("div arr1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("div 1, var1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("div 1, arr1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("aout arr1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("rsz var1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("rsz 1, var2"), ParseError);
+}
+
+
+
+/**
 Проверка приведения типа.
 */
 
@@ -530,6 +564,26 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_accessPermitionsFalse)
 
 	BOOST_CHECK_THROW(translator.translate("mov arr2[1], 1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("mov arr2[0], arr2[2]"), ParseError);
+
+
+	keeper.getArray("arr1").setWriteable(false);
+	BOOST_CHECK_THROW(translator.translate("rsz arr1, 5"), ParseError);
+	keeper.getArray("arr1").setWriteable(true);
+	keeper.getArray("arr1")[0].setWriteable(true);
+	keeper.getArray("arr1")[1].setWriteable(true);
+	keeper.getArray("arr1")[2].setWriteable(true);
+	BOOST_CHECK_NO_THROW(translator.translate("rsz arr1, 5"));
+
+	array = Array(2, Value::MOD8);
+	array[0].setReadable(true);
+	array[1].setReadable(false);
+	keeper.addArray(array, "str");
+
+	BOOST_CHECK_THROW(translator.translate("aout str"), ParseError);
+	keeper.getArray("str")[1].setReadable(true);
+	BOOST_CHECK_NO_THROW(translator.translate("aout str"));
+
+
 }
 
 
@@ -579,5 +633,16 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_aout)
 	BOOST_CHECK_THROW(translator.translate("rsa arr, 5"), ParseError);
 }
 
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_commend)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate(";comment"));
+	BOOST_CHECK_NO_THROW(translator.translate("mul var, 1;comment"));
+	BOOST_CHECK_NO_THROW(translator.translate("jmp lbl 					;comment"));
+
+}
 
 BOOST_AUTO_TEST_SUITE_END();
