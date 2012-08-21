@@ -18,6 +18,8 @@ set (SOURCES
 	../src/ArrayOperand.cpp
 	../src/CodeBlockTranslator.cpp
 	../src/Function.cpp
+	../src/Translator.cpp
+	../src/HeaderTranslator.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -32,6 +34,8 @@ set (SOURCES
 	ArrayOperandTest.cpp
 	CodeBlockTranslatorTest.cpp
 	FunctionTest.cpp
+	TranslatorTest.cpp
+	HeaderTranslatorTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

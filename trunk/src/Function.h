@@ -61,6 +61,12 @@ class Function
 		void setCommands(const std::vector<Command> &commands);
 
 
+/**
+Очистка параметров.
+*/
+		void clear();
+
+
 	private:
 		std::string 										m_name;
 		std::map<Exception::Type, std::vector<Command> >	m_handlers;

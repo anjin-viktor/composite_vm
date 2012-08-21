@@ -33,3 +33,12 @@ void Function::setCommands(const std::vector<Command> &commands)
 {
 	m_code = commands;
 }
+
+
+
+void Function::clear()
+{
+	m_name = "";
+	m_handlers.clear();
+	m_code.clear();
+}

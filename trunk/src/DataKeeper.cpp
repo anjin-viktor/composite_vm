@@ -67,7 +67,7 @@ Value &DataKeeper::getVarValue(const std::string &name) throw(std::runtime_error
 {
 	std::map<std::string, Value>::iterator itr = m_vars.find(name);
 	if(itr == m_vars.end())
-		throw(std::runtime_error("Variable with name + " + name + " not exists"));
+		throw(std::runtime_error("Variable with name " + name + " not exists"));
 
 	return itr -> second;
 }
@@ -119,4 +119,12 @@ void DataKeeper::clear()
 {
 	m_arrs.clear();
 	m_vars.clear();
+}
+
+
+
+
+std::size_t DataKeeper::getNumberOfElements() const
+{
+	return m_arrs.size() + m_vars.size();
 }

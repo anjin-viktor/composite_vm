@@ -309,6 +309,8 @@ BOOST_AUTO_TEST_CASE(VarTranslatorTest_combined)
 
 	DataKeeper keeper = translator.getDataKeeper();
 
+	BOOST_CHECK_EQUAL(keeper.getNumberOfElements(), 8);
+
 	BOOST_CHECK_EQUAL(keeper.isExists("ch"), true);
 	BOOST_CHECK_EQUAL(keeper.isExists("ch1"), true);
 	BOOST_CHECK_EQUAL(keeper.isExists("val"), true);

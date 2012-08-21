@@ -116,6 +116,16 @@ class DataKeeper
 */
 		void clear();
 
+
+
+
+/**
+Получение числа сохраненных в объекте массивов и переменных. Используется в первую очередь для тестирования
+@return число массивов + число переменных
+*/
+		std::size_t getNumberOfElements() const;
+
+
 	private:
 		std::map<std::string, Value>		m_vars;
 		std::map<std::string, Array>		m_arrs;

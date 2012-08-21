@@ -642,7 +642,6 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_commend)
 	BOOST_CHECK_NO_THROW(translator.translate(";comment"));
 	BOOST_CHECK_NO_THROW(translator.translate("mul var, 1;comment"));
 	BOOST_CHECK_NO_THROW(translator.translate("jmp lbl 					;comment"));
-
 }
 
 BOOST_AUTO_TEST_SUITE_END();
