@@ -25,35 +25,30 @@ Program &Program::getInstance()
 Function &Program::getFunction(const std::string &name)
 {
 	if(functionIsExists(name) == false)
-	{
-		/*Бросить исключение*/
-	}
+		throw std::runtime_error("function with name " + name + " not exists");
 
 	return m_functions[name];
 }
 
 
 
-/*
+
 const Function &Program::getFunction(const std::string &name) const
 {
 	if(functionIsExists(name) == false)
-	{
-		/*Бросить исключение*/
-/*	}
+		throw std::runtime_error("function with name " + name + " not exists");
 
-	return	m_functions[name];
+	std::map<std::string, Function>::const_iterator itr = m_functions.find(name);
+	return itr -> second;
 }
 
-*/
+
 
 
 void Program::addFunction(const Function &function)
 {
 	if(functionIsExists(function.getName()) != false)
-	{
-		/*Бросить исключение*/
-	}
+		throw std::runtime_error("function with name " + function.getName() + " already exists");
 
 	m_functions[function.getName()] = function;
 }

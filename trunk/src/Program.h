@@ -9,6 +9,7 @@
 
 #include <string>
 #include <map>
+#include <stdexcept>
 
 
 #include "Function.h"
@@ -38,7 +39,7 @@ class Program
 Получение константной ссылки на функцию по её имени. В случае отсутствия генерируется исключение.
 @param name - имя функции
 */
-//		const Function &getFunction(const std::string &name) const;
+		const Function &getFunction(const std::string &name) const;
 
 
 /**
