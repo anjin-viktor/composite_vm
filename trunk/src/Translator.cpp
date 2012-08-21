@@ -66,8 +66,71 @@ void Translator::translate()
 		{
 			if(boost::istarts_with(str, ".name") == false)
 				throw ParseError(str + " not expected");
-			
+		
+			translateFunction(str);
 		}
 	}
 }
 
+
+
+
+void Translator::translateFunction(const std::string &header)
+{
+/*	std::string str;
+
+	bool fError = true;
+	while(readString(str) == false)
+	{
+		boost::trim(str);
+		if(str != ".var")
+			if(boost::istarts_with(str, ".var") == false)
+				throw ParseError(str + " not expected");
+			else
+				fError = false;
+	}
+
+	if(fError)
+		throw ParseError("Неожиданный конец");
+
+	VarTranslator varTransl;
+	bool fEnd = false;
+	while(readString(str) == false)
+	{
+		boost::trim(str);
+		if(str == ".begin")
+			fEnd = true;
+		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
+			varTransl.translate(str);
+	}
+
+	if(str != ".begin")
+	{
+		if(str == "")		
+			throw ParseError("Неожиданный конец");
+		else
+			throw ParseError(str + " not expected");
+	}
+
+	fEnd = false;
+
+	DataKeeper data = varTransl.getDataKeeper();
+
+
+
+	CodeTranslator codeTransl;
+	codeTransl.setDataKeeperPtr(&D)
+
+
+	while(readString(str) == false)
+	{
+		boost::trim(str);
+		if(boost::istarts_with(".end") || boost::istarts_with(".exception"))
+			fEnd = true;
+
+		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
+			varTransl.translate(str);
+	}
+*/
+
+}

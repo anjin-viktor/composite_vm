@@ -20,6 +20,7 @@ set (SOURCES
 	../src/Function.cpp
 	../src/Translator.cpp
 	../src/HeaderTranslator.cpp
+	../src/Program.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -36,6 +37,7 @@ set (SOURCES
 	FunctionTest.cpp
 	TranslatorTest.cpp
 	HeaderTranslatorTest.cpp
+	ProgramTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

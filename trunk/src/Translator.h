@@ -67,6 +67,11 @@ class Translator
 */
 		static bool isEmptyOrComment(const std::string &str);
 
+/**
+Транслирование функции. Вызывается из translate().
+@param header - строка - заголовок функции
+*/
+		void translateFunction(const std::string &);
 
 
 		std::string		m_inputFileName;
