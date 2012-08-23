@@ -269,8 +269,34 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_arrVar)
 	BOOST_CHECK_EQUAL(keeper.getVarValue("b").getType(), Value::MOD32);
 	BOOST_CHECK_EQUAL(keeper.getVarValue("b").isReadable(), true);
 	BOOST_CHECK_EQUAL(keeper.getVarValue("b").isWriteable(), false);
+}
 
 
+
+
+/**
+Тест функции getNameFromString
+*/
+
+
+BOOST_AUTO_TEST_CASE(HeaderTranslator_getNameFromStr_test)
+{
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr(".name main"), "main");
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr("    .name    main   "), "main");
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr(".name _main"), "_main");
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr(".name _m1"), "_m1");
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr(".name m1"), "m1");
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr(".name main 123 asd"), "main");
+	BOOST_CHECK_EQUAL(HeaderTranslator::getNameFromStr(".name main mod8 a, array mod8 str, ARRAY sint numbers  , const mod32 b, array     ushort   test "), "main");
+
+
+
+	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr("main"), std::runtime_error);
+	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr(".name   "), std::runtime_error);
+	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr(".name 1main"), std::runtime_error);
+	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr(".name mai:n"), std::runtime_error);
+	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr("1name main"), std::runtime_error);
+	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr(".name main:"), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END();

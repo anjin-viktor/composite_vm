@@ -8,9 +8,12 @@
 */
 
 #include <string>
+#include <stdexcept>
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/bind.hpp>
+#include <boost/regex.hpp>
+#include <boost/algorithm/string.hpp>
 
 
 #include "DataKeeper.h"
@@ -55,6 +58,13 @@ class HeaderTranslator
 @param str - транслируемая строка
 */
 		void translate(std::string str);
+
+
+/**
+Получение имени функции. Подразумевается, что вход - корректная строка, являющаяся заголовком модуля.
+@parem str - заголовок модуля.
+*/
+		static std::string getNameFromStr(const std::string &str);
 
 
 /**
