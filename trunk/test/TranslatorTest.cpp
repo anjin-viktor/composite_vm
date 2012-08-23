@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include "../src/Translator.h"
+#include "Program.h"
 
 
 /**
@@ -26,6 +27,28 @@ BOOST_AUTO_TEST_CASE(TranslatorSetGet_Test)
 
 
 
+/**
+Тест правильности трансляции 1.mpr
+*/
+BOOST_AUTO_TEST_CASE(Translator_1_Test)
+{
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/1.mpr");
+	tr.translate();
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 1);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+
+	std::vector<Command> v1, v2;
+	Command c;
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(4);
+
+	v1.push_back(c);
+	v2 = Program::getInstance().getFunction("main").getCommands();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 0);
+}
 
 
 BOOST_AUTO_TEST_SUITE_END();

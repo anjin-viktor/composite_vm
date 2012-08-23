@@ -27,7 +27,7 @@ void CodeBlockTranslator::setDataKeeperPtr(DataKeeper *pdata)
 
 
 
-void CodeBlockTranslator::translate(const std::string &str)
+void CodeBlockTranslator::translate(const std::string &str, std::size_t lineNo)
 {
 	m_codeTranslator.translate(str);
 
@@ -40,7 +40,11 @@ void CodeBlockTranslator::translate(const std::string &str)
 		m_mapLabels[m_vcommands.size()].push_back(*itr);
 
 	if(m_codeTranslator.getOperation() != Command::NONE)
-		m_vcommands.push_back(m_codeTranslator.getCommand());
+	{
+		Command c = m_codeTranslator.getCommand();
+		c.setLineNumber(lineNo);
+		m_vcommands.push_back(c);
+	}
 }
 
 

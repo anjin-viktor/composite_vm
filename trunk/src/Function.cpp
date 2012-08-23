@@ -42,3 +42,38 @@ void Function::clear()
 	m_handlers.clear();
 	m_code.clear();
 }
+
+
+
+void Function::setDataKeeper(const DataKeeper &keeper)
+{
+	m_data = keeper;
+}
+
+
+
+DataKeeper &Function::getDataKeeper()
+{
+	return m_data;
+}
+
+
+
+const DataKeeper &Function::getDataKeeper() const
+{
+	return m_data;
+}
+
+
+
+DataKeeper *Function::getDataKeeperPtr()
+{
+	return &m_data;
+}
+
+
+
+std::vector<Command> Function::getCommands() const
+{
+	return m_code;
+}

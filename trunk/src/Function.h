@@ -14,6 +14,7 @@
 #include "Value.h"
 #include "Command.h"
 #include "Exception.h"
+#include "DataKeeper.h"
 
 
 /**
@@ -61,16 +62,52 @@ class Function
 		void setCommands(const std::vector<Command> &commands);
 
 
+
+/**
+Получение массива команд функции.
+@return массив команд функции
+*/
+		std::vector<Command> getCommands() const;
+
+
 /**
 Очистка параметров.
 */
 		void clear();
+
+/**
+Установка набора данных.
+@param data устанавливаемый набор
+*/
+		void setDataKeeper(const DataKeeper &data);
+
+
+/**
+Получение константной ссылки на набор данных.
+@return константная ссылка на набор данных функции
+*/
+		const DataKeeper &getDataKeeper() const;
+
+
+/**
+Получение ссылки на набор данных.
+@return ссылка на набор данных функции
+*/
+		DataKeeper &getDataKeeper();
+
+
+/**
+Получение указателя на набор данных.
+@return указатель на набор данных функции
+*/
+		DataKeeper *getDataKeeperPtr();
 
 
 	private:
 		std::string 										m_name;
 		std::map<Exception::Type, std::vector<Command> >	m_handlers;
 		std::vector<Command>								m_code;
+		DataKeeper											m_data;
 };
 
 

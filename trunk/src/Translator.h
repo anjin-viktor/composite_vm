@@ -8,13 +8,15 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstddef>
 
 #include <boost/algorithm/string.hpp>
 
 
 #include "VarTranslator.h"
 #include "CodeBlockTranslator.h"
-
+#include "Program.h"
+#include "HeaderTranslator.h"
 
 /**
 @class Translator
@@ -76,6 +78,7 @@ class Translator
 
 		std::string		m_inputFileName;
 		std::ifstream	m_in;
+		std::size_t		m_lineNumb;
 };
 
 

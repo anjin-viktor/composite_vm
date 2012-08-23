@@ -7,6 +7,7 @@
 
 
 
+#include <cstddef>
 #include <vector>
 #include <map>
 #include <string>
@@ -59,8 +60,9 @@ class CodeBlockTranslator
 /**
 Трансляция строки.
 @param str - транслируемая строка
+@param lineNo - номер строки в исходном файле
 */
-		void translate(const std::string &str);
+		void translate(const std::string &str, std::size_t lineNo = 0);
 
 
 /**

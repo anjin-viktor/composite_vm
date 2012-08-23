@@ -32,14 +32,15 @@ std::string Translator::getInputFileName() const
 
 bool Translator::readString(std::string &str)
 {
-	char s[2048];
-
+	m_lineNumb++;
+	char endLineChar;
 	if(m_in.is_open() == false)
 		m_in.open(m_inputFileName.c_str(), std::ifstream::in);
 
 	std::stringbuf sb;
 
 	m_in.get(sb, '\n');
+	m_in.get(endLineChar);
 
 	str = sb.str();
 
@@ -57,6 +58,8 @@ bool Translator::isEmptyOrComment(const std::string &str)
 
 void Translator::translate()
 {
+	m_lineNumb = 0;
+	Program::getInstance().clear();
 	std::string str;
 
 	while(readString(str) == false)
@@ -70,67 +73,95 @@ void Translator::translate()
 			translateFunction(str);
 		}
 	}
+
+	m_in.close();
 }
+
+#include <iostream>
 
 
 
 
 void Translator::translateFunction(const std::string &header)
 {
-/*	std::string str;
+	std::string str;
+	std::string funcName = HeaderTranslator::getNameFromStr(header);
+
+	Function func;
+	func.setName(funcName);
 
 	bool fError = true;
-	while(readString(str) == false)
+	bool fEnd = false;
+	while(readString(str) == false && fEnd == false)
 	{
-		boost::trim(str);
-		if(str != ".var")
-			if(boost::istarts_with(str, ".var") == false)
+		if(Translator::isEmptyOrComment(str) == false)
+		{
+			boost::trim(str);
+			if(str != ".var")
 				throw ParseError(str + " not expected");
 			else
+			{
 				fError = false;
+				fEnd = true;
+			}
+		}
 	}
 
+
+
 	if(fError)
-		throw ParseError("Неожиданный конец");
+		throw ParseError("unexpected end");
 
 	VarTranslator varTransl;
-	bool fEnd = false;
-	while(readString(str) == false)
+	fEnd = false;
+
+
+	do
 	{
 		boost::trim(str);
 		if(str == ".begin")
 			fEnd = true;
-		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
-			varTransl.translate(str);
+		else 
+			if(Translator::isEmptyOrComment(str) == false && fEnd == false)
+				varTransl.translate(str);
 	}
+	while(fEnd == false && readString(str) == false);
+
 
 	if(str != ".begin")
 	{
 		if(str == "")		
-			throw ParseError("Неожиданный конец");
+			throw ParseError("unexpected end");
 		else
 			throw ParseError(str + " not expected");
 	}
 
+
 	fEnd = false;
 
-	DataKeeper data = varTransl.getDataKeeper();
+
+	Program::getInstance().addFunction(func);
+	Program::getInstance().getFunction(funcName).setDataKeeper(varTransl.getDataKeeper());
+
+
+	HeaderTranslator headerTransl;
+	headerTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
+	headerTransl.translate(header);
 
 
 
-	CodeTranslator codeTransl;
-	codeTransl.setDataKeeperPtr(&D)
+	CodeBlockTranslator codeTransl;
 
 
 	while(readString(str) == false)
 	{
 		boost::trim(str);
-		if(boost::istarts_with(".end") || boost::istarts_with(".exception"))
+		if(boost::istarts_with(str, ".end") || boost::istarts_with(str, ".exception"))
 			fEnd = true;
 
 		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
-			varTransl.translate(str);
+			codeTransl.translate(str, m_lineNumb);
 	}
-*/
 
+	Program::getInstance().getFunction(funcName).setCommands(codeTransl.getCommands());
 }

@@ -60,3 +60,32 @@ bool Program::functionIsExists(const std::string &name) const
 {
 	return m_functions.find(name) != m_functions.end();	
 }
+
+
+
+
+std::size_t Program::numberOfFunctions() const
+{
+	return m_functions.size();
+}
+
+
+
+
+std::list<std::string> Program::getFunctionNames() const
+{
+	std::list<std::string> lst;
+	std::map<std::string, Function>::const_iterator itr = m_functions.begin();
+
+	for(;itr != m_functions.end(); itr++)
+		lst.push_front(itr -> first);
+
+	return lst;
+}
+
+
+
+void Program::clear()
+{
+	m_functions.clear();
+}

@@ -10,6 +10,7 @@
 #include <string>
 #include <map>
 #include <stdexcept>
+#include <list>
 
 
 #include "Function.h"
@@ -54,6 +55,27 @@ class Program
 @param name - проверяемое имя
 */
 		bool functionIsExists(const std::string &name) const;
+
+
+/**
+Получение числа функций в программе.
+@return число функций
+*/
+		std::size_t numberOfFunctions() const;
+
+
+/**
+Получение списка имён функций программы
+@return список имйн функций
+*/
+		std::list<std::string> getFunctionNames() const;
+
+
+
+/**
+Очистка программы.
+*/
+		void clear();
 
 
 	private:

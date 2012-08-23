@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <cstddef>
+#include <string>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/shared_ptr.hpp>
@@ -25,6 +26,8 @@
 
 class Command
 {
+	friend std::ostream &operator << (std::ostream &stream, const Command &);
+
 	public:
 /** 
 @brief Перечисление типов комманд.
@@ -121,6 +124,15 @@ class Command
 
 		static Command::Operation strToOperation(const std::string &str);
 
+
+
+/**
+Преобразование команды из формы Command::Operation в строковое представление.
+@param op - операция
+@return строковое представление операции
+*/
+		static std::string operationToStr(Command::Operation op);
+
 /**
 Установка положения строки команды в файле с исходным кодом. Используется при обработке ошибок.
 */
@@ -133,11 +145,20 @@ class Command
 		std::size_t getLineNumber() const;
 
 
+
+/**
+Оператор проверки на неравенство
+*/
+		bool operator != (const Command &command);
+
 	private:
 		Command::Operation 						 		m_opType;
 		std::vector<boost::shared_ptr<Operand> >		m_operands;
 		std::size_t										m_numb;
 };
+
+
+std::ostream &operator << (std::ostream &stream, const Command &comm);
 
 
 #endif

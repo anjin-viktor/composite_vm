@@ -121,6 +121,73 @@ Command::Operation Command::strToOperation(const std::string &str)
 
 
 
+std::string Command::operationToStr(Command::Operation op)
+{
+	std::string str;
+	switch(op)
+	{
+		case Command::MOV:
+			str = "MOV";
+			break;
+		case Command::ADD:
+			str = "ADD";
+			break;
+		case Command::SUB:
+			str = "SUB";
+			break;
+		case Command::MUL:
+			str = "MUL";
+			break;
+		case Command::DIV:
+			str = "DIV";
+			break;
+		case Command::MOD:
+			str = "MOD";
+			break;
+		case Command::JMP:
+			str = "JMP";
+			break;
+		case Command::JL:
+			str = "JL";
+			break;
+		case Command::JE:
+			str = "JE";
+			break;
+		case Command::JG:
+			str = "JG";
+			break;
+		case Command::JNE:
+			str = "JNE";
+			break;
+		case Command::AOUT:
+			str = "AOUT";
+			break;
+		case Command::RSZ:
+			str = "RSZ";
+			break;
+		case Command::CALL:
+			str = "CALL";
+			break;
+		case Command::RET:
+			str = "RET";
+			break;
+		case Command::NOP:
+			str = "NOP";
+			break;
+		case Command::CMP:
+			str = "CMP";
+			break;
+		case Command::NONE:
+			str = "NONE";
+			break;
+	};
+	return str;
+}
+
+
+
+
+
 void Command::setLineNumber(std::size_t numb)
 {
 	m_numb = numb;
@@ -131,4 +198,20 @@ void Command::setLineNumber(std::size_t numb)
 std::size_t Command::getLineNumber() const
 {
 	return m_numb;
+}
+
+
+
+std::ostream &operator << (std::ostream &stream, const Command &comm)
+{
+	stream << Command::operationToStr(comm.m_opType) << "(" << comm.m_numb << ")";
+	return stream;
+}
+
+
+
+
+bool Command::operator !=(const Command &command)
+{
+	return m_opType != command.m_opType || m_numb != command.m_numb;
 }
