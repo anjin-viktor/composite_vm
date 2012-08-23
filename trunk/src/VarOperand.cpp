@@ -141,6 +141,20 @@ bool VarOperand::isReadable() const
 }
 
 
+
+
+void VarOperand::initialize()
+{
+	if(m_pval)
+		return m_pval -> setReadable(true);
+
+	if(m_parr)
+		return m_parr -> operator[](m_indx).setReadable(true);
+}
+
+
+
+
 bool VarOperand::isWriteable() const
 {
 	if(m_const == true)

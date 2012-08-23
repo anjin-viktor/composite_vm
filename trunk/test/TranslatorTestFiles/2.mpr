@@ -1,0 +1,27 @@
+
+	.name main
+;comment
+
+		.var			 
+	uchar ch 125
+	uint n
+
+.begin
+	mov n, 125
+	add n, (uint) ch
+	div n, 1 		;comment
+	;comment
+l1:
+
+
+	jmp l2
+
+
+l2: cmp ch,(uchar)n
+	je l3 ;comment
+
+
+	jmp l4;comment
+l3:
+l4:
+.end

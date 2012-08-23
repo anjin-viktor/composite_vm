@@ -39,14 +39,23 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_false)
 	translator.setDataKeeperPtr(&keeper);
 
 	BOOST_CHECK_NO_THROW(translator.translate(".name main"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate("   .name    _main"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate("   .name    _MAIN"		   ));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name name uchar ch"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name name uchar ch, sint n"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name name uchar ch,sint n"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name 	 name     uchar  ch	 ,   	sint	 v 	"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name name array sshort arr"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name name array sint arr, ARRAY uint arr1"));
+	translator.clear();
 	BOOST_CHECK_NO_THROW(translator.translate(".name 	 name    const mod16  ch	 ,   	sint	 v , ARRAY schar arr "));
 }
 
@@ -64,14 +73,23 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_true)
 	translator.setDataKeeperPtr(&keeper);
 
 	BOOST_CHECK_THROW(translator.translate(".name"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".nam  _main"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name    1MAIN"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main:"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main error_type ch"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main uint ch uchar ch1"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main array arr"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main const array arr"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main const uchar"), ParseError);
+	translator.clear();
 	BOOST_CHECK_THROW(translator.translate(".name main const uchar ch, ARRay arr"), ParseError);
 }
 
@@ -91,30 +109,39 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_moduleName)
 	translator.translate(".name main");
 	BOOST_CHECK_EQUAL(translator.getName(), "main");
 
+	translator.clear();
 	translator.translate("   .name    _main");
 	BOOST_CHECK_EQUAL(translator.getName(), "_main");
 
+	translator.clear();
 	translator.translate("   .name    _MAIN  		");
 	BOOST_CHECK_EQUAL(translator.getName(), "_MAIN");
 
+	translator.clear();
 	translator.translate(".name name uchar ch");
 	BOOST_CHECK_EQUAL(translator.getName(), "name");
 
+	translator.clear();
 	translator.translate(".name na_me uchar ch, sint n");
 	BOOST_CHECK_EQUAL(translator.getName(), "na_me");
 
+	translator.clear();
 	translator.translate(".name name uchar ch,sint n");
 	BOOST_CHECK_EQUAL(translator.getName(), "name");
 
+	translator.clear();
 	translator.translate(".name 	 name     uchar  ch	 ,   	sint	 v 	");
 	BOOST_CHECK_EQUAL(translator.getName(), "name");
 
+	translator.clear();
 	translator.translate(".name name array sshort arr");
 	BOOST_CHECK_EQUAL(translator.getName(), "name");
 
+	translator.clear();
 	translator.translate(".name name array sint arr, ARRAY uint arr1");
 	BOOST_CHECK_EQUAL(translator.getName(), "name");
 
+	translator.clear();
 	translator.translate(".name 	 name    const mod16  ch	 ,   	sint	 v , ARRAY schar arr ");	
 	BOOST_CHECK_EQUAL(translator.getName(), "name");
 }
@@ -139,6 +166,7 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_var)
 	BOOST_CHECK_EQUAL(keeper.getVarValue("ch").isWriteable(), true);
 	BOOST_CHECK_EQUAL(keeper.getNumberOfElements(), 1);
 
+	translator.clear();
 	translator.translate(".name 	 name     uchar  ch1	 ,   	sint	 v, mod8 s");
 	BOOST_CHECK_EQUAL(keeper.getNumberOfElements(), 3);
 	BOOST_CHECK_EQUAL(keeper.isVar("ch1"), true);
@@ -159,6 +187,7 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_var)
 	BOOST_CHECK_EQUAL(keeper.getVarValue("s").isReadable(), true);
 	BOOST_CHECK_EQUAL(keeper.getVarValue("s").isWriteable(), true);
 
+	translator.clear();
 	translator.translate(".name name sshort  sh1, const sint v");
 	BOOST_CHECK_EQUAL(keeper.getNumberOfElements(), 2);
 	BOOST_CHECK_EQUAL(keeper.isVar("sh1"), true);
@@ -194,6 +223,7 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_arr)
 	BOOST_CHECK_EQUAL(keeper.getArray("str").getType(), Value::MOD8);
 
 
+	translator.clear();
 	translator.translate(".name main array mod8 str, ARRAY sint numbers  , array     ushort   test ");
 	BOOST_CHECK_EQUAL(keeper.getNumberOfElements(), 3);
 	BOOST_CHECK_EQUAL(keeper.isArray("str"), true);
@@ -241,7 +271,7 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_arrVar)
 	BOOST_CHECK_EQUAL(keeper.getVarValue("n").isWriteable(), true);
 
 
-
+	translator.clear();
 	translator.translate(".name main mod8 a, array mod8 str, ARRAY sint numbers  , const mod32 b, array     ushort   test ");
 	BOOST_CHECK_EQUAL(keeper.getNumberOfElements(), 5);
 	BOOST_CHECK_EQUAL(keeper.isArray("str"), true);

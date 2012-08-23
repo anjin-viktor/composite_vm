@@ -97,8 +97,9 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 				if(op1 -> getAfterCastType() != op2 -> getAfterCastType() && op2 -> getAfterCastType() != Value::NO_TYPE)
 					throw ParseError("mismatch");
-			}
 
+				op1 -> initialize();
+			}
 			break;
 		}
 

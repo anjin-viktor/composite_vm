@@ -73,6 +73,12 @@ class HeaderTranslator
 */
 		std::string getName() const;
 
+
+/**
+Очистка транслятора. Нужно вызывать перед началом трансляции.
+*/
+		void clear();
+
 	private:
 
 /**

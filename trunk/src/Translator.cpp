@@ -34,15 +34,14 @@ bool Translator::readString(std::string &str)
 {
 	m_lineNumb++;
 	char endLineChar;
+
 	if(m_in.is_open() == false)
 		m_in.open(m_inputFileName.c_str(), std::ifstream::in);
 
-	std::stringbuf sb;
+	if(m_in.eof() == true)
+		return true;
 
-	m_in.get(sb, '\n');
-	m_in.get(endLineChar);
-
-	str = sb.str();
+	std::getline(m_in, str);
 
 	return m_in.eof();
 }
@@ -67,6 +66,7 @@ void Translator::translate()
 		boost::trim(str);
 		if(Translator::isEmptyOrComment(str) == false)
 		{
+
 			if(boost::istarts_with(str, ".name") == false)
 				throw ParseError(str + " not expected");
 		
@@ -77,7 +77,6 @@ void Translator::translate()
 	m_in.close();
 }
 
-#include <iostream>
 
 
 
@@ -94,9 +93,9 @@ void Translator::translateFunction(const std::string &header)
 	bool fEnd = false;
 	while(readString(str) == false && fEnd == false)
 	{
+		boost::trim(str);
 		if(Translator::isEmptyOrComment(str) == false)
 		{
-			boost::trim(str);
 			if(str != ".var")
 				throw ParseError(str + " not expected");
 			else
@@ -106,7 +105,6 @@ void Translator::translateFunction(const std::string &header)
 			}
 		}
 	}
-
 
 
 	if(fError)
@@ -136,22 +134,17 @@ void Translator::translateFunction(const std::string &header)
 			throw ParseError(str + " not expected");
 	}
 
-
 	fEnd = false;
-
 
 	Program::getInstance().addFunction(func);
 	Program::getInstance().getFunction(funcName).setDataKeeper(varTransl.getDataKeeper());
-
 
 	HeaderTranslator headerTransl;
 	headerTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 	headerTransl.translate(header);
 
-
-
 	CodeBlockTranslator codeTransl;
-
+	codeTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 
 	while(readString(str) == false)
 	{
@@ -164,4 +157,5 @@ void Translator::translateFunction(const std::string &header)
 	}
 
 	Program::getInstance().getFunction(funcName).setCommands(codeTransl.getCommands());
+
 }

@@ -38,8 +38,6 @@ void HeaderTranslator::translate(std::string str)
 
     m_grammar.clear();
 
-    if(m_pdata)
-    	m_pdata -> clear();
 
     bool success = qi::parse(begin, end, m_grammar);
 
@@ -77,4 +75,14 @@ std::string HeaderTranslator::getNameFromStr(const std::string &str)
         throw std::runtime_error("HeaderTranslator::getNameFromStr: incorrect parameter");
 
     return "";
+}
+
+
+
+void HeaderTranslator::clear()
+{
+    m_grammar.clear();
+
+    if(m_pdata)
+        m_pdata -> clear();
 }

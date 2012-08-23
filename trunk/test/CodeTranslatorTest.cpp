@@ -482,6 +482,7 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_castOperandTwoOperation)
 	BOOST_CHECK_EQUAL(op2 -> isConstant(), true);
 	BOOST_CHECK_EQUAL(op1 -> getType(), Value::NO_TYPE);
 	BOOST_CHECK_EQUAL(op2 -> getType(), Value::UNSIGNED_INT);
+	BOOST_CHECK_EQUAL(op2 -> getAfterCastType(), Value::UNSIGNED_INT);
 
 
 	translator.translate("  cmp var1,  1");

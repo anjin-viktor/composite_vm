@@ -101,6 +101,9 @@ class CodeTranslator
 				m_pcommand = NULL;
 				m_plbls = NULL;
 				m_pdata = NULL;
+				m_castType = Value::NO_TYPE;
+				m_operandIsConst = false;
+				m_operandIsNumber = false;
 
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
@@ -305,6 +308,7 @@ class CodeTranslator
 					m_currentVar = VarOperand(&(m_pdata -> getVarValue(valName)));
 				}
 				m_currentVar.setConstancy(true);
+				m_operandIsNumber = true;
 			}
 
 
@@ -315,8 +319,8 @@ class CodeTranslator
 */
 			void setOperandType(std::string str)
 			{
-				m_currentVar.setConstancy(true);
-				m_currentVar.setType(Value::strToValueType(str));
+				m_castType = Value::strToValueType(str);
+				m_operandIsConst = true;
 			}
 
 
@@ -325,11 +329,17 @@ class CodeTranslator
 */
 			void saveFirstOperand()
 			{
+				m_currentVar.setType(m_castType);
+
+				if(m_operandIsNumber == false)
+					m_currentVar.setConstancy(m_operandIsConst);
+
 				if(m_pcommand)
 					m_pcommand -> setFirstOperand(boost::shared_ptr<Operand>(new VarOperand(m_currentVar)));
 
-				m_currentVar.setType(Value::NO_TYPE);
-				m_currentVar.setConstancy(false);
+				m_castType = Value::NO_TYPE;
+				m_operandIsConst = false;
+				m_operandIsNumber = false;
 			}
 
 
@@ -338,11 +348,19 @@ class CodeTranslator
 */
 			void saveSecondOperand()
 			{
+				m_currentVar.setType(m_castType);
+
+				if(m_operandIsNumber == false)
+					m_currentVar.setConstancy(m_operandIsConst);
+
+
 				if(m_pcommand)
 					m_pcommand -> setSecondOperand(boost::shared_ptr<Operand>(new VarOperand(m_currentVar)));
 
-				m_currentVar.setType(Value::NO_TYPE);
-				m_currentVar.setConstancy(false);
+				m_operandIsNumber = false;
+				m_castType = Value::NO_TYPE;
+				m_operandIsConst = false;
+
 			}
 
 /**
@@ -484,6 +502,9 @@ class CodeTranslator
 			std::string								m_arrName;
 			std::size_t								m_arrElementIndx;
 			VarOperand 								m_currentVar;
+			Value::ValueType 						m_castType;
+			bool									m_operandIsConst;
+			bool									m_operandIsNumber;
 	};
 
 

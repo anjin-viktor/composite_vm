@@ -129,6 +129,13 @@ class VarOperand: public Operand
 */
 		Value::ValueType getAfterCastType() const;
 
+
+/**
+Выполнение инициализации. Осуществляется при первом использовании на запись значения. После этого переменная
+становится читаемой.
+*/
+		void initialize();
+
 	private:
 		Value 				*m_pval;
 		Value::ValueType	m_type;
