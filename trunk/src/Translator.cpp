@@ -80,6 +80,8 @@ void Translator::translate()
 		}
 	}
 
+
+	callOperandsCheck();
 	m_in.close();
 }
 
@@ -176,4 +178,29 @@ void Translator::translateFunction(const std::string &header)
 
 	Program::getInstance().getFunction(funcName).setCommands(codeTransl.getCommands());
 
+}
+
+
+
+
+void Translator::callOperandsCheck() const
+{
+	std::list<std::string> lstNames = Program::getInstance().getFunctionNames();
+	std::list<std::string>::const_iterator itr = lstNames.begin();
+
+	for(;itr != lstNames.end(); itr++)
+	{
+		std::vector<Command> code = Program::getInstance().getFunction(*itr).getCommands();
+
+		for(int i=0, size=code.size(); i<size; i++)
+		{
+			if(code[i].getOperationType() == Command::CALL)
+			{
+				std::string callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(code[i].getFirstOperand()) -> getLabelName();
+
+				if(std::find(lstNames.begin(), lstNames.end(), callName) == lstNames.end())
+					throw(ParseError("function with name " + callName + " not exists"));
+			}
+		}
+	}
 }

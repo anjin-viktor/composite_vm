@@ -1,0 +1,21 @@
+.name main
+.var
+.begin
+	call f1
+.end
+
+
+
+.name f1
+.var
+.begin
+	call f2
+.end
+
+
+
+.name f2
+.var
+.begin
+	call main
+.end

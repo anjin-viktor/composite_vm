@@ -154,10 +154,64 @@ BOOST_AUTO_TEST_CASE(Translator_3_Test)
 }
 
 
+
+
+/**
+Тест правильности трансляции 4.mpr
+*/
+BOOST_AUTO_TEST_CASE(Translator_4_Test)
+{
+	std::string callName;
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/4.mpr");
+	tr.translate();
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 3);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f1"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f2"), true);
+
+	std::vector<Command> v1, v2;
+
+	Command c;
+	c.setOperationType(Command::CALL);
+	c.setLineNumber(4);
+
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getCommands();
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[0].getFirstOperand()) -> getLabelName();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(callName, "f1");
+
+	v1[0].setLineNumber(12);
+	v2 = Program::getInstance().getFunction("f1").getCommands();
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[0].getFirstOperand()) -> getLabelName();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(callName, "f2");
+
+	v1[0].setLineNumber(20);
+	v2 = Program::getInstance().getFunction("f2").getCommands();
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[0].getFirstOperand()) -> getLabelName();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(callName, "main");
+
+
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 0);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f1").getDataKeeperPtr() -> getNumberOfElements(), 0);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f2").getDataKeeperPtr() -> getNumberOfElements(), 0);
+}
+
+
+
+
+
 /**
 Тест отказат трансляции некорректных входных данных (false_[n].mpr)
 */
-
 BOOST_AUTO_TEST_CASE(Translator_false_Test)
 {
 	Translator tr;
@@ -193,6 +247,9 @@ BOOST_AUTO_TEST_CASE(Translator_false_Test)
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
 
 	tr.setInputFileName("TranslatorTestFiles/false_11.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_12.mpr");
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
 }
 

@@ -1,0 +1,22 @@
+;is incorrect code
+
+.name func2
+.var
+.begin
+	nop
+.end
+
+
+.name main
+.var
+.begin
+	call err_func_name
+.end
+
+
+
+.name func1
+.var
+.begin
+	nop
+.end

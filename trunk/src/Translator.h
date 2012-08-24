@@ -10,18 +10,22 @@
 #include <iostream>
 #include <cstddef>
 #include <stdexcept>
+#include <algorithm>
 
 #include <boost/algorithm/string.hpp>
-
+#include <boost/smart_ptr.hpp>
 
 #include "VarTranslator.h"
 #include "CodeBlockTranslator.h"
 #include "Program.h"
 #include "HeaderTranslator.h"
+#include "Operand.h"
+#include "LabelOperand.h"
 
 /**
 @class Translator
 @brief Класс, производящий трансляцию кода из конкретного файла.
+
 */
 class Translator
 {
@@ -75,6 +79,11 @@ class Translator
 @param header - строка - заголовок функции
 */
 		void translateFunction(const std::string &);
+
+/**
+Проверка наличия в программе функций с именами - операндами команд call
+*/
+		void callOperandsCheck() const;
 
 
 		std::string		m_inputFileName;
