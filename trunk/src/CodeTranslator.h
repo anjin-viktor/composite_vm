@@ -21,6 +21,7 @@
 #include "LabelOperand.h"
 #include "VarOperand.h"
 #include "ArrayOperand.h"
+#include "CallOperand.h"
 
 
 
@@ -108,7 +109,7 @@ class CodeTranslator
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
                 						>> *qi::space >> -comment;
-		        operation = zero_operation | one_operation | two_operation;
+		        operation = zero_operation | one_operation | two_operation | call_operation;
 
                 var %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)];
@@ -142,7 +143,6 @@ class CodeTranslator
                                             qi::string("jmp") |
                                             qi::string("jl") |
                                             qi::string("jg") |
-                                            qi::string("call") |
                                             qi::string("je") |
                                             qi::string("jne")
                                      )[boost::bind(&(CodeGrammar::setOperation), this, _1)] 
@@ -172,6 +172,13 @@ class CodeTranslator
                 label %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)] >> qi::char_(':');
                 comment = qi::char_(';') >> *qi::char_;
+			
+				call_operation %= qi::string("call") [boost::bind(&(CodeGrammar::setOperation), this, _1)]
+					>> +qi::space >> label_operand[boost::bind(&(CodeGrammar::saveJumpOperation), this)] 
+					>> -(*(call_operand[boost::bind(&(CodeGrammar::addCallOperand), this)]));
+				call_operand %= *qi::space >> ',' >> *qi::space >> (call_wr_operand | rd_operand); 
+				call_wr_operand = (array_element[boost::bind(&(CodeGrammar::saveCallArrayElementOperand), this)] |
+                					var[boost::bind(&(CodeGrammar::saveVarOrArrOperand), this)]);
 			}
 
 /**
@@ -190,6 +197,7 @@ class CodeTranslator
 				m_arrName = "";
 				m_varName = "";
 
+				m_callOpNo = 1;
 				m_opExists = false;
 			}
 
@@ -275,7 +283,7 @@ class CodeTranslator
 
 				if(m_pdata)
 					if(m_pdata -> isArray(m_arrName) == false)
-						throw ParseError("array with name " + m_arrName + "not exists");
+						throw ParseError("array with name " + m_arrName + " not exists");
 					else
 						op -> setArrayPtr(&m_pdata -> getArray(m_arrName));
 
@@ -296,12 +304,13 @@ class CodeTranslator
 				std::stringstream ss;
 				ss << n;
 				std::string valName = ss.str();
+				Value val;
 
 				if(m_pdata)
 				{
 					if(m_pdata -> isExists(valName) == false)
 					{
-						Value val(n, Value::NO_TYPE, true, false);
+						val = Value(n, Value::NO_TYPE, true, false);
 						m_pdata -> addVar(val, valName);
 					}
 
@@ -309,6 +318,9 @@ class CodeTranslator
 				}
 				m_currentVar.setConstancy(true);
 				m_operandIsNumber = true;
+			
+				m_callOpVal = val;
+				m_callOpIsVal = true;
 			}
 
 
@@ -372,7 +384,7 @@ class CodeTranslator
 				if(m_pdata)
 				{
 					if(m_pdata -> isArray(m_arrName) == false)
-						throw ParseError("array with name " + m_arrName + "not exists");
+						throw ParseError("array with name " + m_arrName + " not exists");
 
 					m_currentVar = VarOperand(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx, Value::NO_TYPE);
 					m_arrName = "";
@@ -389,11 +401,16 @@ class CodeTranslator
 				if(m_pdata)
 				{
 					if(m_pdata -> isVar(m_varName) == false)
-						throw ParseError("variable with name " + m_varName + "not exists");
+						throw ParseError("variable with name " + m_varName + " not exists");
 			
 					m_currentVar = VarOperand(&(m_pdata -> getVarValue(m_varName)));
+
+					m_callOpVal = m_pdata -> getVarValue(m_varName);
+					m_callOpIsVal = true;
+
 					m_varName = "";
 					m_arrName = "";
+
 				}
 			}
 
@@ -487,9 +504,88 @@ class CodeTranslator
 			}
 
 
+/**
+Сохранение операнда команды call(это переменная или массив). Используется как семантическое действие грамматики.
+*/
+			void saveVarOrArrOperand()
+			{
+				if(m_pdata)
+				{
+					if(m_pdata -> isVar(m_varName))
+					{
+						m_callOpVal = m_pdata -> getVarValue(m_varName);
+						m_callOpIsVal = true;
+
+					}
+					else if(m_pdata -> isArray(m_varName))
+					{
+						m_callOpArr = m_pdata -> getArray(m_varName);
+						m_callOpIsVal = false;
+					}
+					else 
+						throw ParseError("variable with name " + m_varName + " not exists");
+			
+					m_varName = "";
+					m_arrName = "";
+				}				
+			}
+
+
+/**
+Сохранение операнда - элемента массива для команды call. Используется как семантическое действие грамматики.
+*/
+			void saveCallArrayElementOperand()
+			{
+				if(m_pdata)
+				{
+					if(m_pdata -> isArray(m_arrName) == false)
+						throw ParseError("array with name " + m_arrName + " not exists");
+
+					m_callOpVal = m_pdata -> getArray(m_arrName)[m_arrElementIndx];
+					m_callOpIsVal = true;
+					m_arrName = "";
+					m_arrName = "";
+				}
+			}
+
+/**
+Добавление операнда команды call. Используется как семантическое действие грамматики.
+*/
+			void addCallOperand()
+			{
+				boost::shared_ptr<CallOperand> op(new CallOperand);
+
+				if(m_callOpIsVal)
+				{
+					if(m_castType != Value::NO_TYPE)
+					{
+						m_callOpVal.setType(m_castType);
+						m_callOpVal.setWriteable(false);
+					}
+
+					if(m_operandIsConst || m_operandIsNumber)
+						m_callOpVal.setWriteable(false);
+
+					op -> setValue(m_callOpVal);
+
+				}
+				else 
+				{
+					if(m_operandIsConst)
+						m_callOpArr.setWriteable(false);
+
+
+					op -> setArray(m_callOpArr);
+				}
+
+				m_pcommand -> setOperand(m_callOpNo, boost::shared_ptr<Operand>(op));
+				m_callOpNo++;
+			}
+
 
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
-            one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation;
+            one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation,
+            call_operand, call_operation, call_wr_operand;
 
             Command									*m_pcommand;
             std::list<std::string>					*m_plbls;
@@ -505,6 +601,10 @@ class CodeTranslator
 			Value::ValueType 						m_castType;
 			bool									m_operandIsConst;
 			bool									m_operandIsNumber;
+			Array 									m_callOpArr;
+			Value 									m_callOpVal;
+			bool									m_callOpIsVal;
+			std::size_t								m_callOpNo;
 	};
 
 

@@ -116,6 +116,14 @@ class Array
 
 		Value& operator[] (std::size_t n);
 
+
+/**
+Создание копии не являющейся ссылкой.
+return копию массива
+*/
+		Array createNoLink() ;
+
+
 	private:
 		boost::shared_ptr<std::vector<Value> >		m_parr;
 		bool										m_isWriteable;

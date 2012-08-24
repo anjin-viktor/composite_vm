@@ -182,7 +182,6 @@ BOOST_AUTO_TEST_CASE(testValue_SET_GET_TYPE)
 
 
 
-
 /**
 Тест взятия значения по ссылке и не по ссылке.
 */

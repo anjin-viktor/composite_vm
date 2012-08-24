@@ -5,6 +5,8 @@
 #include <boost/test/unit_test.hpp>
 #include "../src/CodeTranslator.h"
 #include "../src/ParseError.h"
+#include "../src/LabelOperand.h"
+#include "../src/CallOperand.h"
 
 
 /**
@@ -636,7 +638,8 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_aout)
 
 
 
-BOOST_AUTO_TEST_CASE(CodeTranslatorTest_commend)
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_comment)
 {
 	CodeTranslator translator;
 
@@ -644,5 +647,78 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_commend)
 	BOOST_CHECK_NO_THROW(translator.translate("mul var, 1;comment"));
 	BOOST_CHECK_NO_THROW(translator.translate("jmp lbl 					;comment"));
 }
+
+
+
+/**
+Тест для команды call
+*/
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_call)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate("call label"));
+	BOOST_CHECK_NO_THROW(translator.translate("call label, l"));
+	BOOST_CHECK_NO_THROW(translator.translate("    call    label  ,   v1,(uchar)v2 "));
+	BOOST_CHECK_NO_THROW(translator.translate("    call    label  ,   v1,v2,     123 "));
+
+	BOOST_CHECK_THROW(translator.translate("call 123"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("call :label"), ParseError);
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(1, Value::MOD16, true, true), "var1");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, true, false), "var2");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, false, false), "var3");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(1, Value::MOD16, false, false);
+	array[2];
+
+	keeper.addArray(array, "arr");
+	translator.setDataKeeperPtr(&keeper);
+	BOOST_CHECK_NO_THROW(translator.translate("call    label, var1 "));
+	BOOST_CHECK_NO_THROW(translator.translate("call    label, var2 "));
+	BOOST_CHECK_NO_THROW(translator.translate("call    label, (uint)   var2, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("call    label_, arr"));
+	BOOST_CHECK_NO_THROW(translator.translate("call    label_, arr, var2"));
+	BOOST_CHECK_NO_THROW(translator.translate("call    label_, arr[1]"));
+	BOOST_CHECK_NO_THROW(translator.translate("call    label_, (   mod8   ) arr[2]"));
+
+	BOOST_CHECK_THROW(translator.translate("call    label_, arr_[2]"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("call    label_, var4"), ParseError);
+
+
+
+	translator.translate("call    label_, arr, (uint)var2, 123");
+
+	boost::shared_ptr<LabelOperand> name = boost::dynamic_pointer_cast<LabelOperand, Operand>(translator.getCommand().getFirstOperand());
+	BOOST_CHECK_EQUAL(name -> getLabelName(), "label_");
+
+	boost::shared_ptr<CallOperand> op = boost::dynamic_pointer_cast<CallOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(op -> isArray(), true);
+	BOOST_CHECK_EQUAL(op -> isValue(), false);
+	BOOST_CHECK_EQUAL(op -> getArray().size(), 3);
+	BOOST_CHECK_EQUAL(op -> getArray()[0].getValue(), 1);
+	BOOST_CHECK_EQUAL(op -> getArray()[1].getValue(), 1);
+
+	op = boost::dynamic_pointer_cast<CallOperand, Operand>(translator.getCommand().getOperand(3));
+	BOOST_CHECK_EQUAL(op -> isArray(), false);
+	BOOST_CHECK_EQUAL(op -> isValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue().getValue(), 123);
+	BOOST_CHECK_EQUAL(op -> getValue().isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> getValue().isWriteable(), false);
+
+
+	op = boost::dynamic_pointer_cast<CallOperand, Operand>(translator.getCommand().getOperand(2));
+	BOOST_CHECK_EQUAL(op -> isArray(), false);
+	BOOST_CHECK_EQUAL(op -> isValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue().getValue(), 1);
+	BOOST_CHECK_EQUAL(op -> getValue().isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> getValue().isWriteable(), false);
+	BOOST_CHECK_EQUAL(op -> getValue().getType(), Value::UNSIGNED_INT);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END();

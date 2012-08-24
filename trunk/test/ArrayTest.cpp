@@ -60,4 +60,33 @@ BOOST_AUTO_TEST_CASE(ArrayTest_Constructor_2)
 }
 
 
+
+
+/**
+Тест функции копирования массива
+*/
+BOOST_AUTO_TEST_CASE(ArrayTest_create)
+{
+	Array arr(3, Value::MOD8);
+	arr[0] = 1;
+	arr[1] = 2;
+	arr[2] = 3;
+
+	Array arr_ = arr;
+	arr_[0] = 0;
+	BOOST_CHECK_EQUAL(arr[0].getValue(), 0);
+	arr_.resize(5);
+	BOOST_CHECK_EQUAL(arr.size(), 5);
+
+	arr = Array(3, Value::MOD8);
+	arr[0] = 1;
+	arr[1] = 2;
+	arr[2] = 3;
+
+	arr_ = arr.createNoLink();
+	arr_[0] = 0;
+	BOOST_CHECK_EQUAL(arr[0].getValue(), 1);
+	arr_.resize(5);
+	BOOST_CHECK_EQUAL(arr.size(), 3);
+}
 BOOST_AUTO_TEST_SUITE_END();

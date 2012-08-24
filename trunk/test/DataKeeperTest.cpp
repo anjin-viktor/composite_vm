@@ -1,5 +1,7 @@
 #include <stdexcept>
-
+#include <list>
+#include <string>
+#include <algorithm>
 
 #include <boost/test/unit_test.hpp>
 #include "../src/DataKeeper.h"
@@ -129,6 +131,47 @@ BOOST_AUTO_TEST_CASE(testDataKeeper_clear)
 
 
 
+
+/**
+Тест функций поулчения списка имён переменных и массивов (getValuesNames(), getArraysNames())
+*/
+BOOST_AUTO_TEST_CASE(testDataKeeper_getNames)
+{
+	DataKeeper keeper;
+	std::list<std::string> lstVals, lstArrs;
+
+	BOOST_CHECK_EQUAL(keeper.getValuesNames().size(), 0);
+	BOOST_CHECK_EQUAL(keeper.getArraysNames().size(), 0);
+
+	keeper.addVar(Value(1), "val_name");
+	keeper.addArray(Array(), "arr_name");
+
+	lstVals = keeper.getValuesNames();
+	lstArrs = keeper.getArraysNames();
+
+	BOOST_CHECK_EQUAL(keeper.getValuesNames().size(), 1);
+	BOOST_CHECK_EQUAL(keeper.getArraysNames().size(), 1);
+	BOOST_CHECK(std::find(lstVals.begin(), lstVals.end(), "val_name") != lstVals.end());
+	BOOST_CHECK(std::find(lstArrs.begin(), lstArrs.end(), "arr_name") != lstArrs.end());
+
+	keeper.addVar(Value(1), "val_");
+	keeper.addArray(Array(), "arr_");
+
+
+	lstVals = keeper.getValuesNames();
+	lstArrs = keeper.getArraysNames();
+
+	BOOST_CHECK_EQUAL(keeper.getValuesNames().size(), 2);
+	BOOST_CHECK_EQUAL(keeper.getArraysNames().size(), 2);
+	BOOST_CHECK(std::find(lstVals.begin(), lstVals.end(), "val_name") != lstVals.end());
+	BOOST_CHECK(std::find(lstArrs.begin(), lstArrs.end(), "arr_name") != lstArrs.end());
+	BOOST_CHECK(std::find(lstVals.begin(), lstVals.end(), "val_") != lstVals.end());
+	BOOST_CHECK(std::find(lstArrs.begin(), lstArrs.end(), "arr_") != lstArrs.end());
+
+	keeper.clear();
+	BOOST_CHECK_EQUAL(keeper.getValuesNames().size(), 0);
+	BOOST_CHECK_EQUAL(keeper.getArraysNames().size(), 0);
+}
 
 
 

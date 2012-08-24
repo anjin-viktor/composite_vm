@@ -6,7 +6,7 @@
 */
 
 
-
+#include <list>
 #include <map>
 #include <string>
 
@@ -117,6 +117,19 @@ class DataKeeper
 		void clear();
 
 
+
+/**
+Получение списка имен переменных
+@return список имен
+*/
+		std::list<std::string> getValuesNames() const;
+
+
+/**
+Получение списка имен массивов
+@return список имен
+*/
+		std::list<std::string> getArraysNames() const;
 
 
 /**

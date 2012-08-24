@@ -105,22 +105,40 @@ class Command
 @return указатель на первый операнд команды
 @throw std::out_of_range при отсутствии первого операнда
 */
-
 		boost::shared_ptr<Operand> getFirstOperand() const throw(std::out_of_range);
+
+
 /**
 Получение указателя на второй операнд команды.
 @return указатель на второй операнд команды
 @throw std::out_of_range при отсутствии второго операнда
 */
-
-
 		boost::shared_ptr<Operand> getSecondOperand() const throw(std::out_of_range);
+
+
+/**
+Установка на операнд с указанным номером.
+@param n - номер операнда
+@param p - операнд команды
+*/
+		void setOperand(std::size_t n, boost::shared_ptr<Operand> p);
+
+
+/**
+Получение указателя на операнд с указанным номером.
+@return указатель на операнд
+*/
+		boost::shared_ptr<Operand> getOperand(std::size_t n) const throw(std::out_of_range);
+
+
+
 
 /**
 Преобразование строковой записи команды в форму Command::Operation
 @param str - строковое представление команды
 @return представление команды в формате Command::Operation
 */
+
 
 		static Command::Operation strToOperation(const std::string &str);
 
@@ -150,6 +168,14 @@ class Command
 Оператор проверки на неравенство
 */
 		bool operator != (const Command &command);
+
+
+/**
+Получение числа операндов команды. Имеет смысл только при их числе большем 2.
+Необходимо для работы с операндами команды call.
+@return число операндов
+*/
+		std::size_t getNumberOfOperands() const;
 
 	private:
 		Command::Operation 						 		m_opType;

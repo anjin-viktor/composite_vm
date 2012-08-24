@@ -3,8 +3,8 @@
 
 Command::Command()
 {
-	m_operands.resize(2);
 	m_opType = Command::NONE;
+	m_operands.resize(2);
 }
 
 
@@ -57,6 +57,14 @@ void Command::setSecondOperand(boost::shared_ptr<Operand> poperand)
 
 
 
+void Command::setOperand(std::size_t n, boost::shared_ptr<Operand> poperand)
+{
+	if(m_operands.size() < n+1)
+		m_operands.resize(n+1);
+
+	m_operands[n] = poperand;
+}
+
 
 
 boost::shared_ptr<Operand> Command::getFirstOperand() const throw(std::out_of_range)
@@ -72,6 +80,12 @@ boost::shared_ptr<Operand> Command::getSecondOperand() const throw(std::out_of_r
 	return m_operands[1];
 }
 
+
+
+boost::shared_ptr<Operand> Command::getOperand(std::size_t n) const throw(std::out_of_range)
+{
+	return m_operands[n];
+}
 
 
 
@@ -214,4 +228,12 @@ std::ostream &operator << (std::ostream &stream, const Command &comm)
 bool Command::operator !=(const Command &command)
 {
 	return m_opType != command.m_opType || m_numb != command.m_numb;
+}
+
+
+
+
+std::size_t Command::getNumberOfOperands() const
+{
+	return m_operands.size();
 }

@@ -146,3 +146,20 @@ Value &Array::operator[] (std::size_t n)
 
 	return m_parr -> at(n);
 }
+
+
+
+
+Array Array::createNoLink()
+{
+	Array arr = *this;
+
+	if(m_parr.use_count() > 0)
+	{
+		arr.m_parr = boost::shared_ptr<std::vector<Value> >(new std::vector<Value>(m_parr -> size()));
+		for(int i=0; i<m_parr -> size(); i++)
+			arr.m_parr -> at(i) = m_parr -> at(i).createNoLink();
+	}
+
+	return arr;
+}

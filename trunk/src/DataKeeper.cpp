@@ -128,3 +128,30 @@ std::size_t DataKeeper::getNumberOfElements() const
 {
 	return m_arrs.size() + m_vars.size();
 }
+
+
+
+
+std::list<std::string> DataKeeper::getValuesNames() const
+{
+	std::list<std::string> res;
+	std::map<std::string, Value>::const_iterator itr = m_vars.begin();
+
+	for(;itr != m_vars.end(); itr++)
+		res.push_front(itr -> first);
+
+	return res;
+}
+
+
+
+std::list<std::string> DataKeeper::getArraysNames() const
+{
+	std::list<std::string> res;
+	std::map<std::string, Array>::const_iterator itr = m_arrs.begin();
+
+	for(;itr != m_arrs.end(); itr++)
+		res.push_front(itr -> first);
+
+	return res;
+}
