@@ -1,0 +1,9 @@
+;is incorrect code
+
+.name main
+.var
+	uchar ch
+	uint n 1
+.begin
+	mov n, ch
+.end

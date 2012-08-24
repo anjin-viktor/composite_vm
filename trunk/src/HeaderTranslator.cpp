@@ -72,7 +72,7 @@ std::string HeaderTranslator::getNameFromStr(const std::string &str)
         return s;
     }
     else
-        throw std::runtime_error("HeaderTranslator::getNameFromStr: incorrect parameter");
+        throw std::runtime_error("HeaderTranslator::getNameFromStr: parameter is incorrect");
 
     return "";
 }

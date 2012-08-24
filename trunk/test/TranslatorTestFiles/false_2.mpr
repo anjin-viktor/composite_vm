@@ -1,0 +1,8 @@
+;is incorrect code
+
+.name main
+.var
+	const uchar ch 1
+.begin
+	add ch, 2
+.end

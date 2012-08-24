@@ -1,0 +1,13 @@
+;is incorrect code
+
+.name main
+.var
+.begin
+	nop
+.end
+
+.name 1a
+.var
+.begin
+	nop
+.end

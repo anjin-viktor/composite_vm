@@ -16,6 +16,7 @@ Translator::~Translator()
 
 void Translator::setInputFileName(const std::string &fname)
 {
+	m_in.close();
 	m_inputFileName = fname;
 }
 
@@ -38,10 +39,15 @@ bool Translator::readString(std::string &str)
 	if(m_in.is_open() == false)
 		m_in.open(m_inputFileName.c_str(), std::ifstream::in);
 
+	if(m_in.is_open() == false)
+		throw std::runtime_error("file " + m_inputFileName + " not exists");
+
+
 	if(m_in.eof() == true)
 		return true;
 
 	std::getline(m_in, str);
+
 
 	return m_in.eof();
 }
@@ -66,11 +72,11 @@ void Translator::translate()
 		boost::trim(str);
 		if(Translator::isEmptyOrComment(str) == false)
 		{
-
 			if(boost::istarts_with(str, ".name") == false)
 				throw ParseError(str + " not expected");
-		
+
 			translateFunction(str);
+	
 		}
 	}
 
@@ -83,8 +89,15 @@ void Translator::translate()
 
 void Translator::translateFunction(const std::string &header)
 {
-	std::string str;
-	std::string funcName = HeaderTranslator::getNameFromStr(header);
+	std::string str, funcName;
+	try
+	{
+		funcName = HeaderTranslator::getNameFromStr(header);
+	}
+	catch(std::runtime_error err)
+	{
+		throw ParseError("header " + header + " is incorrect");
+	}
 
 	Function func;
 	func.setName(funcName);
@@ -108,11 +121,10 @@ void Translator::translateFunction(const std::string &header)
 
 
 	if(fError)
-		throw ParseError("unexpected end");
+		throw ParseError("unexpected end of file");
 
 	VarTranslator varTransl;
 	fEnd = false;
-
 
 	do
 	{
@@ -126,10 +138,11 @@ void Translator::translateFunction(const std::string &header)
 	while(fEnd == false && readString(str) == false);
 
 
+
 	if(str != ".begin")
 	{
 		if(str == "")		
-			throw ParseError("unexpected end");
+			throw ParseError("unexpected end of file");
 		else
 			throw ParseError(str + " not expected");
 	}
@@ -146,7 +159,7 @@ void Translator::translateFunction(const std::string &header)
 	CodeBlockTranslator codeTransl;
 	codeTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 
-	while(readString(str) == false)
+	while(readString(str) == false && fEnd == false)
 	{
 		boost::trim(str);
 		if(boost::istarts_with(str, ".end") || boost::istarts_with(str, ".exception"))
@@ -154,6 +167,11 @@ void Translator::translateFunction(const std::string &header)
 
 		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
 			codeTransl.translate(str, m_lineNumb);
+	}
+
+	if(fEnd == false)
+	{
+		throw ParseError("unexpected end of file");
 	}
 
 	Program::getInstance().getFunction(funcName).setCommands(codeTransl.getCommands());

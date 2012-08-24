@@ -1,0 +1,9 @@
+;is incorrect code
+
+.name main
+.var
+	const array const uchar arr 5 1 2 3 4 5
+	uchar ch k 10
+.begin
+	rsz arr, k
+.end

@@ -147,7 +147,6 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			op1 = boost::dynamic_pointer_cast<ArrayOperand, Operand>(m_command.getFirstOperand());
 			op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getSecondOperand());
 
-
 			if(op1 -> hasValue() && op2 -> hasValue())
 			{
 				if(op1 -> getArrayPtr() -> isWriteable() == false)

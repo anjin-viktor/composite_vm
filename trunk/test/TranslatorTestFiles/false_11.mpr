@@ -1,0 +1,6 @@
+;is incorrect code
+
+.name main
+.var
+	nop
+.end

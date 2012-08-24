@@ -101,9 +101,99 @@ BOOST_AUTO_TEST_CASE(Translator_2_Test)
 	v2 = Program::getInstance().getFunction("main").getCommands();
 
 	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
-	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> isExists("ch"), true);
 	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 4);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> isExists("n"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> isExists("ch"), true);
 
+}
+
+
+
+/**
+Тест правильности трансляции 3.mpr
+*/
+BOOST_AUTO_TEST_CASE(Translator_3_Test)
+{
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/3.mpr");
+	tr.translate();
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 1);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+
+	std::vector<Command> v1, v2;
+	Command c;
+	c.setOperationType(Command::MOV);
+	c.setLineNumber(7);
+	v1.push_back(c);
+
+	c.setOperationType(Command::ADD);
+	c.setLineNumber(8);
+	v1.push_back(c);
+
+	c.setOperationType(Command::MUL);
+	c.setLineNumber(9);
+	v1.push_back(c);
+
+	c.setOperationType(Command::MUL);
+	c.setLineNumber(10);
+	v1.push_back(c);
+
+	c.setOperationType(Command::RSZ);
+	c.setLineNumber(11);
+	v1.push_back(c);
+
+	c.setOperationType(Command::AOUT);
+	c.setLineNumber(12);
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getCommands();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 3);
+}
+
+
+/**
+Тест отказат трансляции некорректных входных данных (false_[n].mpr)
+*/
+
+BOOST_AUTO_TEST_CASE(Translator_false_Test)
+{
+	Translator tr;
+
+	tr.setInputFileName("TranslatorTestFiles/false_1.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_2.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_3.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_4.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_5.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_6.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_7.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_8.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_9.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_10.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_11.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
 }
 
 
