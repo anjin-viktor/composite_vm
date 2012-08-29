@@ -1,0 +1,15 @@
+;is incorrect code
+
+.name f uchar c_
+.var
+.begin
+	nop
+.end
+
+
+.name main
+.var
+	const uchar ch 1
+.begin
+	call f, ch
+.end

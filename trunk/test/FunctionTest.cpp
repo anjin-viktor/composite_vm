@@ -57,4 +57,50 @@ BOOST_AUTO_TEST_CASE(testFunction_setGetCommands)
 }
 
 
+/**
+Проверка корректности работы со списком аргументов
+*/
+
+BOOST_AUTO_TEST_CASE(testFunction_argsList)
+{
+	Function func;
+
+	std::list<std::string> lst, funcArgs;
+
+
+	funcArgs = func.getArgsNames();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(lst.begin(), lst.end(), funcArgs.begin(), funcArgs.end());
+
+	lst.push_front("name1");
+	func.addArgName("name1");
+
+	funcArgs = func.getArgsNames();
+	BOOST_CHECK_EQUAL_COLLECTIONS(lst.begin(), lst.end(), funcArgs.begin(), funcArgs.end());
+
+	lst.push_back("name2");
+	func.addArgName("name2");
+	lst.push_back("name3");
+	func.addArgName("name3");
+
+	funcArgs = func.getArgsNames();
+	BOOST_CHECK_EQUAL_COLLECTIONS(lst.begin(), lst.end(), funcArgs.begin(), funcArgs.end());
+
+	lst.clear();
+	funcArgs.clear();
+
+	lst.push_back("name_1");
+	lst.push_back("name_2");
+	lst.push_back("name_3");
+
+	funcArgs.push_back("name_1");
+	funcArgs.push_back("name_2");
+	funcArgs.push_back("name_3");
+	func.setArgsNamesFromList(funcArgs);
+	funcArgs.clear();
+
+	funcArgs = func.getArgsNames();
+	BOOST_CHECK_EQUAL_COLLECTIONS(lst.begin(), lst.end(), funcArgs.begin(), funcArgs.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END();

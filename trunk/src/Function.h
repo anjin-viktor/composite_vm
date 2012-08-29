@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <list>
 
 #include "Value.h"
 #include "Command.h"
@@ -103,11 +104,36 @@ class Function
 		DataKeeper *getDataKeeperPtr();
 
 
+/**
+Получение списка аргументов в порядке слева на право
+@return список аргументов
+*/
+		std::list<std::string> getArgsNames() const;
+
+
+/**
+Добавление имени переменной к списку аргументов. Помещать следует слева на право.
+@param str - добавляемое имя
+*/
+		void addArgName(const std::string &str);
+
+/**
+Установка списка имен аргументов. В списке имена следует перечислять слева на право в порядке их 
+нахождения в сигнатуре.
+@param lst - устанавливаемый список
+*/
+		void setArgsNamesFromList(const std::list<std::string> &lst);
+
+
 	private:
 		std::string 										m_name;
 		std::map<Exception::Type, std::vector<Command> >	m_handlers;
 		std::vector<Command>								m_code;
 		DataKeeper											m_data;
+/*
+аргументы функции в порядке слева на право
+*/
+		std::list<std::string>								m_args;
 };
 
 

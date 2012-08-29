@@ -81,7 +81,7 @@ class Translator
 		void translateFunction(const std::string &);
 
 /**
-Проверка наличия в программе функций с именами - операндами команд call
+Проверка наличия в программе функций с именами - операндами команд call и проверка соответствия типов параметров
 */
 		void callOperandsCheck() const;
 

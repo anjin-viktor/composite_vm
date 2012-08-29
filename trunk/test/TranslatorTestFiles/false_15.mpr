@@ -1,0 +1,15 @@
+;is incorrect code
+
+.name func2 uchar ch
+.var
+.begin
+	nop
+.end
+
+
+.name main
+.var
+	const uchar ch 1
+.begin
+	call func2, ch
+.end

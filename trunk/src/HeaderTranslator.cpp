@@ -38,6 +38,7 @@ void HeaderTranslator::translate(std::string str)
 
     m_grammar.clear();
 
+    m_grammar.setArgsNamesListPtr(&m_argsNames);
 
     bool success = qi::parse(begin, end, m_grammar);
 
@@ -82,7 +83,15 @@ std::string HeaderTranslator::getNameFromStr(const std::string &str)
 void HeaderTranslator::clear()
 {
     m_grammar.clear();
+    m_argsNames.clear();
 
     if(m_pdata)
         m_pdata -> clear();
+}
+
+
+
+std::list<std::string> HeaderTranslator::getArgsNames() const
+{
+    return m_argsNames;
 }

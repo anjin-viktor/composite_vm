@@ -9,6 +9,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <list>
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/bind.hpp>
@@ -79,6 +80,15 @@ class HeaderTranslator
 */
 		void clear();
 
+
+/**
+Получение списка имён аргументов в порядке слева на право.
+@return список имён аргументов модуля
+*/
+		std::list<std::string> getArgsNames() const;
+
+
+
 	private:
 
 /**
@@ -95,6 +105,7 @@ class HeaderTranslator
 				HeaderGrammar(): HeaderGrammar::base_type(expression)
 				{
 					m_varIsConst = false;
+					m_plstArgs = NULL;
 
 					expression = *qi::space >> qi::string(".name") >> +qi::space >> name
 								>> -(+qi::space >> param) >>  *(*qi::space >> qi::char_(',') >> *qi::space >> param)
@@ -148,13 +159,23 @@ class HeaderTranslator
 
 
 /**
-Установка указателя на объект для записи данных
+Установка указателя на объект для записи данных.
 @param pdata - устанавливаемый указатель
 */
 				void setDataKeeperPtr(DataKeeper *pdata)
 				{
 					m_pdata = pdata;
 				}
+
+/**
+Установка указателя на список для сохранения имён аргументов.
+@param plst - указатель на список
+*/
+				void setArgsNamesListPtr(std::list<std::string> *plst)
+				{
+					m_plstArgs = plst;
+				}
+
 
 			private:
 /**
@@ -203,6 +224,9 @@ class HeaderTranslator
 					if(m_pdata)
 						m_pdata -> addVar(Value(0, m_type, true, !m_varIsConst), m_currentVarName);
 
+					if(m_plstArgs)
+						m_plstArgs -> push_back(m_currentVarName);
+
 					m_varIsConst = false;
 					m_currentVarName = "";
 				}
@@ -215,6 +239,9 @@ class HeaderTranslator
 				{
 					if(m_pdata)
 						m_pdata -> addArray(Array(0, m_type), m_currentArrName);
+
+					if(m_plstArgs)
+						m_plstArgs -> push_back(m_currentArrName);
 
 					m_currentArrName = "";
 				}
@@ -230,20 +257,21 @@ class HeaderTranslator
 
 
 
-				DataKeeper 			*m_pdata;
-				Value::ValueType 	m_type;
-				std::string 		m_currentVarName;
-				std::string			m_currentArrName;
-				std::string			m_name;
-				bool				m_varIsConst;
-				qi::rule<Iterator> 	expression, name, param, simple_type, array, var, var_name, arr_name;
+				DataKeeper 				*m_pdata;
+				Value::ValueType 		m_type;
+				std::string 			m_currentVarName;
+				std::string				m_currentArrName;
+				std::string				m_name;
+				bool					m_varIsConst;
+				qi::rule<Iterator> 		expression, name, param, simple_type, array, var, var_name, arr_name;
+				std::list<std::string>	*m_plstArgs;
 		};
 
 
 		DataKeeper 								*m_pdata;
 		std::string								m_name;
 		HeaderGrammar<std::string::iterator>	m_grammar;
-
+		std::list<std::string>					m_argsNames;
 };
 
 

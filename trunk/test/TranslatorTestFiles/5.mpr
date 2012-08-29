@@ -1,0 +1,24 @@
+.name func2 uchar c_
+.var
+	uint n 2
+.begin
+	nop
+	call func1, c_, n
+.end
+
+
+.name main
+.var
+	uchar ch 1
+.begin
+	call func2, ch
+.end
+
+
+
+.name func1 uchar ch, uint k
+.var
+	mod8 tmp
+.begin
+	nop
+.end

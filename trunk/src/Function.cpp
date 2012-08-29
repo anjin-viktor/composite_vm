@@ -77,3 +77,26 @@ std::vector<Command> Function::getCommands() const
 {
 	return m_code;
 }
+
+
+
+
+std::list<std::string> Function::getArgsNames() const
+{
+	return m_args;
+}
+
+
+
+void Function::addArgName(const std::string &name) 
+{
+	m_args.push_back(name);
+}
+
+
+
+
+void Function::setArgsNamesFromList(const std::list<std::string> &lst)
+{
+	m_args = lst;
+}

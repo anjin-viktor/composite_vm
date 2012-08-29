@@ -1,0 +1,16 @@
+;is incorrect code
+
+.name f uchar c_, uchar c__, array uchar arr
+.var
+.begin
+	nop
+.end
+
+
+.name main
+.var
+	uchar ch 1
+	array uchar arr 5 1 2 3 4 5 
+.begin
+	call f, ch, arr, ch
+.end

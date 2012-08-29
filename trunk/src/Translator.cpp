@@ -80,8 +80,8 @@ void Translator::translate()
 		}
 	}
 
-
 	callOperandsCheck();
+
 	m_in.close();
 }
 
@@ -158,6 +158,8 @@ void Translator::translateFunction(const std::string &header)
 	headerTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 	headerTransl.translate(header);
 
+	Program::getInstance().getFunction(funcName).setArgsNamesFromList(headerTransl.getArgsNames());
+
 	CodeBlockTranslator codeTransl;
 	codeTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 
@@ -198,8 +200,81 @@ void Translator::callOperandsCheck() const
 			{
 				std::string callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(code[i].getFirstOperand()) -> getLabelName();
 
-				if(std::find(lstNames.begin(), lstNames.end(), callName) == lstNames.end())
-					throw(ParseError("function with name " + callName + " not exists"));
+				std::list<std::string>::const_iterator itrNames = std::find(lstNames.begin(), lstNames.end(), callName);
+
+				if(itrNames == lstNames.end())
+				{
+					throw ParseError("function with name " + callName + " not exists");
+				}
+
+				std::list<std::string> funcArgsNames = Program::getInstance().getFunction(callName).getArgsNames();
+
+/**
+Command::getNumberOfOperands() имеет смысл только при числе операндов >= 2
+*/
+				if(funcArgsNames.size() != (code[i].getNumberOfOperands() - 1))
+				{
+
+					if(funcArgsNames.size() != 0)
+					{
+						throw ParseError("wrong number of operands");						
+					}
+
+
+					if(code[i].getSecondOperand().get() != NULL)
+					{
+						throw ParseError("wrong number of operands");
+					}
+				}
+				else if(funcArgsNames.size() == 1 && code[i].getSecondOperand().get() == NULL)
+				{
+					throw ParseError("wrong number of operands");
+				}
+
+				itrNames = funcArgsNames.begin();
+
+				for(int j=0; itrNames != funcArgsNames.end(); itrNames++, j++)
+				{
+					boost::shared_ptr<CallOperand> pop =  boost::dynamic_pointer_cast<CallOperand, Operand>
+						(code[i].getOperand(j+1));
+
+					if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
+					{
+						if(pop -> isValue() == false)
+						{
+							throw ParseError("incorrect operand type in call function " + callName);
+						}
+						if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
+							pop -> getValue().getType() ||
+							(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable()
+							&& pop -> getValue().isWriteable() == false)
+						  )
+						{
+
+							throw ParseError("incorrect operand type in call function " + callName);
+						}
+					}
+					else
+					{
+						if(pop -> isArray() == false)
+						{
+
+							throw ParseError("incorrect operand type in call function " + callName);
+						}
+
+
+						if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).getType() !=
+							pop -> getArray().getType() ||
+							(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).isWriteable()
+							&& pop -> getArray().isWriteable() == false)
+						  )
+						{
+
+							throw ParseError("incorrect operand type in call function " + callName);
+						}
+
+					}
+				}
 			}
 		}
 	}
