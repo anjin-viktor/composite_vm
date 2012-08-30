@@ -56,3 +56,11 @@ bool CallOperand::isArray() const
 {
 	return !m_fisValue;
 }
+
+
+
+
+void CallOperand::setValueType(Value::ValueType type)
+{
+	m_val.setType(type);
+}

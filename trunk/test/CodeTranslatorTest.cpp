@@ -668,7 +668,7 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_call)
 
 	DataKeeper keeper;
 	keeper.addVar(Value(1, Value::MOD16, true, true), "var1");
-	keeper.addVar(Value(1, Value::UNSIGNED_INT, true, false), "var2");
+	keeper.addVar(Value(1, Value::SIGNED_INT, true, false), "var2");
 	keeper.addVar(Value(1, Value::UNSIGNED_INT, false, false), "var3");
 
 	Array array(3, Value::MOD16);

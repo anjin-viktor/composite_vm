@@ -73,6 +73,13 @@ class CallOperand: public Operand
 		Array getArray() const;
 
 
+
+/**
+Установка типа операнда. Используется для установки типа числового значения. Имеет смысл только при isValue() == true
+@param type - устанавливаемый тип
+*/
+		void setValueType(Value::ValueType type); 
+
 	private:
 		Value 	m_val;
 		Array	m_arr;

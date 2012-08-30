@@ -1,0 +1,14 @@
+.name function uchar c, sint k, mod16 t, mod32 m
+.var
+.begin
+	nop
+.end
+
+
+.name main
+.var
+	uchar ch 1
+	array uchar arr 5 1 2 3 4 5 
+.begin
+	call function, ch, (sint) ch, ( mod16 )arr[3], 100
+.end

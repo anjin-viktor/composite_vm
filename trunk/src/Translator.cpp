@@ -238,6 +238,13 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 					boost::shared_ptr<CallOperand> pop =  boost::dynamic_pointer_cast<CallOperand, Operand>
 						(code[i].getOperand(j+1));
 
+/*Это константа*/
+					if(pop -> isValue() && pop -> getValue().getType() == Value::NO_TYPE
+						&& Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
+					{
+						pop -> setValueType(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType());
+					}
+
 					if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
 					{
 						if(pop -> isValue() == false)
@@ -245,12 +252,11 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 							throw ParseError("incorrect operand type in call function " + callName);
 						}
 						if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
-							pop -> getValue().getType() ||
+							pop -> getValue().getType() /*||
 							(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable()
-							&& pop -> getValue().isWriteable() == false)
+							&& pop -> getValue().isWriteable() == false)*/
 						  )
 						{
-
 							throw ParseError("incorrect operand type in call function " + callName);
 						}
 					}
@@ -264,9 +270,9 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 
 
 						if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).getType() !=
-							pop -> getArray().getType() ||
+							pop -> getArray().getType() /*||
 							(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).isWriteable()
-							&& pop -> getArray().isWriteable() == false)
+							&& pop -> getArray().isWriteable() == false)*/
 						  )
 						{
 

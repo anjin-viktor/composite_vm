@@ -555,6 +555,7 @@ class CodeTranslator
 			{
 				boost::shared_ptr<CallOperand> op(new CallOperand);
 
+
 				if(m_callOpIsVal)
 				{
 					if(m_castType != Value::NO_TYPE)
@@ -580,6 +581,7 @@ class CodeTranslator
 
 				m_pcommand -> setOperand(m_callOpNo, boost::shared_ptr<Operand>(op));
 				m_callOpNo++;
+				m_castType = Value::NO_TYPE;
 			}
 
 
