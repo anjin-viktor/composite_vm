@@ -88,6 +88,13 @@ class HeaderTranslator
 		std::list<std::string> getArgsNames() const;
 
 
+/**
+Отвечает на вопрос, является ли операнд ссылкой.
+@param name - имя операнда
+@return true - операнд - ссылка, иначе - false
+*/
+		bool argIsRef(const std::string &name) const;
+
 
 	private:
 
@@ -106,6 +113,10 @@ class HeaderTranslator
 				{
 					m_varIsConst = false;
 					m_plstArgs = NULL;
+					m_argIsRef = false;
+					m_pargsIsRefs = NULL;
+					m_pdata = NULL;
+
 
 					expression = *qi::space >> qi::string(".name") >> +qi::space >> name
 								>> -(+qi::space >> param) >>  *(*qi::space >> qi::char_(',') >> *qi::space >> param)
@@ -120,11 +131,12 @@ class HeaderTranslator
 					arr_name = qi::char_("_a-zA-Z")[boost::bind(&(HeaderGrammar::addArrNameChar), this, _1)]
 						>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(HeaderGrammar::addArrNameChar), this, _1)];
 
-					param = *qi::space >> (array[boost::bind(&(HeaderGrammar::saveArr), this)] | 
+					param = *qi::space >> -(qi::char_('&')[boost::bind(&(HeaderGrammar::argIsRef), this)])
+							>> *qi::space >> (array[boost::bind(&(HeaderGrammar::saveArr), this)] | 
 							var[boost::bind(&(HeaderGrammar::saveVar), this)]) >> *qi::space;
 
-					var = -(qi::string("const")[boost::bind(&(HeaderGrammar::setVarToConst), this)] >> +qi::space) >> simple_type >> +qi::space >> var_name;
-					array = (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> simple_type >> +qi::space
+					var = -(qi::string("const")[boost::bind(&(HeaderGrammar::setVarToConst), this)] >> +qi::space) >> simple_type >> ref_or_space >> var_name;
+					array = (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> simple_type >> ref_or_space
 						>> arr_name;
 			       	simple_type %= (
        					qi::string("mod8") | 
@@ -137,6 +149,9 @@ class HeaderTranslator
         				qi::string("uint") |
         				qi::string("sint")
        				)[boost::bind(&(HeaderGrammar::setType), this, _1)];
+
+       				ref_or_space = (*qi::space >> -(qi::char_('&')[boost::bind(&(HeaderGrammar::argIsRef), this)])
+									>> *qi::space) | +qi::space;
 				}
 
 /**
@@ -174,6 +189,15 @@ class HeaderTranslator
 				void setArgsNamesListPtr(std::list<std::string> *plst)
 				{
 					m_plstArgs = plst;
+				}
+
+/**
+Установка указателя на список для сохранения информации о том, является ли операнд ссылкой
+@param plst - указатель на список
+*/
+				void setArgsIsRefsListPtr(std::list<bool> *plst)
+				{
+					m_pargsIsRefs = plst;
 				}
 
 
@@ -227,8 +251,12 @@ class HeaderTranslator
 					if(m_plstArgs)
 						m_plstArgs -> push_back(m_currentVarName);
 
+					if(m_pargsIsRefs)
+						m_pargsIsRefs -> push_back(m_argIsRef);
+
 					m_varIsConst = false;
 					m_currentVarName = "";
+					m_argIsRef = false;
 				}
 
 
@@ -243,7 +271,11 @@ class HeaderTranslator
 					if(m_plstArgs)
 						m_plstArgs -> push_back(m_currentArrName);
 
+					if(m_pargsIsRefs)
+						m_pargsIsRefs -> push_back(m_argIsRef);
+
 					m_currentArrName = "";
+					m_argIsRef = false;
 				}
 
 
@@ -255,6 +287,13 @@ class HeaderTranslator
 					m_varIsConst = true;
 				}
 
+/**
+Указывает, что строящийся аргумент является ссылкой
+*/
+				void argIsRef()
+				{
+					m_argIsRef = true;
+				}
 
 
 				DataKeeper 				*m_pdata;
@@ -263,8 +302,10 @@ class HeaderTranslator
 				std::string				m_currentArrName;
 				std::string				m_name;
 				bool					m_varIsConst;
-				qi::rule<Iterator> 		expression, name, param, simple_type, array, var, var_name, arr_name;
+				bool					m_argIsRef;
+				qi::rule<Iterator> 		expression, name, param, simple_type, array, var, var_name, arr_name, ref_or_space;
 				std::list<std::string>	*m_plstArgs;
+				std::list<bool>			*m_pargsIsRefs;
 		};
 
 
@@ -272,6 +313,8 @@ class HeaderTranslator
 		std::string								m_name;
 		HeaderGrammar<std::string::iterator>	m_grammar;
 		std::list<std::string>					m_argsNames;
+		std::map<std::string, bool>				m_argsIsRefs;
+		std::list<bool>							m_argsIsRefsList;
 };
 
 

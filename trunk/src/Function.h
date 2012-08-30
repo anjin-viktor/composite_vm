@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <stdexcept>
 
 #include "Value.h"
 #include "Command.h"
@@ -124,6 +125,21 @@ class Function
 */
 		void setArgsNamesFromList(const std::list<std::string> &lst);
 
+/**
+Указание, является ли аргумент ссылкой.
+@param str - имя аргумента
+@param f - true - ссылка, иначе - false
+*/
+		void argIsRef(const std::string &name, bool f);
+
+
+/**
+Яляется ли аргумент ссылкой?
+@param str - имя аргумента
+@return true - ссылка, иначе - false
+*/
+		bool argIsRef(const std::string &name) const;
+
 
 	private:
 		std::string 										m_name;
@@ -134,6 +150,7 @@ class Function
 аргументы функции в порядке слева на право
 */
 		std::list<std::string>								m_args;
+		std::map<std::string, bool>							m_argsIsRefs;
 };
 
 

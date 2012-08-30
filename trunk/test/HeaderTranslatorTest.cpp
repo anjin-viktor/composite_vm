@@ -329,4 +329,23 @@ BOOST_AUTO_TEST_CASE(HeaderTranslator_getNameFromStr_test)
 	BOOST_CHECK_THROW(HeaderTranslator::getNameFromStr(".name main:"), std::runtime_error);
 }
 
+
+
+/**
+Тест на работу с ссылками
+*/
+
+BOOST_AUTO_TEST_CASE(HeaderTranslator_refs)
+{
+	HeaderTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate(".name main mod8 ch, uchar &   c, array uint& arr, array uint arr_, mod32 &n"));
+	BOOST_CHECK_EQUAL(translator.argIsRef("ch"), false);
+	BOOST_CHECK_EQUAL(translator.argIsRef("c"), true);
+	BOOST_CHECK_EQUAL(translator.argIsRef("arr"), true);
+	BOOST_CHECK_EQUAL(translator.argIsRef("arr_"), false);
+	BOOST_CHECK_EQUAL(translator.argIsRef("n"), true);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END();

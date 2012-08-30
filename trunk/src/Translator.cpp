@@ -158,6 +158,12 @@ void Translator::translateFunction(const std::string &header)
 	headerTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 	headerTransl.translate(header);
 
+	std::list<std::string> argNames = headerTransl.getArgsNames();
+	std::list<std::string>::const_iterator itr = argNames.begin();
+
+	for(;itr != argNames.end(); itr++)
+		func.argIsRef(*itr, headerTransl.argIsRef(*itr));
+
 	Program::getInstance().getFunction(funcName).setArgsNamesFromList(headerTransl.getArgsNames());
 
 	CodeBlockTranslator codeTransl;

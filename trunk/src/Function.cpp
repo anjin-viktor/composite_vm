@@ -91,6 +91,7 @@ std::list<std::string> Function::getArgsNames() const
 void Function::addArgName(const std::string &name) 
 {
 	m_args.push_back(name);
+	m_argsIsRefs[name] = false;
 }
 
 
@@ -99,4 +100,27 @@ void Function::addArgName(const std::string &name)
 void Function::setArgsNamesFromList(const std::list<std::string> &lst)
 {
 	m_args = lst;
+	m_argsIsRefs.clear();
+
+	std::list<std::string>::const_iterator itr = lst.begin();
+	for(;itr != lst.end(); itr++)
+		m_argsIsRefs[*itr] = false;
+}
+
+
+
+void  Function::argIsRef(const std::string &name, bool f)
+{
+	m_argsIsRefs[name] = f;
+}
+
+
+bool Function::argIsRef(const std::string &name) const
+{
+	std::map<std::string, bool>::const_iterator itr = m_argsIsRefs.find(name);
+
+	if(itr == m_argsIsRefs.end())
+		throw std::runtime_error(std::string("Argument with name ") + name + " not exists");
+
+	return itr -> second;
 }
