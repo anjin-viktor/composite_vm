@@ -2,6 +2,10 @@
 #include <boost/test/unit_test.hpp>
 #include "../src/Translator.h"
 #include "Program.h"
+#include "VarOperand.h"
+#include "CallOperand.h"
+#include "LabelOperand.h"
+#include "ArrayOperand.h"
 
 /**
 @file TranslatorTest.cpp
@@ -534,10 +538,180 @@ BOOST_AUTO_TEST_CASE(Translator_10_Test)
 	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f3"), true);
 	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f4"), true);
 
-
 }
 
 
+
+
+/**
+Тест трансляции 11.mpr
+*/
+BOOST_AUTO_TEST_CASE(Translator_11_Test)
+{
+	Translator tr;
+	std::string callName, labelName;
+
+	tr.setInputFileName("TranslatorTestFiles/11.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 5);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f1"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f2"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f3"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f4"), true);
+
+
+
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 5);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f1").getDataKeeperPtr() -> getNumberOfElements(), 1);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f2").getDataKeeperPtr() -> getNumberOfElements(), 1);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f3").getDataKeeperPtr() -> getNumberOfElements(), 2);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f4").getDataKeeperPtr() -> getNumberOfElements(), 2);
+
+
+	std::vector<Command> v1, v2;
+
+	Command c;
+	c.setOperationType(Command::CALL);
+	c.setLineNumber(21);
+	v1.push_back(c);
+
+	c.setLineNumber(22);
+	v1.push_back(c);
+
+	c.setLineNumber(23);
+	v1.push_back(c);
+
+	c.setLineNumber(24);
+	v1.push_back(c);
+
+	c.setOperationType(Command::MOV);
+	c.setLineNumber(26);
+	v1.push_back(c);
+
+	c.setOperationType(Command::MUL);
+	c.setLineNumber(27);
+	v1.push_back(c);
+
+	c.setOperationType(Command::JMP);
+	c.setLineNumber(28);
+	v1.push_back(c);
+
+	c.setOperationType(Command::ADD);
+	c.setLineNumber(29);
+	v1.push_back(c);
+
+	c.setOperationType(Command::JMP);
+	c.setLineNumber(32);
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getCommands();
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[0].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(callName, "f1");
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[1].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(callName, "f2");
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[2].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(callName, "f3");
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[3].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(callName, "f4");
+	boost::shared_ptr<CallOperand> pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(v2[0].getOperand(1));
+	BOOST_CHECK_EQUAL(pcop -> isArray(), true);
+	pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(v2[1].getOperand(1));
+	BOOST_CHECK_EQUAL(pcop -> isValue(), true);
+	pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(v2[2].getOperand(1));
+	BOOST_CHECK_EQUAL(pcop -> isArray(), true);
+	pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(v2[3].getOperand(1));
+	BOOST_CHECK_EQUAL(pcop -> isValue(), true);
+
+	boost::shared_ptr<VarOperand> pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[4].getOperand(0));
+	BOOST_CHECK_EQUAL(pvop -> hasValue(), true);
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 100);
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[4].getOperand(1));
+	BOOST_CHECK_EQUAL(pvop -> hasValue(), true);
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 150);
+
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[5].getOperand(0));
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 100);
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[5].getOperand(1));
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 100);
+
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[7].getFirstOperand());
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 1);
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[7].getFirstOperand());
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 1);
+
+	labelName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[6].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(labelName, "label");
+	labelName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[8].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(labelName, "start");
+
+
+	v1.clear();
+	c.setOperationType(Command::ADD);
+	c.setLineNumber(35);
+	v1.push_back(c);
+
+	v2 = Program::getInstance().getFunction("main").getExceptionHandlerCode(Exception::NumericError);
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[0].getOperand(0));
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 0);
+	pvop = boost::dynamic_pointer_cast<VarOperand, Operand>(v2[0].getSecondOperand());
+	BOOST_CHECK_EQUAL(pvop -> getValue(), 2);
+
+
+	v1.clear();
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(6);
+	v1.push_back(c);
+
+	c.setOperationType(Command::JMP);
+	c.setLineNumber(7);
+	v1.push_back(c);
+
+	v2 = Program::getInstance().getFunction("f1").getCommands();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	labelName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[1].getFirstOperand()) -> getLabelName();
+	BOOST_CHECK_EQUAL(labelName, "f1_label");
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f1").getDataKeeperPtr() -> getArray("arr").isWriteable(), false);
+
+	v1.clear();
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(43);
+	v1.push_back(c);
+
+	v2 = Program::getInstance().getFunction("f2").getCommands();
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f2").getDataKeeperPtr() -> getVarValue("n").isWriteable(), false);
+
+
+	v1.clear();
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(52);
+	v1.push_back(c);
+
+	v2 = Program::getInstance().getFunction("f3").getCommands();
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f3").getDataKeeperPtr() -> getArray("arr").isWriteable(), false);
+
+
+	v1.clear();
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(61);
+	v1.push_back(c);
+	c.setOperationType(Command::RSZ);
+	c.setLineNumber(62);
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("f4").getCommands();
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f4").getDataKeeperPtr() -> getVarValue("n").isWriteable(), false);
+}
 
 
 

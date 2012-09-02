@@ -1,0 +1,63 @@
+ 
+.name f1 const array uchar &arr
+.var
+.begin
+ f1_label:
+	nop
+	jmp f1_label
+.end
+
+
+
+.name main;
+.var;
+	const array uchar arr 5 0 1 2 3 4 ;12345
+	const mod32 ch 1 ;    
+	array uchar arr_ 2 0 1;    
+	mod32 k 100
+
+.begin
+		start:
+	call f1, arr
+	call f2, ch
+	call f3, arr_
+	call f4, k
+
+	mov k, 150
+	mul k, k
+	jmp label;
+	add arr_[1], (uchar) ch
+
+label:;   
+	jmp start;1
+
+:when_numeric_error;abc
+	add arr_[0], arr[2];abc
+.end;a
+
+
+
+.name f2 const mod32 &n
+.var
+.begin
+	nop
+.end
+
+
+
+.name f3 const array uchar &arr;
+.var
+	uchar ch
+.begin
+	nop
+.end
+
+
+
+.name f4 const mod32 &n
+.var
+	array uchar  arr 5 1 2 3 4 5
+.begin
+	nop
+	rsz arr, n
+.end

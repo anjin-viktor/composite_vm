@@ -112,6 +112,11 @@ void Translator::translateFunction(const std::string &header)
 	while(readString(str) == false && fEnd == false)
 	{
 		boost::trim(str);
+		std::size_t pos = str.find(";");
+
+		if(pos != std::string::npos)
+			str.erase(pos);
+
 		if(Translator::isEmptyOrComment(str) == false)
 		{
 			if(str != ".var")

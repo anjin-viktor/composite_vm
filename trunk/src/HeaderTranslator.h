@@ -120,7 +120,7 @@ class HeaderTranslator
 
 					expression = *qi::space >> qi::string(".name") >> +qi::space >> name
 								>> -(+qi::space >> param) >>  *(*qi::space >> qi::char_(',') >> *qi::space >> param)
-								>> *qi::space;
+								>> *qi::space >> -comment;
 
 					name = qi::char_("_a-zA-Z")[boost::bind(&(HeaderGrammar::addNameChar), this, _1)] 
 							>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(HeaderGrammar::addNameChar), this, _1)];
@@ -153,6 +153,7 @@ class HeaderTranslator
 
        				ref_or_space = (*qi::space >> -(qi::char_('&')[boost::bind(&(HeaderGrammar::argIsRef), this)])
 									>> *qi::space) | +qi::space;
+					comment = qi::char_(';') >> *qi::char_;
 				}
 
 /**
@@ -323,7 +324,7 @@ class HeaderTranslator
 				bool					m_varIsConst;
 				bool					m_argIsRef;
 				bool					m_arrIsConst;
-				qi::rule<Iterator> 		expression, name, param, simple_type, array, var, var_name, arr_name, ref_or_space;
+				qi::rule<Iterator> 		expression, name, param, simple_type, array, var, var_name, arr_name, ref_or_space, comment;
 				std::list<std::string>	*m_plstArgs;
 				std::list<bool>			*m_pargsIsRefs;
 		};

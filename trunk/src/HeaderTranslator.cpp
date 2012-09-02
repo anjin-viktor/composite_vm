@@ -61,7 +61,7 @@ void HeaderTranslator::translate(std::string str)
 std::string HeaderTranslator::getNameFromStr(const std::string &str)
 {
     boost::regex expr("^\\s*\\.name\\s*[\\l\\u_]\\w*");
-    boost::regex cmpExpr("^\\s*\\.name\\s*[\\l\\u_]\\w*(\\s.*)*");
+    boost::regex cmpExpr("^\\s*\\.name\\s*[\\l\\u_]\\w*([\\s;].*)*");
   
     boost::smatch res;
     std::string::const_iterator start = str.begin();

@@ -1,0 +1,7 @@
+trunk/test/CMakeCache.txt
+trunk/test/CMakeFiles/*
+trunk/test/COMPOZIT_VM_TESTS
+trunk/test/CTestTestfile.cmake
+trunk/test/Makefile
+trunk/test/Testing/*
+trunk/test/cmake_install.cmake
