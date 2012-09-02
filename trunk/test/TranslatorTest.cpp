@@ -607,6 +607,9 @@ BOOST_AUTO_TEST_CASE(Translator_false_Test)
 
 	tr.setInputFileName("TranslatorTestFiles/false_20.mpr");
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_21.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
 }
 
 

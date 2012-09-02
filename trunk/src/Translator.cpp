@@ -83,6 +83,9 @@ void Translator::translate()
 	callOperandsCheck();
 
 	m_in.close();
+
+	if(Program::getInstance().functionIsExists("main") == false)
+		throw ParseError("function `main` not exists");
 }
 
 
