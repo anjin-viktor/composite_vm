@@ -1,9 +1,0 @@
-trunk/docs/html/*
-trunk/docs/latex/*
-trunk/test/CMakeFiles/*
-trunk/test/Makefile
-trunk/test/CMakeCache.txt
-trunk/test/COMPOZIT_VM_TESTS
-trunk/test/CTestTestfile.cmake
-trunk/test/Testing/*
-trunk/test/cmake_install.cmake
