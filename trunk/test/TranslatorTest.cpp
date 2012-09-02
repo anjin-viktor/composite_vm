@@ -453,19 +453,7 @@ BOOST_AUTO_TEST_CASE(Translator_9_Test)
 	std::string callName;
 	Translator tr;
 	tr.setInputFileName("TranslatorTestFiles/9.mpr");
-/*	try
-	{
-		tr.translate();
 
-	}
-	catch(ParseError err)
-	{
-		std::cerr << "exception with message: " << err.what() << std::endl << std::endl;
-	}
-	catch(std::exception err)
-	{
-		std::cerr << "exception with message: " << err.what() << std::endl << std::endl;
-	}*/
 	BOOST_CHECK_NO_THROW(tr.translate());
 
 	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 3);
@@ -529,6 +517,30 @@ BOOST_AUTO_TEST_CASE(Translator_9_Test)
 
 
 
+
+
+/**
+Тест трансляции 10.mpr без исключений
+*/
+BOOST_AUTO_TEST_CASE(Translator_10_Test)
+{
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/10.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 5);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f1"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f2"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f3"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f4"), true);
+
+
+}
+
+
+
+
+
 /**
 Тест отказа трансляции некорректных входных данных (false_[n].mpr)
 */
@@ -579,18 +591,21 @@ BOOST_AUTO_TEST_CASE(Translator_false_Test)
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
 
 	tr.setInputFileName("TranslatorTestFiles/false_15.mpr");
-//	BOOST_CHECK_THROW(tr.translate(), ParseError);
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
 
 	tr.setInputFileName("TranslatorTestFiles/false_16.mpr");
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
 
 	tr.setInputFileName("TranslatorTestFiles/false_17.mpr");
-//	BOOST_CHECK_THROW(tr.translate(), ParseError);
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
 
 	tr.setInputFileName("TranslatorTestFiles/false_18.mpr");
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
 
 	tr.setInputFileName("TranslatorTestFiles/false_19.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_20.mpr");
 	BOOST_CHECK_THROW(tr.translate(), ParseError);
 }
 

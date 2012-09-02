@@ -1,15 +1,17 @@
-;is correct code
-
-.name f uchar c_
-.var
-.begin
-	nop
-.end
+;is incorrect code
 
 
 .name main
 .var
-	const uchar ch 1
+	const array uchar arr 5 0 1 2 3 4
 .begin
-	call f, ch
+	call f, arr
+.end
+
+
+ 
+.name f array uchar &arr
+.var
+.begin
+	nop
 .end

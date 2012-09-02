@@ -176,7 +176,8 @@ class CodeTranslator
 				call_operation %= qi::string("call") [boost::bind(&(CodeGrammar::setOperation), this, _1)]
 					>> +qi::space >> label_operand[boost::bind(&(CodeGrammar::saveJumpOperation), this)] 
 					>> -(*(call_operand[boost::bind(&(CodeGrammar::addCallOperand), this)]));
-				call_operand %= *qi::space >> ',' >> *qi::space >> (call_wr_operand | rd_operand); 
+				call_operand %= *qi::space >> ',' >> *qi::space >> (call_wr_operand | rd_operand
+					[boost::bind(&(CodeGrammar::setCallOperandToConst), this)]); 
 				call_wr_operand = (array_element[boost::bind(&(CodeGrammar::saveCallArrayElementOperand), this)] |
                 					var[boost::bind(&(CodeGrammar::saveVarOrArrOperand), this)]);
 			}
@@ -582,8 +583,21 @@ class CodeTranslator
 				m_pcommand -> setOperand(m_callOpNo, boost::shared_ptr<Operand>(op));
 				m_callOpNo++;
 				m_castType = Value::NO_TYPE;
+				m_operandIsConst = false;
+				m_callOpArr.setWriteable(true);
+				m_callOpVal.setWriteable(true);
 			}
 
+
+
+/**
+Установка в константу строящегося операдна команды call. Используется как семантическое действие грамматики
+*/
+
+			void setCallOperandToConst()
+			{
+				m_operandIsConst = true;
+			}
 
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
             one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation,

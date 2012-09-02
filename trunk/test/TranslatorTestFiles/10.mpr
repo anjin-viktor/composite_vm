@@ -1,0 +1,50 @@
+
+
+.name main
+.var
+	const array uchar arr 5 0 1 2 3 4
+	const mod32 ch 1
+	array uchar arr_ 2 0 1
+	mod32 k 100
+
+.begin
+	call f1, arr
+	call f2, ch
+	call f3, arr_
+	call f4, k
+.end
+
+
+ 
+.name f1 const array uchar &arr
+.var
+.begin
+	nop
+.end
+
+
+
+.name f2 const mod32 &n
+.var
+.begin
+	nop
+.end
+
+
+.name f3 const array uchar &arr
+.var
+.begin
+	nop
+.end
+
+
+
+.name f4 const mod32 &n
+.var
+.begin
+	nop
+.end
+
+
+
+

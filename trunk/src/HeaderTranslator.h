@@ -116,7 +116,7 @@ class HeaderTranslator
 					m_argIsRef = false;
 					m_pargsIsRefs = NULL;
 					m_pdata = NULL;
-
+					m_arrIsConst = false;
 
 					expression = *qi::space >> qi::string(".name") >> +qi::space >> name
 								>> -(+qi::space >> param) >>  *(*qi::space >> qi::char_(',') >> *qi::space >> param)
@@ -136,8 +136,9 @@ class HeaderTranslator
 							var[boost::bind(&(HeaderGrammar::saveVar), this)]) >> *qi::space;
 
 					var = -(qi::string("const")[boost::bind(&(HeaderGrammar::setVarToConst), this)] >> +qi::space) >> simple_type >> ref_or_space >> var_name;
-					array = (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> simple_type >> ref_or_space
-						>> arr_name;
+					array = -(qi::string("const")[boost::bind(&(HeaderGrammar::setArrToConst), this)] >> +qi::space) >> 
+							(qi::string("array") | qi::string("ARRAY")) >> +qi::space >> simple_type >> ref_or_space
+							>> arr_name;
 			       	simple_type %= (
        					qi::string("mod8") | 
        					qi::string("uchar") | 
@@ -257,6 +258,7 @@ class HeaderTranslator
 					m_varIsConst = false;
 					m_currentVarName = "";
 					m_argIsRef = false;
+					m_arrIsConst = false;
 				}
 
 
@@ -266,7 +268,11 @@ class HeaderTranslator
 				void saveArr()
 				{
 					if(m_pdata)
-						m_pdata -> addArray(Array(0, m_type), m_currentArrName);
+					{
+						Array arr(0, m_type);
+						arr.setWriteable(!m_arrIsConst);
+						m_pdata -> addArray(arr, m_currentArrName);
+					}
 
 					if(m_plstArgs)
 						m_plstArgs -> push_back(m_currentArrName);
@@ -276,6 +282,7 @@ class HeaderTranslator
 
 					m_currentArrName = "";
 					m_argIsRef = false;
+					m_arrIsConst = false;
 				}
 
 
@@ -286,6 +293,18 @@ class HeaderTranslator
 				{
 					m_varIsConst = true;
 				}
+
+
+
+/**
+Устанавливает разбируемуый массив в константу. Используется как семантическое действие грамматики.
+*/
+				void setArrToConst()
+				{
+					m_arrIsConst = true;
+				}
+
+
 
 /**
 Указывает, что строящийся аргумент является ссылкой
@@ -303,6 +322,7 @@ class HeaderTranslator
 				std::string				m_name;
 				bool					m_varIsConst;
 				bool					m_argIsRef;
+				bool					m_arrIsConst;
 				qi::rule<Iterator> 		expression, name, param, simple_type, array, var, var_name, arr_name, ref_or_space;
 				std::list<std::string>	*m_plstArgs;
 				std::list<bool>			*m_pargsIsRefs;

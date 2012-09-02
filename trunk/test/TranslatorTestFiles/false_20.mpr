@@ -1,0 +1,17 @@
+;is incorrect code
+
+.name main
+.var
+	mod16 m 1
+.begin
+	call f, (mod32) m
+.end
+
+
+
+.name f mod32 &n
+.var
+.begin
+	nop
+.end
+
