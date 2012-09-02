@@ -1,0 +1,35 @@
+.name f uchar c_, uchar c__, array uchar arr
+.var
+.begin
+	nop
+.end
+
+
+
+
+.name main
+.var
+	uchar ch 1
+	array uchar arr 5 1 2 3 4 5 
+.begin
+	nop
+
+:when_numeric_error
+l1:
+	jmp l1
+	call  f, ch, ch, arr
+	je l2
+l2:
+
+:when_constraint_error
+;comment
+call function, ch, (sint) ch, ( mod16 )arr[3], 100
+.end
+
+
+
+.name function uchar c, sint k, mod16 t, mod32 m
+.var
+.begin
+	nop
+.end

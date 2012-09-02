@@ -14,6 +14,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/smart_ptr.hpp>
+#include <boost/regex.hpp>
 
 #include "VarTranslator.h"
 #include "CodeBlockTranslator.h"
@@ -21,6 +22,7 @@
 #include "HeaderTranslator.h"
 #include "Operand.h"
 #include "LabelOperand.h"
+#include "Exception.h"
 
 /**
 @class Translator
@@ -69,7 +71,7 @@ class Translator
 
 /**
 Проверка на вхождение в строку полезной нагрузки.
-@str - проверяемая строка
+@param str - проверяемая строка
 @return строка содержит информацию?
 */
 		static bool isEmptyOrComment(const std::string &str);
@@ -80,11 +82,28 @@ class Translator
 */
 		void translateFunction(const std::string &);
 
+
+/**
+Транслирование обработчика ислючительной ситуации. Вызывается из translateFunction90
+@param header - строка - заголовок обработчика
+@param name - имя функции, которой принадлежит обработчик
+@return последняя строка(либо определение нового обработчика, либо .end)
+*/
+		std::string translateExceptionHandler(const std::string &header, const std::string &name);
+
 /**
 Проверка наличия в программе функций с именами - операндами команд call и проверка соответствия типов параметров
 */
 		void callOperandsCheck() const;
 
+
+
+/**
+Проверка команды call. Используется из callOperandsCheck().
+@param command - команда
+@param funcName - имя функции, содержащей команду
+*/
+		void callCheck(Command command, const std::string &funcName) const;
 
 		std::string		m_inputFileName;
 		std::ifstream	m_in;

@@ -1,6 +1,6 @@
 ;is correct code
 
-.name func2 uchar ch
+.name func2 uchar &ch
 .var
 .begin
 	nop

@@ -57,6 +57,26 @@ class Function
 */
 		void setExceptionHandler(Exception::Type except, const std::vector<Command> &commands);
 
+
+
+/**
+Проверка на существование обработчика исключительной ситуации определённого типа.
+@param except - проверяемый обработчик
+@return true - обработчик существует, иначе - false
+*/
+		bool exceptionHandlerIsExists(Exception::Type except) const;
+
+
+
+/**
+Получение кода обарботчика ислючения
+@param except - тип обработчика
+@throw std::runtime_error в случае несуществования обработчика для типа except
+@return код обработчика
+*/
+		std::vector<Command> getExceptionHandlerCode(Exception::Type except) const;
+
+
 /**
 Установка массива команд функции.
 @param commands - устанавливаемый вектор команд
@@ -127,7 +147,7 @@ class Function
 
 /**
 Указание, является ли аргумент ссылкой.
-@param str - имя аргумента
+@param name - имя аргумента
 @param f - true - ссылка, иначе - false
 */
 		void argIsRef(const std::string &name, bool f);
@@ -135,7 +155,7 @@ class Function
 
 /**
 Яляется ли аргумент ссылкой?
-@param str - имя аргумента
+@param name - имя аргумента
 @return true - ссылка, иначе - false
 */
 		bool argIsRef(const std::string &name) const;

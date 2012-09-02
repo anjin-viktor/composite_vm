@@ -2,7 +2,7 @@
 #define CODE_BLOCK_TRANSLATOR_H_
 
 /**
-@file CodeBlackTranslator.CODE_BLOCK_TRANSLATOR_H_
+@file CodeBlockTranslator.h
 */
 
 

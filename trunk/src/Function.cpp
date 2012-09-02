@@ -124,3 +124,26 @@ bool Function::argIsRef(const std::string &name) const
 
 	return itr -> second;
 }
+
+
+
+
+bool Function::exceptionHandlerIsExists(Exception::Type except) const
+{
+	return m_handlers.find(except) != m_handlers.end();
+}
+
+
+
+
+std::vector<Command> Function::getExceptionHandlerCode(Exception::Type except) const
+{
+	if(exceptionHandlerIsExists(except))
+	{
+		std::map<Exception::Type, std::vector<Command> >::const_iterator itr = m_handlers.find(except);
+		return itr -> second;
+	}
+	else
+		throw std::runtime_error(std::string("Handler for exception with name ") + 
+			Exception::exceptionTypeToStr(except) + " not exists");
+}

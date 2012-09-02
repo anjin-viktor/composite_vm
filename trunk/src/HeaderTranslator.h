@@ -63,7 +63,7 @@ class HeaderTranslator
 
 /**
 Получение имени функции. Подразумевается, что вход - корректная строка, являющаяся заголовком модуля.
-@parem str - заголовок модуля.
+@param str - заголовок модуля.
 */
 		static std::string getNameFromStr(const std::string &str);
 

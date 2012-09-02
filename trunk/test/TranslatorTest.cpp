@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <boost/test/unit_test.hpp>
 #include "../src/Translator.h"
 #include "Program.h"
@@ -326,17 +327,6 @@ BOOST_AUTO_TEST_CASE(Translator_7_Test)
 	Translator tr;
 	tr.setInputFileName("TranslatorTestFiles/7.mpr");
 
-/*
-	try
-	{
-		tr.translate();
-	}
-	catch(ParseError err)
-	{
-		std::cerr << "\n\n" << err.what() << "\n\n";
-	}
-*/
-
 	BOOST_CHECK_NO_THROW(tr.translate());
 
 	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 2);
@@ -407,6 +397,138 @@ BOOST_AUTO_TEST_CASE(Translator_7_Test)
 
 
 
+
+/**
+Тест правильности трансляции 8.mpr
+*/
+BOOST_AUTO_TEST_CASE(Translator_8_Test)
+{
+	std::string callName;
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/8.mpr");
+
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 1);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 2);
+
+
+	std::vector<Command> v1, v2;
+
+	Command c;
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(5);
+
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getCommands();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+	c.setOperationType(Command::MOV);
+	c.setLineNumber(8);
+	v1[0] = c;
+
+	v2 = Program::getInstance().getFunction("main").getExceptionHandlerCode(Exception::NumericError);
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+	c.setOperationType(Command::ADD);
+	c.setLineNumber(11);
+	v1[0] = c;
+
+	v2 = Program::getInstance().getFunction("main").getExceptionHandlerCode(Exception::ConstraintError);
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+}
+
+
+/**
+Тест правильности трансляции 9.mpr
+*/
+BOOST_AUTO_TEST_CASE(Translator_9_Test)
+{
+	std::string callName;
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/9.mpr");
+/*	try
+	{
+		tr.translate();
+
+	}
+	catch(ParseError err)
+	{
+		std::cerr << "exception with message: " << err.what() << std::endl << std::endl;
+	}
+	catch(std::exception err)
+	{
+		std::cerr << "exception with message: " << err.what() << std::endl << std::endl;
+	}*/
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 3);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("f"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("function"), true);
+
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("main").getDataKeeperPtr() -> getNumberOfElements(), 3);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f").getDataKeeperPtr() -> getNumberOfElements(), 3);
+	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("function").getDataKeeperPtr() -> getNumberOfElements(), 4);
+
+
+	std::vector<Command> v1, v2;
+
+	Command c;
+	c.setOperationType(Command::NOP);
+	c.setLineNumber(15);
+
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getCommands();
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+
+
+	c.setOperationType(Command::JMP);
+	c.setLineNumber(19);
+	v1[0] = c;
+
+	c.setOperationType(Command::CALL);
+	c.setLineNumber(20);
+	v1.push_back(c);
+
+	c.setOperationType(Command::JE);
+	c.setLineNumber(21);
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getExceptionHandlerCode(Exception::NumericError);
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[1].getFirstOperand()) -> getLabelName();
+
+	BOOST_CHECK_EQUAL(callName, "f");
+	BOOST_CHECK_EQUAL(v2.size(), v1.size());
+
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+
+	v1.clear();
+	c.setOperationType(Command::CALL);
+	c.setLineNumber(26);
+	v1.push_back(c);
+
+
+	v2 = Program::getInstance().getFunction("main").getExceptionHandlerCode(Exception::ConstraintError);
+	callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(v2[0].getFirstOperand()) -> getLabelName();
+
+	BOOST_CHECK_EQUAL(callName, "function");
+	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
+}
+
+
+
 /**
 Тест отказа трансляции некорректных входных данных (false_[n].mpr)
 */
@@ -464,6 +586,12 @@ BOOST_AUTO_TEST_CASE(Translator_false_Test)
 
 	tr.setInputFileName("TranslatorTestFiles/false_17.mpr");
 //	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_18.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
+
+	tr.setInputFileName("TranslatorTestFiles/false_19.mpr");
+	BOOST_CHECK_THROW(tr.translate(), ParseError);
 }
 
 

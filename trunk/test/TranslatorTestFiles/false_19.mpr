@@ -1,0 +1,14 @@
+;is correct code
+
+.name main
+.var
+	uchar ch 1
+.begin
+	nop
+
+:when_numeri_error
+	mov ch, 2
+
+
+.end
+

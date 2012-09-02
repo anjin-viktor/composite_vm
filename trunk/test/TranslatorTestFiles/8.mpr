@@ -1,0 +1,15 @@
+.name main
+.var
+	uchar ch 1
+.begin
+	nop
+
+:when_numeric_error
+	mov ch, 2
+:when_constraint_error ; a 
+
+	add ch, ch
+
+
+.end
+

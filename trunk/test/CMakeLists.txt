@@ -22,6 +22,7 @@ set (SOURCES
 	../src/HeaderTranslator.cpp
 	../src/Program.cpp
 	../src/CallOperand.cpp
+	../src/Exception.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -40,6 +41,7 @@ set (SOURCES
 	HeaderTranslatorTest.cpp
 	ProgramTest.cpp
 	CallOperandTest.cpp
+	ExceptionTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

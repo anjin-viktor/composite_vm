@@ -169,10 +169,10 @@ void Translator::translateFunction(const std::string &header)
 	CodeBlockTranslator codeTransl;
 	codeTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
 
-	while(readString(str) == false && fEnd == false)
+	while(fEnd == false && readString(str) == false)
 	{
 		boost::trim(str);
-		if(boost::istarts_with(str, ".end") || boost::istarts_with(str, ".exception"))
+		if(boost::istarts_with(str, ".end") || boost::istarts_with(str, ":when_"))
 			fEnd = true;
 
 		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
@@ -186,6 +186,18 @@ void Translator::translateFunction(const std::string &header)
 
 	Program::getInstance().getFunction(funcName).setCommands(codeTransl.getCommands());
 
+
+	for(; boost::istarts_with(str, ":when_");)
+	{
+		str = translateExceptionHandler(str, funcName);
+		boost::trim(str);
+	}
+
+
+	if(boost::istarts_with(str, ".end") == false)
+	{
+		throw ParseError("unexpected end of file");
+	}
 }
 
 
@@ -201,93 +213,152 @@ void Translator::callOperandsCheck() const
 		std::vector<Command> code = Program::getInstance().getFunction(*itr).getCommands();
 
 		for(int i=0, size=code.size(); i<size; i++)
-		{
 			if(code[i].getOperationType() == Command::CALL)
-			{
-				std::string callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(code[i].getFirstOperand()) -> getLabelName();
+				callCheck(code[i], *itr);
 
-				std::list<std::string>::const_iterator itrNames = std::find(lstNames.begin(), lstNames.end(), callName);
+		if(Program::getInstance().getFunction(*itr).exceptionHandlerIsExists(Exception::NumericError))
+		{
+			code = Program::getInstance().getFunction(*itr).getExceptionHandlerCode(Exception::NumericError);
 
-				if(itrNames == lstNames.end())
-				{
-					throw ParseError("function with name " + callName + " not exists");
-				}
+			for(int i=0, size=code.size(); i<size; i++)
+				if(code[i].getOperationType() == Command::CALL)
+					callCheck(code[i], *itr);
+		}
 
-				std::list<std::string> funcArgsNames = Program::getInstance().getFunction(callName).getArgsNames();
+		if(Program::getInstance().getFunction(*itr).exceptionHandlerIsExists(Exception::ConstraintError))
+		{
+			code = Program::getInstance().getFunction(*itr).getExceptionHandlerCode(Exception::ConstraintError);
+
+			for(int i=0, size=code.size(); i<size; i++)
+				if(code[i].getOperationType() == Command::CALL)
+					callCheck(code[i], *itr);
+		}
+	}
+}
+
+
+
+
+
+
+void Translator::callCheck(Command command, const std::string &functionName) const
+{
+	std::list<std::string> lstNames = Program::getInstance().getFunctionNames();
+	std::string callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(command.getFirstOperand()) -> getLabelName();
+	std::list<std::string>::const_iterator itrNames = std::find(lstNames.begin(), lstNames.end(), callName);
+
+
+	if(itrNames == lstNames.end())
+		throw ParseError("function with name " + callName + " not exists");
+
+	std::list<std::string> funcArgsNames = Program::getInstance().getFunction(callName).getArgsNames();
 
 /**
 Command::getNumberOfOperands() имеет смысл только при числе операндов >= 2
 */
-				if(funcArgsNames.size() != (code[i].getNumberOfOperands() - 1))
-				{
-
-					if(funcArgsNames.size() != 0)
-					{
-						throw ParseError("wrong number of operands");						
-					}
+	if(funcArgsNames.size() != (command.getNumberOfOperands() - 1))
+	{
+		if(funcArgsNames.size() != 0)
+			throw ParseError("wrong number of operands");						
 
 
-					if(code[i].getSecondOperand().get() != NULL)
-					{
-						throw ParseError("wrong number of operands");
-					}
-				}
-				else if(funcArgsNames.size() == 1 && code[i].getSecondOperand().get() == NULL)
-				{
-					throw ParseError("wrong number of operands");
-				}
+		if(command.getSecondOperand().get() != NULL)
+			throw ParseError("wrong number of operands");
+	}
+	else if(funcArgsNames.size() == 1 && command.getSecondOperand().get() == NULL)
+		throw ParseError("wrong number of operands");
 
-				itrNames = funcArgsNames.begin();
+	itrNames = funcArgsNames.begin();
 
-				for(int j=0; itrNames != funcArgsNames.end(); itrNames++, j++)
-				{
-					boost::shared_ptr<CallOperand> pop =  boost::dynamic_pointer_cast<CallOperand, Operand>
-						(code[i].getOperand(j+1));
+	for(int j=0; itrNames != funcArgsNames.end(); itrNames++, j++)
+	{
+		boost::shared_ptr<CallOperand> pop =  boost::dynamic_pointer_cast<CallOperand, Operand>
+		(command.getOperand(j+1));
 
 /*Это константа*/
-					if(pop -> isValue() && pop -> getValue().getType() == Value::NO_TYPE
-						&& Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
-					{
-						pop -> setValueType(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType());
-					}
+		if(pop -> isValue() && pop -> getValue().getType() == Value::NO_TYPE
+			&& Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
+				pop -> setValueType(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType());
 
-					if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
-					{
-						if(pop -> isValue() == false)
-						{
-							throw ParseError("incorrect operand type in call function " + callName);
-						}
-						if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
-							pop -> getValue().getType() /*||
-							(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable()
-							&& pop -> getValue().isWriteable() == false)*/
-						  )
-						{
-							throw ParseError("incorrect operand type in call function " + callName);
-						}
-					}
-					else
-					{
-						if(pop -> isArray() == false)
-						{
+		if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
+		{
+			if(pop -> isValue() == false)
+				throw ParseError("incorrect operand type in call function " + callName);
 
-							throw ParseError("incorrect operand type in call function " + callName);
-						}
+			if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
+				pop -> getValue().getType() /*||
+				(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable()
+				&& pop -> getValue().isWriteable() == false)*/
+			  )
+				throw ParseError("incorrect operand type in call function " + callName);
+		}
+		else
+		{
+			if(pop -> isArray() == false)
+				throw ParseError("incorrect operand type in call function " + callName);
 
-
-						if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).getType() !=
-							pop -> getArray().getType() /*||
-							(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).isWriteable()
-							&& pop -> getArray().isWriteable() == false)*/
-						  )
-						{
-
-							throw ParseError("incorrect operand type in call function " + callName);
-						}
-
-					}
-				}
-			}
+			if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).getType() !=
+				pop -> getArray().getType() /*||
+				(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getArray(*itrNames).isWriteable()
+				&& pop -> getArray().isWriteable() == false)*/
+			  )
+				throw ParseError("incorrect operand type in call function " + callName);
 		}
 	}
+}
+
+
+std::string Translator::translateExceptionHandler(const std::string &header, const std::string &funcName)
+{
+	boost::regex cmpExpr("^\\s*\\:when_[\\l\\u_]*\\s*(;.*)?");
+    boost::regex expr(":when_[\\l\\u_]*");
+ 
+    boost::smatch res;
+    std::string::const_iterator start = header.begin();
+    std::string::const_iterator end = header.end();
+
+    std::string exceptionType;
+
+    if(boost::regex_match(start, end, res, cmpExpr))
+    {
+        start = header.begin();
+        end = header.end();
+
+        boost::regex_search(start, end, res, expr);
+        exceptionType = res[0];
+        boost::replace_first(exceptionType, ":when_", "");
+    }
+    else
+    	throw ParseError("incorrect exception handler header");
+
+
+    Exception::Type type = Exception::strToExceptionType(exceptionType);
+
+    if(type == Exception::NoType)
+    	throw ParseError("incorrect exception handler name " + exceptionType);
+
+    if(Program::getInstance().getFunction(funcName).exceptionHandlerIsExists(type))
+    	throw ParseError("in function " + funcName + " handler on exception " + exceptionType + " already exists");
+
+
+    CodeBlockTranslator codeTransl;
+	codeTransl.setDataKeeperPtr(Program::getInstance().getFunction(funcName).getDataKeeperPtr());
+
+	bool fEnd;
+
+	std::string str;
+
+	while(fEnd == false && readString(str) == false)
+	{
+		boost::trim(str);
+		if(boost::istarts_with(str, ".end") || boost::istarts_with(str, ":when_"))
+			fEnd = true;
+
+		if(Translator::isEmptyOrComment(str) == false && fEnd == false)
+			codeTransl.translate(str, m_lineNumb);
+	}
+
+	Program::getInstance().getFunction(funcName).setExceptionHandler(type, codeTransl.getCommands());
+
+	return str;
 }
