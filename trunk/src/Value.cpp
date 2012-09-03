@@ -261,3 +261,14 @@ Value Value::createNoLink() const
 
 	return val;
 }
+
+
+
+
+bool Value::operator == (const Value &v) const
+{
+	if(this == &v)
+		return true;
+
+	return m_pval == v.m_pval && m_type == v.m_type && m_isWriteable == v.m_isWriteable && m_isReadable == v.m_isReadable;
+}

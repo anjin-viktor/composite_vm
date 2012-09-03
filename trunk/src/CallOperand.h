@@ -7,7 +7,9 @@
 */
 
 #include <list>
+#include <string>
 
+#include <iostream>
 
 #include "Operand.h"
 #include "DataKeeper.h"
@@ -72,13 +74,20 @@ class CallOperand: public Operand
 */
 		Array getArray() const;
 
+/**
+Строит объект для нового хранителя данных по старому.
+@param pold - старый хранитель
+@param pnew - ноый хранитель
+@return операнд
+*/
+	CallOperand convert(const DataKeeper *pold, DataKeeper *pnew) const;
 
 
 /**
 Установка типа операнда. Используется для установки типа числового значения. Имеет смысл только при isValue() == true
 @param type - устанавливаемый тип
 */
-		void setValueType(Value::ValueType type); 
+	void setValueType(Value::ValueType type); 
 
 	private:
 		Value 	m_val;

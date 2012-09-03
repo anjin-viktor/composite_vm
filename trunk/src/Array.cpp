@@ -163,3 +163,13 @@ Array Array::createNoLink()
 
 	return arr;
 }
+
+
+
+bool Array::operator == (const Array &arr) const
+{
+	if(this == &arr)
+		return true;
+
+	return m_parr == arr.m_parr && m_isWriteable == arr.m_isWriteable && m_type == arr.m_type;
+}

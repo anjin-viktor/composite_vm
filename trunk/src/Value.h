@@ -156,6 +156,11 @@ return копию переменной
 */
 		static ValueType strToValueType(const std::string &str);
 
+/**
+Сравнение
+*/
+		bool operator == (const Value &) const;
+
 	private:
 /**
 Если значение не инициализировано указатель 

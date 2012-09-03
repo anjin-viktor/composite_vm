@@ -7,6 +7,7 @@
 @file ArrayOperand.h
 */
 
+#include "DataKeeper.h"
 #include "Operand.h"
 #include "Array.h"
 
@@ -48,6 +49,15 @@ class ArrayOperand: public Operand
 @return операнд связан с массивом?
 */
 		bool hasValue() const;
+
+
+/**
+Строит объект для нового хранителя данных по старому.
+@param pold - старый хранитель
+@param pnew - ноый хранитель
+@return массив-операнд
+*/
+	ArrayOperand convert(const DataKeeper *pold, DataKeeper *pnew) const;
 
 	private:
 		Array 		*m_parr;

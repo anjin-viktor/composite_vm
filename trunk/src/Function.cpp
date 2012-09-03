@@ -147,3 +147,84 @@ std::vector<Command> Function::getExceptionHandlerCode(Exception::Type except) c
 		throw std::runtime_error(std::string("Handler for exception with name ") + 
 			Exception::exceptionTypeToStr(except) + " not exists");
 }
+
+
+
+
+Function Function::copy()
+{
+	Function func;
+
+	func.setName(m_name);
+	DataKeeper keeper;
+
+	std::list<std::string> names = getDataKeeperPtr() -> getValuesNames();
+	std::list<std::string>::const_iterator itrNames = names.begin();
+
+	for(;itrNames != names.end(); itrNames++)
+		keeper.addVar(getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
+
+	names = getDataKeeperPtr() -> getArraysNames();
+
+	for(itrNames = names.begin(); itrNames != names.end(); itrNames++)
+		keeper.addArray(getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
+
+	func.setDataKeeper(keeper);
+
+	func.m_args = m_args;
+	func.m_argsIsRefs = m_argsIsRefs;
+
+	func.m_code = codeCopy(func.getDataKeeperPtr(), m_code);
+ 	
+	if(exceptionHandlerIsExists(Exception::NumericError))
+		func.m_handlers[Exception::NumericError] = 
+				codeCopy(func.getDataKeeperPtr(), getExceptionHandlerCode(Exception::NumericError));
+
+	if(exceptionHandlerIsExists(Exception::ConstraintError))
+		func.m_handlers[Exception::ConstraintError] = 
+				codeCopy(func.getDataKeeperPtr(), getExceptionHandlerCode(Exception::ConstraintError));
+
+	return func;
+}
+
+
+
+std::vector<Command> Function::codeCopy(DataKeeper *pnewKeeper, const std::vector<Command> &code)
+{
+	std::vector<Command> newCode = code;
+
+	boost::shared_ptr<ArrayOperand> parr;
+	boost::shared_ptr<VarOperand> pvar;
+	boost::shared_ptr<CallOperand> pcop;
+
+
+	for(std::size_t i=0, size=code.size(); i<size; i++)
+	{
+		for(std::size_t j=0, numbOfElements=code[i].getNumberOfOperands(); j<numbOfElements; j++)
+		{
+			if((boost::dynamic_pointer_cast<ArrayOperand, Operand>(code[i].getOperand(j))).get() != NULL)
+			{
+				parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(code[i].getOperand(j));
+				ArrayOperand arr = parr -> convert(getDataKeeperPtr(), pnewKeeper);
+				*(parr.get()) = arr;
+
+			}
+			else if((boost::dynamic_pointer_cast<VarOperand, Operand>(code[i].getOperand(j))).get() != NULL)
+			{
+				pvar = boost::dynamic_pointer_cast<VarOperand, Operand>(code[i].getOperand(j));
+				VarOperand var = pvar -> convert(getDataKeeperPtr(), pnewKeeper);
+				*(pvar.get()) = var;
+			}
+			else if((boost::dynamic_pointer_cast<CallOperand, Operand>(code[i].getOperand(j))).get() != NULL)
+			{
+				pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(code[i].getOperand(j));
+				CallOperand cop = pcop -> convert(getDataKeeperPtr(), pnewKeeper);
+				*(pcop.get()) = cop;
+			}
+
+		}
+
+	}
+
+	return newCode;
+}

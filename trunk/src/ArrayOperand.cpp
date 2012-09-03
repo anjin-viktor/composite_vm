@@ -36,3 +36,30 @@ bool ArrayOperand::hasValue() const
 {
 	return m_parr != NULL;
 }
+
+
+
+ArrayOperand ArrayOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
+{
+	if(m_parr)
+	{
+		std::list<std::string> names = pold -> getArraysNames();
+		std::list<std::string>::const_iterator itr = names.begin();
+
+		for(;itr != names.end()&& (&(pold -> getArray(*itr)) != m_parr); itr++);
+
+		if(itr == names.end())
+			return ArrayOperand();
+
+
+		if(pnew -> isArray(*itr) == false)
+			return ArrayOperand();
+
+		ArrayOperand arr;
+		arr.m_parr = &(pnew -> getArray(*itr));
+
+		return arr;
+	}
+	else
+		return ArrayOperand();
+}

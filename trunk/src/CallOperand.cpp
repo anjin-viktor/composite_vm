@@ -1,6 +1,7 @@
 #include "CallOperand.h"
 
 
+
 CallOperand::CallOperand()
 {
 }
@@ -63,4 +64,45 @@ bool CallOperand::isArray() const
 void CallOperand::setValueType(Value::ValueType type)
 {
 	m_val.setType(type);
+}
+
+
+
+CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
+{
+	CallOperand op;
+	if(m_fisValue)
+	{
+		std::list<std::string> names = pold -> getValuesNames();
+		std::list<std::string>::const_iterator itr = names.begin();
+
+
+		for(;itr != names.end() && !(pold -> getVarValue(*itr) == m_val); itr++);
+
+		if(itr == names.end())
+			return op;
+
+		if(pnew -> isVar(*itr) == false)
+			return op;
+
+		op.setValue(pnew -> getVarValue(*itr));
+		return op;
+	}
+	else
+	{
+		std::list<std::string> names = pold -> getArraysNames();
+		std::list<std::string>::const_iterator itr = names.begin();
+
+		for(;itr != names.end() && !(pold -> getArray(*itr) == m_arr); itr++);
+
+		if(itr == names.end())
+			return op;
+
+		if(pnew -> isArray(*itr) == false)
+			return op;
+
+		op.setArray(pnew -> getArray(*itr));
+		return op;
+	}
+
 }

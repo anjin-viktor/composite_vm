@@ -17,6 +17,9 @@
 #include "Command.h"
 #include "Exception.h"
 #include "DataKeeper.h"
+#include "ArrayOperand.h"
+#include "VarOperand.h"
+#include "CallOperand.h"
 
 
 /**
@@ -161,7 +164,26 @@ class Function
 		bool argIsRef(const std::string &name) const;
 
 
+
+/**
+Копирование функции.
+@return копия функции
+*/
+		Function copy();
+
+
+
 	private:
+/**
+Копирование кода (функции, обработчиков прерываний). Осуществляет изменение указателей.
+@param pnewKeeper - данный новой функции (функции-назначения)
+@param code - вектор команд
+@return скопированный вектор.
+*/
+		std::vector<Command> codeCopy(DataKeeper *pnewKeeper, const std::vector<Command> &code);
+
+
+
 		std::string 										m_name;
 		std::map<Exception::Type, std::vector<Command> >	m_handlers;
 		std::vector<Command>								m_code;

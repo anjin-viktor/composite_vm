@@ -173,3 +173,59 @@ bool VarOperand::isWriteable() const
 
 	return false;
 }
+
+
+
+
+VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
+{
+	VarOperand var;
+	if(m_pval)
+	{
+		std::list<std::string> names = pold -> getValuesNames();
+		std::list<std::string>::const_iterator itr = names.begin();
+
+		for(;itr != names.end()&& (&(pold -> getVarValue(*itr)) != m_pval); itr++);
+
+		if(itr == names.end())
+			return VarOperand();
+
+		std::string name =  *itr;
+
+		var.m_type = m_type;
+		var.m_const = m_const;
+
+
+		if(pnew -> isVar(name) == false)
+			return VarOperand();
+
+		var.setValuePtr(&(pnew -> getVarValue(name)));
+		m_pval -> setValue(123);
+
+		return var;
+	}
+	else if(m_parr)
+	{
+		std::list<std::string> names = pold -> getArraysNames();
+		std::list<std::string>::const_iterator itr = names.begin();
+
+		for(;itr != names.end()&& (&(pold -> getArray(*itr)) != m_parr); itr++);
+
+		if(itr == names.end())
+			return VarOperand();
+
+		std::string name =  *itr;
+		var.m_type = m_type;
+		var.m_const = m_const;
+
+
+		if(pnew -> isArray(name) == false)
+			return VarOperand();
+
+		var.m_parr = &(pnew -> getArray(name));
+		var.m_indx = m_indx;
+
+		return var;
+	}
+	else return VarOperand();
+}

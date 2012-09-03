@@ -124,6 +124,11 @@ return копию массива
 		Array createNoLink() ;
 
 
+/**
+Сравнение.
+*/
+		bool operator == (const Array &) const;
+
 	private:
 		boost::shared_ptr<std::vector<Value> >		m_parr;
 		bool										m_isWriteable;

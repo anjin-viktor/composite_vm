@@ -10,7 +10,7 @@
 #include "Operand.h"
 #include "Value.h"
 #include "Array.h"
-
+#include "DataKeeper.h"
 
 
 /**
@@ -49,6 +49,15 @@ class VarOperand: public Operand
 @param pval - указатель на переменную
 */
 		void setValuePtr(Value *pval);
+
+
+/**
+Построение объекта на новом наборе данных по старому
+@param pold - старый объект хранитель, в котором ведётся поиск. 
+@param pnew - новый объект хранитель. 
+@return операнд относительно нового набора данных
+*/
+		VarOperand convert(const DataKeeper *pold, DataKeeper *pnew) const;
 
 
 /**
