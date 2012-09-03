@@ -45,7 +45,11 @@ void VarOperand::setValuePtr(Value *pval)
 
 bool VarOperand::hasValue() const
 {
-	return (m_pval != NULL || m_parr != NULL);
+	if(m_pval != NULL)
+		return true;
+	else if(m_parr != NULL && m_indx < m_parr -> size())
+		return true;
+	else return false;
 }
 
 

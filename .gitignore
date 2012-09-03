@@ -1,3 +1,5 @@
+trunk/docs/html
+trunk/docs/latex
 trunk/test/CMakeCache.txt
 trunk/test/CMakeFiles/*
 trunk/test/COMPOZIT_VM_TESTS

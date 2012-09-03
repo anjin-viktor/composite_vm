@@ -50,8 +50,8 @@ label:;
 	uchar ch
 .begin
 	nop
+	mov ch, arr[0]
 .end
-
 
 
 .name f4 const mod32 &n

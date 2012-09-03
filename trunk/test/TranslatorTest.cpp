@@ -694,6 +694,11 @@ BOOST_AUTO_TEST_CASE(Translator_11_Test)
 	c.setLineNumber(52);
 	v1.push_back(c);
 
+	c.setOperationType(Command::MOV);
+	c.setLineNumber(53);
+	v1.push_back(c);
+
+
 	v2 = Program::getInstance().getFunction("f3").getCommands();
 	BOOST_CHECK_EQUAL_COLLECTIONS(v1.begin(), v1.end(), v2.begin(), v2.end());
 	BOOST_CHECK_EQUAL(Program::getInstance().getFunction("f3").getDataKeeperPtr() -> getArray("arr").isWriteable(), false);
