@@ -23,6 +23,7 @@ set (SOURCES
 	../src/Program.cpp
 	../src/CallOperand.cpp
 	../src/Exception.cpp
+	../src/Context.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -42,6 +43,7 @@ set (SOURCES
 	ProgramTest.cpp
 	CallOperandTest.cpp
 	ExceptionTest.cpp
+	ContextTest.cpp
 	)
  
 set (BOOST_COMPONENTS 
