@@ -4,6 +4,7 @@
 
 CallOperand::CallOperand()
 {
+	m_parr = NULL;
 }
 
 
@@ -17,8 +18,17 @@ void CallOperand::setValue(const Value &val)
 {
 	m_fisValue = true;
 	m_val = val;
+	m_parr = NULL;
 }
 
+
+
+void CallOperand::setArrayElement(Array *parr, std::size_t indx)
+{
+	m_fisValue = true;
+	m_parr = parr;
+	m_indx = indx;
+}
 
 
 
@@ -26,6 +36,7 @@ void CallOperand::setArray(const Array &arr)
 {
 	m_fisValue = false;
 	m_arr = arr;
+	m_parr = NULL;
 }
 
 
@@ -33,7 +44,10 @@ void CallOperand::setArray(const Array &arr)
 
 Value CallOperand::getValue() const
 {
-	return m_val;
+	if(m_parr == NULL)
+		return m_val;
+	else 
+		return m_parr -> operator[](m_indx);
 }
 
 
@@ -105,4 +119,22 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		return op;
 	}
 
+}
+
+
+
+bool CallOperand::isArrayElement() const
+{
+	return m_parr != NULL;
+}
+
+
+
+
+Value::ValueType CallOperand::getValueType() const
+{
+	if(m_parr == NULL)
+		return m_val.getType();
+	else 
+		return m_parr -> getType();
 }

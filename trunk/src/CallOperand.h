@@ -74,6 +74,22 @@ class CallOperand: public Operand
 */
 		Array getArray() const;
 
+
+/**
+Является ли значение элементом массива?
+@return true - да
+*/
+		bool isArrayElement() const;
+
+
+/**
+Установка операндом элемента массива. Может использоваться для массивов неподходящей длинный.
+@param parr - указатель на массив
+@param indx - смещение элемента в массиве
+*/
+
+		void setArrayElement(Array *parr, std::size_t indx);
+
 /**
 Строит объект для нового хранителя данных по старому.
 @param pold - старый хранитель
@@ -84,15 +100,25 @@ class CallOperand: public Operand
 
 
 /**
+Получение типа операнда. Имеет смысл, если операнд - переменная.
+@return тип операнда
+*/
+
+	Value::ValueType getValueType() const;
+
+
+/**
 Установка типа операнда. Используется для установки типа числового значения. Имеет смысл только при isValue() == true
 @param type - устанавливаемый тип
 */
 	void setValueType(Value::ValueType type); 
 
 	private:
-		Value 	m_val;
-		Array	m_arr;
-		bool	m_fisValue;
+		Value 		m_val;
+		Array		m_arr;
+		bool		m_fisValue;
+		bool		m_indx;
+		Array 		*m_parr;
 };
 
 

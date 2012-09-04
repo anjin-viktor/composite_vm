@@ -1,20 +1,5 @@
 
 
-Копирование объекта Function
-
-
-------------------------
-
-Исправить CallOperand
-Пример:
-
-.name function array uchar arr
-.var
-.begin
-	mov arr[3], 0
-.end
-
-------------------------
 
 Переход к выполнению кода
 

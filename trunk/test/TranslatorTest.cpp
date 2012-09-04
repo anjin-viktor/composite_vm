@@ -721,6 +721,23 @@ BOOST_AUTO_TEST_CASE(Translator_11_Test)
 
 
 /**
+Тест трансляции 12.mpr без исключений
+*/
+BOOST_AUTO_TEST_CASE(Translator_12_Test)
+{
+	Translator tr;
+	tr.setInputFileName("TranslatorTestFiles/12.mpr");
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 3);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("main"), true);
+	BOOST_CHECK_EQUAL(Program::getInstance().functionIsExists("function"), true);
+
+}
+
+
+
+/**
 Тест отказа трансляции некорректных входных данных (false_[n].mpr)
 */
 BOOST_AUTO_TEST_CASE(Translator_false_Test)

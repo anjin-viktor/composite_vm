@@ -67,6 +67,7 @@ void Translator::translate()
 	Program::getInstance().clear();
 	std::string str;
 
+
 	while(readString(str) == false)
 	{
 		boost::trim(str);
@@ -76,7 +77,6 @@ void Translator::translate()
 				throw ParseError(str + " not expected");
 
 			translateFunction(str);
-	
 		}
 	}
 
@@ -86,6 +86,7 @@ void Translator::translate()
 
 	if(Program::getInstance().functionIsExists("main") == false)
 		throw ParseError("function `main` not exists");
+
 }
 
 
@@ -286,7 +287,7 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 		(command.getOperand(j+1));
 
 /*Это константа*/
-		if(pop -> isValue() && pop -> getValue().getType() == Value::NO_TYPE
+		if(pop -> isArrayElement() == false && pop -> isValue() && pop -> getValue().getType() == Value::NO_TYPE
 			&& Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
 				pop -> setValueType(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType());
 
@@ -295,15 +296,24 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 			if(pop -> isValue() == false)
 				throw ParseError("incorrect operand type in call function " + callName);
 
-			if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
-				pop -> getValue().getType())
-				throw ParseError("incorrect operand type in call function " + callName);
+			if(pop -> isArrayElement() == false)
+			{
+				if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
+						pop -> getValue().getType())
+					throw ParseError("incorrect operand type in call function " + callName);
 		
-			if(Program::getInstance().getFunction(callName).argIsRef(*itrNames) && 
-			    Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable() == true &&
-			     pop -> getValue().isWriteable() == false
-			  )
-				throw ParseError("incorrect operand type in call function " + callName);
+				if(Program::getInstance().getFunction(callName).argIsRef(*itrNames) && 
+			    	Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable() == true &&
+			    	 pop -> getValue().isWriteable() == false
+			  	)
+					throw ParseError("incorrect operand type in call function " + callName);
+			}
+			else
+			{
+				if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
+						pop -> getValueType())
+					throw ParseError("incorrect operand type in call function " + callName);		
+			}
 
 		}
 		else

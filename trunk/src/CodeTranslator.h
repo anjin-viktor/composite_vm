@@ -105,6 +105,7 @@ class CodeTranslator
 				m_castType = Value::NO_TYPE;
 				m_operandIsConst = false;
 				m_operandIsNumber = false;
+				m_varIsArrayElement = false;
 
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
@@ -388,9 +389,9 @@ class CodeTranslator
 						throw ParseError("array with name " + m_arrName + " not exists");
 
 					m_currentVar = VarOperand(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx, Value::NO_TYPE);
-					m_arrName = "";
-					m_arrName = "";
 				}
+				m_varName = "";
+				m_arrName = "";
 			}
 
 
@@ -409,10 +410,10 @@ class CodeTranslator
 					m_callOpVal = m_pdata -> getVarValue(m_varName);
 					m_callOpIsVal = true;
 
-					m_varName = "";
-					m_arrName = "";
-
 				}
+				m_varName = "";
+				m_arrName = "";
+
 			}
 
 
@@ -525,10 +526,9 @@ class CodeTranslator
 					}
 					else 
 						throw ParseError("variable with name " + m_varName + " not exists");
-			
-					m_varName = "";
-					m_arrName = "";
 				}				
+				m_varName = "";
+				m_arrName = "";
 			}
 
 
@@ -542,10 +542,9 @@ class CodeTranslator
 					if(m_pdata -> isArray(m_arrName) == false)
 						throw ParseError("array with name " + m_arrName + " not exists");
 
-					m_callOpVal = m_pdata -> getArray(m_arrName)[m_arrElementIndx];
 					m_callOpIsVal = true;
-					m_arrName = "";
-					m_arrName = "";
+					m_varIsArrayElement = true;
+
 				}
 			}
 
@@ -568,7 +567,11 @@ class CodeTranslator
 					if(m_operandIsConst || m_operandIsNumber)
 						m_callOpVal.setWriteable(false);
 
-					op -> setValue(m_callOpVal);
+
+					if(m_varIsArrayElement)
+						op -> setArrayElement(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx);
+					else
+						op -> setValue(m_callOpVal);
 
 				}
 				else 
@@ -586,6 +589,9 @@ class CodeTranslator
 				m_operandIsConst = false;
 				m_callOpArr.setWriteable(true);
 				m_callOpVal.setWriteable(true);
+				m_varIsArrayElement = false;
+
+				m_arrName = "";
 			}
 
 
@@ -621,6 +627,7 @@ class CodeTranslator
 			Value 									m_callOpVal;
 			bool									m_callOpIsVal;
 			std::size_t								m_callOpNo;
+			bool									m_varIsArrayElement;
 	};
 
 
