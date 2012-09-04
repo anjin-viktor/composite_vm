@@ -248,16 +248,30 @@ BOOST_AUTO_TEST_CASE(testFunction_copy)
 
 	code.push_back(c);
 
+	plcop = static_cast<boost::shared_ptr<LabelOperand> >(new LabelOperand("label_name"));
+	pcop = static_cast<boost::shared_ptr<CallOperand> >(new CallOperand);
+	pcop -> setArrayElement(&(func.getDataKeeperPtr() -> getArray("arr")), 2);
+
+
+	c = Command();
+	c.setOperationType(Command::CALL);
+	c.setFirstOperand(plcop);
+	c.setSecondOperand(pcop);
+	code.push_back(c);
+
 
 	func.setCommands(code);
 
 	Function copyFunc = func.copy();
 
-	func.getDataKeeperPtr() -> getArray("arr").resize(1);
+
+	func.getDataKeeperPtr() -> getArray("arr").resize(25);
 	func.getDataKeeperPtr() -> getVarValue("val").setValue(10);
 	func.getDataKeeperPtr() -> getVarValue("val").setReadable(false);
 	func.getDataKeeperPtr() -> getVarValue("val").setWriteable(true);
 	func.getDataKeeperPtr() -> getArray("arr").setWriteable(false);
+	(func.getDataKeeperPtr() -> getArray("arr"))[2].setValue(1);
+
 
 	BOOST_CHECK_EQUAL(copyFunc.argIsRef("name_1"), true);
 	BOOST_CHECK_EQUAL(copyFunc.argIsRef("name_2"), false);
@@ -312,6 +326,10 @@ BOOST_AUTO_TEST_CASE(testFunction_copy)
 
 	pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(vect[5].getOperand(3));
 	BOOST_CHECK_EQUAL(pcop -> getValue().getValue(), 256);
-   
 
+
+	plop = boost::dynamic_pointer_cast<LabelOperand, Operand>(vect[6].getFirstOperand());
+	pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(vect[6].getSecondOperand());
+	BOOST_CHECK_EQUAL(plop -> getLabelName(), "label_name");
+	BOOST_CHECK_EQUAL(pcop -> isArrayElement(), true);
 }

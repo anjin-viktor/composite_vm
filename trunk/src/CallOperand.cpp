@@ -87,20 +87,39 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 	CallOperand op;
 	if(m_fisValue)
 	{
-		std::list<std::string> names = pold -> getValuesNames();
-		std::list<std::string>::const_iterator itr = names.begin();
+		if(m_parr == NULL)
+		{
+			std::list<std::string> names = pold -> getValuesNames();
+			std::list<std::string>::const_iterator itr = names.begin();
 
 
-		for(;itr != names.end() && !(pold -> getVarValue(*itr) == m_val); itr++);
+			for(;itr != names.end() && !(pold -> getVarValue(*itr) == m_val); itr++);
 
-		if(itr == names.end())
+			if(itr == names.end())
+				return op;
+
+			if(pnew -> isVar(*itr) == false)
+				return op;
+
+			op.setValue(pnew -> getVarValue(*itr));
 			return op;
+		}
+		else
+		{
+			std::list<std::string> names = pold -> getArraysNames();
+			std::list<std::string>::const_iterator itr = names.begin();
 
-		if(pnew -> isVar(*itr) == false)
-			return op;
+			for(;itr != names.end() && (&(pold -> getArray(*itr)) != m_parr); itr++);
 
-		op.setValue(pnew -> getVarValue(*itr));
-		return op;
+			if(itr == names.end())
+				return op;
+
+			if(pnew -> isArray(*itr) == false)
+				return op;
+
+			op.m_parr = &(pnew -> getArray(*itr));
+			return op;	
+		}
 	}
 	else
 	{
