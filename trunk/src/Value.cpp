@@ -71,8 +71,6 @@ bool Value::isReadable() const
 }
 
 
-
-
 bool Value::isWriteable() const
 {
 	return m_isWriteable;

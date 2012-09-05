@@ -18,6 +18,7 @@
 
 class Context
 {
+	friend class CodeExecuter;
 	public:
 /**
 Конструктор.

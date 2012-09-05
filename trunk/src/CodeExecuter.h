@@ -9,15 +9,22 @@
 
 #include <stack>
 #include <stdexcept>
+#include <iostream>
+
+#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "Program.h"
 #include "Context.h"
 #include "Function.h"
 #include "Exception.h"
+#include "ArrayOperand.h"
+#include "VarOperand.h"
+#include "LabelOperand.h"
 
 /**
 @class CodeExecuter
-@brief Класс для выполнения оттранслорованного кода программы
+@brief Класс для выполнения оттранслорованного кода программы. Предполагается что уже проверены типа операндов.
 */
 
 class CodeExecuter
@@ -33,6 +40,11 @@ class CodeExecuter
 		~CodeExecuter();
 
 
+/**
+Установка выходного потока. Поток используется для вывода командой aout
+@param stream - устанавливаемый поток
+*/
+		void setOutputStream(std::ostream &stream);
 
 
 /**
@@ -52,7 +64,9 @@ class CodeExecuter
 */
 		Exception::Type exec_command();
 
+
 		std::stack<Context>		m_contexts;
+		std::ostream 			*m_poutput;
 };
 
 

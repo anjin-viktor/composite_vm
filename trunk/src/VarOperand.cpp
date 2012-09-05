@@ -167,7 +167,6 @@ bool VarOperand::isWriteable() const
 	if(m_pval)
 		return m_pval -> isWriteable();
 
-
 	if(m_parr)
 		return m_parr -> operator[](m_indx).isWriteable();
 
@@ -228,4 +227,17 @@ VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		return var;
 	}
 	else return VarOperand();
+}
+
+
+
+
+void VarOperand::setValue(long long val)
+{
+	if(m_pval)
+		m_pval -> setValue(val);
+	else if(m_parr)
+		return m_parr -> operator[](m_indx).setValue(val);
+	else
+		throw std::logic_error("setting value from NULL-object");	
 }
