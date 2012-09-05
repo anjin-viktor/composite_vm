@@ -161,7 +161,7 @@ void VarOperand::initialize()
 
 bool VarOperand::isWriteable() const
 {
-	if(m_const == true)
+	if(m_const == true || m_type != Value::NO_TYPE)
 		return false;
 
 	if(m_pval)
@@ -199,7 +199,7 @@ VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 			return VarOperand();
 
 		var.setValuePtr(&(pnew -> getVarValue(name)));
-		m_pval -> setValue(123);
+
 
 		return var;
 	}

@@ -68,6 +68,14 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_2)
 	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isReadable(), true);
 	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isWriteable(), true);
 
+	Function func = Program::getInstance().getFunction("main").copy();
+	pkeeper = func.getDataKeeperPtr();
+
+
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isReadable(), true);
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isWriteable(), true);
+
+
 //	BOOST_CHECK_NO_THROW(exec.exec());
 
 

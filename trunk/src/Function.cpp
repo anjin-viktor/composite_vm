@@ -207,7 +207,6 @@ std::vector<Command> Function::codeCopy(DataKeeper *pnewKeeper, const std::vecto
 				parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(code[i].getOperand(j));
 				ArrayOperand arr = parr -> convert(getDataKeeperPtr(), pnewKeeper);
 				*(parr.get()) = arr;
-
 			}
 			else if((boost::dynamic_pointer_cast<VarOperand, Operand>(code[i].getOperand(j))).get() != NULL)
 			{

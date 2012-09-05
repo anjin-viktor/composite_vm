@@ -11,7 +11,7 @@
 #include "ArrayOperand.h"
 #include "VarOperand.h"
 #include "CallOperand.h"
-
+#include "Command.h"
 
 /**
 @file FunctionTest.cpp
@@ -333,3 +333,70 @@ BOOST_AUTO_TEST_CASE(testFunction_copy)
 	BOOST_CHECK_EQUAL(plop -> getLabelName(), "label_name");
 	BOOST_CHECK_EQUAL(pcop -> isArrayElement(), true);
 }
+
+
+/**
+Тест прав доступа переменных при копировании функции
+*/
+
+
+BOOST_AUTO_TEST_CASE(testFunction_copy_access)
+{
+	Function func;
+	std::vector<Command> code;
+	Command c;
+
+	Value val(256, Value::SIGNED_INT, true, true);
+	Value val1(0, Value::SIGNED_INT, true, false);
+	Array arr(3, Value::MOD8);
+
+
+	arr[0] = Value(3, Value::MOD16, false, false);
+	arr[1] = Value(3, Value::MOD16, false, true);
+	arr[2] = Value(3, Value::MOD16, true, true);
+	arr.setWriteable(true);
+
+	func.getDataKeeperPtr() -> addVar(val, "val");
+	func.getDataKeeperPtr() -> addVar(val1, "0");
+	func.getDataKeeperPtr() -> addArray(arr, "arr");
+
+	c.setOperationType(Command::MOV);
+	boost::shared_ptr<VarOperand> pop1 = boost::shared_ptr<VarOperand>(new VarOperand(&(func.getDataKeeperPtr() -> getVarValue("val"))));
+	boost::shared_ptr<VarOperand> pop2 = boost::shared_ptr<VarOperand>(new VarOperand(&(func.getDataKeeperPtr() ->  getArray("arr")),2, Value::NO_TYPE));
+
+	pop2 -> setType(Value::SIGNED_INT);
+	c.setFirstOperand(pop1);
+	c.setSecondOperand(pop2);
+	code.push_back(c);
+
+	func.setCommands(code);
+
+	code = func.getCommands();
+	c = code[0];
+
+	Function copyFunc = func.copy();
+
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getVarValue("val")).isWriteable(), true);
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getVarValue("val")).isReadable(), true);
+
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getArray("arr"))[0].isReadable(), false);
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getArray("arr"))[0].isWriteable(), false);
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getArray("arr"))[1].isReadable(), false);
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getArray("arr"))[1].isWriteable(), true);
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getArray("arr"))[2].isReadable(), true);
+	BOOST_CHECK_EQUAL((copyFunc.getDataKeeperPtr() -> getArray("arr"))[2].isWriteable(), true);
+
+	code = copyFunc.getCommands();
+	c = code[0];
+
+	boost::shared_ptr<VarOperand> pop = boost::dynamic_pointer_cast<VarOperand, Operand>(c.getFirstOperand());
+	BOOST_CHECK_EQUAL(pop -> isWriteable(), true);
+	BOOST_CHECK_EQUAL(pop -> isReadable(), true);
+
+	pop = boost::dynamic_pointer_cast<VarOperand, Operand>(c.getSecondOperand());
+	BOOST_CHECK_EQUAL(pop -> hasValue(), true);
+	BOOST_CHECK_EQUAL(pop -> isWriteable(), false);
+	BOOST_CHECK_EQUAL(pop -> isReadable(), true);
+}
+
+

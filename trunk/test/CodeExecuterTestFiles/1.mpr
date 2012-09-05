@@ -1,0 +1,6 @@
+.name main
+.var
+	array uchar str "hello!"
+.begin
+	aout str
+.end

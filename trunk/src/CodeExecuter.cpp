@@ -81,6 +81,8 @@ Exception::Type CodeExecuter::exec_command()
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
+			
+
 			if(pfArg -> isWriteable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 

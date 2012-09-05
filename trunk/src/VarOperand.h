@@ -2,6 +2,8 @@
 #define VAR_OPERAND_H_
 
 
+#include <iostream>
+
 
 
 #include <stdexcept>
