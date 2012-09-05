@@ -24,6 +24,7 @@ set (SOURCES
 	../src/CallOperand.cpp
 	../src/Exception.cpp
 	../src/Context.cpp
+	../src/CodeExecuter.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -44,6 +45,7 @@ set (SOURCES
 	CallOperandTest.cpp
 	ExceptionTest.cpp
 	ContextTest.cpp
+	CodeExecuterTest.cpp
 	)
  
 set (BOOST_COMPONENTS 
