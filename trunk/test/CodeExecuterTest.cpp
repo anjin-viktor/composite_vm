@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_1)
 	BOOST_CHECK_NO_THROW(tr.translate());
 	BOOST_CHECK_NO_THROW(exec.exec());
 
-	BOOST_CHECK_EQUAL(stream.str(), "hello!");
+	BOOST_CHECK_EQUAL(stream.str(), "hello!\n");
 }
 
 
@@ -77,9 +77,12 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_2)
 
 
 	BOOST_CHECK_NO_THROW(exec.exec());
-
-
-	BOOST_CHECK_EQUAL(stream.str(), "Hello!");
+	BOOST_CHECK_EQUAL(stream.str(), "Hello!\n"
+									"Rello!\n"
+									"Hello!\n"
+									"hello!\n"
+									"hello!\n"
+	);
 }
 
 BOOST_AUTO_TEST_SUITE_END();

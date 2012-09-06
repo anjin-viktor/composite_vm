@@ -208,4 +208,31 @@ BOOST_AUTO_TEST_CASE(testValue_LINK)
 }
 
 
+
+
+
+/**
+Тест на функцию isOwerflow
+*/
+
+
+BOOST_AUTO_TEST_CASE(testValue_ISOWERFLOF)
+{
+
+	BOOST_CHECK_EQUAL(Value::isOverflow(256, Value::SIGNED_CHAR), true);
+	BOOST_CHECK_EQUAL(Value::isOverflow(256, Value::UNSIGNED_CHAR), true);
+	BOOST_CHECK_EQUAL(Value::isOverflow(256, Value::MOD8), false);
+
+	BOOST_CHECK_EQUAL(Value::isOverflow(-10, Value::SIGNED_CHAR), false);
+	BOOST_CHECK_EQUAL(Value::isOverflow(-10, Value::UNSIGNED_CHAR), true);
+	BOOST_CHECK_EQUAL(Value::isOverflow(-10, Value::MOD8), false);
+
+	BOOST_CHECK_EQUAL(Value::isOverflow(1000, Value::SIGNED_INT), false);
+	BOOST_CHECK_EQUAL(Value::isOverflow(1000, Value::UNSIGNED_INT), false);
+	BOOST_CHECK_EQUAL(Value::isOverflow(1000, Value::MOD16), false);
+}
+
+
+
+
 BOOST_AUTO_TEST_SUITE_END();

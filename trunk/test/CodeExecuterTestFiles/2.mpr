@@ -1,9 +1,35 @@
 .name main
 .var
 	sint ch 72
+	schar ch_
 	array uchar str "hello!"
 .begin
 	mov str[0], (uchar)ch
+	aout str
+
+	mov ch_, 10
+	add ch_, (schar)ch
+	mov str[0], (uchar) ch_
+	aout str
+
+	sub str[0], (uchar) ch_
+	add str[0], (uchar) ch
+	aout str
+
+	mov str[0], 10
+	mul str[0], 10
+	add str[0], 4
+	aout str
+
+	mov ch_, (schar) str[0]
+	div str[0], 10
+	mov ch, (sint)str[0]
+	mov str[0], (uchar)ch_
+
+	mod str[0], 10
+	mul ch, 10
+	add str[0], (uchar)ch
+
 	aout str
 
 .end

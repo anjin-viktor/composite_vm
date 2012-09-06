@@ -6,6 +6,7 @@
 */
 
 #include <stdexcept>
+#include <climits>
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -160,6 +161,13 @@ return копию переменной
 Сравнение
 */
 		bool operator == (const Value &) const;
+
+/**
+Проверка не переполнение типа значением
+@param val - значение
+@param type - проверяемый тип
+*/
+		static bool isOverflow(long long val, ValueType type);
 
 	private:
 /**

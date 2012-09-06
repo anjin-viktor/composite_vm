@@ -270,3 +270,30 @@ bool Value::operator == (const Value &v) const
 
 	return m_pval == v.m_pval && m_type == v.m_type && m_isWriteable == v.m_isWriteable && m_isReadable == v.m_isReadable;
 }
+
+
+
+
+bool Value::isOverflow(long long val, Value::ValueType type)
+{
+	switch(type)
+	{
+		case Value::MOD8:
+		case Value::MOD16:
+		case Value::MOD32:
+			return false;
+
+		case Value::SIGNED_CHAR:
+			return (val < SCHAR_MIN || val > SCHAR_MAX);
+		case Value::UNSIGNED_CHAR:
+			return (val < 0 || val > UCHAR_MAX);
+		case Value::SIGNED_SHORT:
+			return (val < SHRT_MIN || val > SHRT_MAX);
+		case Value::UNSIGNED_SHORT:
+			return (val < 0 || val > USHRT_MAX);
+		case Value::SIGNED_INT:
+			return (val < INT_MIN || val > INT_MAX);
+		case Value::UNSIGNED_INT:
+			return (val < 0 || val > UINT_MAX);
+	};
+}

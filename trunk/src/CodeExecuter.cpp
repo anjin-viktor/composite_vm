@@ -81,7 +81,6 @@ Exception::Type CodeExecuter::exec_command()
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
-			
 
 			if(pfArg -> isWriteable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
@@ -93,26 +92,108 @@ Exception::Type CodeExecuter::exec_command()
 		}
 		case Command::ADD:
 		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res = pfArg -> getValue();
+			res += static_cast<long long>(psArg -> getValue());
+			
+			if(Value::isOverflow(res, pfArg -> getAfterCastType()))
+				return Exception::NumericError;
+
+
+			pfArg -> setValue(res);
+
+			m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::SUB:
 		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res = pfArg -> getValue();
+			res -= static_cast<long long>(psArg -> getValue());
+			
+			if(Value::isOverflow(res, pfArg -> getAfterCastType()))
+				return Exception::NumericError;
+
+
+			pfArg -> setValue(res);
+
+			m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::MUL:
 		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res = pfArg -> getValue();
+			res *= static_cast<long long>(psArg -> getValue());
+			
+
+			if(Value::isOverflow(res, pfArg -> getAfterCastType()))
+				return Exception::NumericError;
+
+			if((res / static_cast<long long>(psArg -> getValue())) != pfArg -> getValue())
+				return Exception::NumericError;
+
+			pfArg -> setValue(res);
+			m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::DIV:
 		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res = pfArg -> getValue();
+			res /= static_cast<long long>(psArg -> getValue());
+
+			pfArg -> setValue(res);
+			m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::MOD:
 		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res = pfArg -> getValue();
+			res %= static_cast<long long>(psArg -> getValue());
+
+			pfArg -> setValue(res);
+			m_contexts.top().m_ip++;
 
 			break;
 		}
@@ -146,8 +227,9 @@ Exception::Type CodeExecuter::exec_command()
 			Array *parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand()) -> getArrayPtr();
 
-			char *printingStr = new char[parr -> size() + 1];
-			printingStr[parr -> size()] = '\0';
+			char *printingStr = new char[parr -> size() + 2];
+			printingStr[parr -> size()] = '\n';
+			printingStr[parr -> size()+1] = '\0';
 
 			for(std::size_t i=0, size=parr->size(); i<size; i++)
 			{
@@ -157,7 +239,7 @@ Exception::Type CodeExecuter::exec_command()
 				printingStr[i] = static_cast<char>((parr -> operator[](i)).getValue());
 			}
 
-			m_poutput -> write(printingStr, parr -> size());
+			m_poutput -> write(printingStr, parr -> size()+1);
 			delete [] printingStr;
 			m_contexts.top().m_ip++;
 
@@ -190,7 +272,6 @@ Exception::Type CodeExecuter::exec_command()
 		}
 		case Command::NONE:
 		{
-
 			break;
 		}
 	};
