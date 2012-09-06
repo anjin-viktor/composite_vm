@@ -65,3 +65,4 @@ bool LabelOperand::checkLabelName(const std::string &labelName)
 
     return boost::regex_match(labelName.c_str(), what, expr);
 }
+

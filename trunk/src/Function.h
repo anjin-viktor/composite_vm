@@ -20,7 +20,7 @@
 #include "ArrayOperand.h"
 #include "VarOperand.h"
 #include "CallOperand.h"
-
+#include "LabelOperand.h"
 
 /**
 @class Function
@@ -129,6 +129,12 @@ class Function
 
 
 /**
+Получение константного указателя на набор данных.
+@return указатель на набор данных функции
+*/
+		const DataKeeper *getDataKeeperPtr() const;
+
+/**
 Получение списка аргументов в порядке слева на право
 @return список аргументов
 */
@@ -169,9 +175,10 @@ class Function
 Копирование функции.
 @return копия функции
 */
-		Function copy();
+		Function copy() const;
 
 
+		Function &operator =(const Function &);
 
 	private:
 /**
@@ -180,7 +187,7 @@ class Function
 @param code - вектор команд
 @return скопированный вектор.
 */
-		std::vector<Command> codeCopy(DataKeeper *pnewKeeper, const std::vector<Command> &code);
+		std::vector<Command> codeCopy(DataKeeper *pnewKeeper, const std::vector<Command> &code) const;
 
 
 

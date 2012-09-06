@@ -68,7 +68,6 @@ class LabelOperand: public Operand
 */
 		static bool checkLabelName(const std::string &labelName);
 
-
 	private:
 /**
 Смещение целевой команды относительно начала блока команд (блок команд - тело функции или облаботчика исключительной ситации).

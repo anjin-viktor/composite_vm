@@ -121,7 +121,7 @@ class Array
 Создание копии не являющейся ссылкой.
 return копию массива
 */
-		Array createNoLink() ;
+		Array createNoLink() const;
 
 
 /**

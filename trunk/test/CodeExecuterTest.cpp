@@ -76,10 +76,10 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_2)
 	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isWriteable(), true);
 
 
-//	BOOST_CHECK_NO_THROW(exec.exec());
+	BOOST_CHECK_NO_THROW(exec.exec());
 
 
-//	BOOST_CHECK_EQUAL(stream.str(), "Hello!");
+	BOOST_CHECK_EQUAL(stream.str(), "Hello!");
 }
 
 BOOST_AUTO_TEST_SUITE_END();

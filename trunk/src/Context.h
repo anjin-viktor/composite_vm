@@ -9,7 +9,7 @@
 
 #include "Function.h"
 #include "Command.h"
-
+#include "Exception.h"
 
 /**
 @class Context 
@@ -24,6 +24,12 @@ class Context
 Конструктор.
 */
 		Context();
+
+/**
+Оператор копирования. Нужен для безопасного копирования m_code
+@param cntx
+*/
+		Context(const Context &cntx);
 /**
 Деструктор.
 */
@@ -34,6 +40,14 @@ class Context
 @param f - устанавливаемая функция
 */
 		void setFunction(const Function &f);
+
+/**
+Получение константного указателя на функцию.
+@return указатель на функцию объекта
+*/
+		Function *getFunctionPtr();
+
+
 /**
 Инициализация. Производить перед началом работы
 */
@@ -54,6 +68,15 @@ class Context
 
 
 /**
+Оператор присвоения. Нужен для безопасного копирования m_code
+@param cntx
+@retval
+*/
+		Context &operator =(const Context &);
+
+
+
+/**
 Перейти к обработке исключительной ситуации определённого типа
 @param exceptType - тип ислючительной ситуации
 @throw std::runtime_error в случае отсутствия обработчика
@@ -61,10 +84,15 @@ class Context
 		void execHandler(Exception::Type);
 
 
-	private:
 		Function 				m_function;
 		std::size_t				m_ip;
 		std::vector<Command>	m_code;
+/*
+Исполняемая часть. Exception::NoText - выполнение основного кода
+*/
+		Exception::Type 		m_currentCode;
+	private:
+
 };
 
 

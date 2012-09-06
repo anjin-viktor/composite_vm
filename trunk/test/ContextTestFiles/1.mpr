@@ -1,0 +1,7 @@
+.name main
+.var
+	uchar ch 70
+	uint t 100
+.begin
+	mov ch, 72
+.end

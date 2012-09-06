@@ -150,7 +150,7 @@ Value &Array::operator[] (std::size_t n)
 
 
 
-Array Array::createNoLink()
+Array Array::createNoLink() const
 {
 	Array arr = *this;
 

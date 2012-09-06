@@ -1,6 +1,9 @@
 .name main
 .var
-	uchar ch 72
+	sint ch 72
+	array uchar str "hello!"
 .begin
-	mov ch, 72
+	mov str[0], (uchar)ch
+	aout str
+
 .end

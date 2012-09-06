@@ -5,13 +5,15 @@
 
 #include "../src/Function.h"
 #include "../src/Command.h"
-#include "Value.h"
-#include "Array.h"
-#include "LabelOperand.h"
-#include "ArrayOperand.h"
-#include "VarOperand.h"
-#include "CallOperand.h"
-#include "Command.h"
+#include "../src/Value.h"
+#include "../src/Array.h"
+#include "../src/LabelOperand.h"
+#include "../src/ArrayOperand.h"
+#include "../src/VarOperand.h"
+#include "../src/CallOperand.h"
+#include "../src/Command.h"
+#include "../src/Translator.h"
+#include "../src/DataKeeper.h"
 
 /**
 @file FunctionTest.cpp
@@ -110,8 +112,6 @@ BOOST_AUTO_TEST_CASE(testFunction_argsList)
 	BOOST_CHECK_EQUAL_COLLECTIONS(lst.begin(), lst.end(), funcArgs.begin(), funcArgs.end());
 }
 
-BOOST_AUTO_TEST_SUITE_END();
-
 
 
 /**
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_SUITE_END();
 */
 
 
-BOOST_AUTO_TEST_CASE(testFunction_argsList)
+BOOST_AUTO_TEST_CASE(testFunction_argIsRef)
 {
 	Function func;
 
@@ -400,3 +400,95 @@ BOOST_AUTO_TEST_CASE(testFunction_copy_access)
 }
 
 
+
+
+/**
+Тест 1.mpr
+*/
+
+BOOST_AUTO_TEST_CASE(testFunction_1)
+{
+	Translator tr;
+
+	tr.setInputFileName("FunctionTestFiles/1.mpr");
+
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	DataKeeper *pkeeper = Program::getInstance().getFunction("main").getDataKeeperPtr();
+
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isReadable(), true);
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isWriteable(), true);
+
+	Function f = Program::getInstance().getFunction("main").copy();
+	Function func = f;
+	pkeeper = func.getDataKeeperPtr();
+
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isReadable(), true);
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").isWriteable(), true);
+	BOOST_CHECK_EQUAL(pkeeper -> getVarValue("ch").getValue(), 70);
+
+	std::vector<Command> code = func.getCommands();
+	BOOST_CHECK_EQUAL(code[0].getOperationType(), Command::MOV);
+
+	boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand> (code[0].getFirstOperand());
+	boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand> (code[0].getSecondOperand());
+
+
+	BOOST_CHECK_EQUAL(pfArg -> isReadable(), true);
+	BOOST_CHECK_EQUAL(pfArg -> isWriteable(), true);
+	BOOST_CHECK_EQUAL(pfArg -> isConstant(), false);
+	BOOST_CHECK_EQUAL(pfArg -> isCast(), false);
+	BOOST_CHECK_EQUAL(pfArg -> getValue(), 70);
+
+	BOOST_CHECK_EQUAL(psArg -> isWriteable(), false);
+	BOOST_CHECK_EQUAL(psArg -> isReadable(), true);
+	BOOST_CHECK_EQUAL(psArg -> getValue(), 72);
+
+}
+
+
+
+/**
+Тест копирования функции
+
+*/
+BOOST_AUTO_TEST_CASE(testFunction_1_)
+{
+	Translator tr;
+
+	tr.setInputFileName("FunctionTestFiles/1.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	Function f, func;
+	func = Program::getInstance().getFunction("___main____").copy();
+
+	Program::getInstance().getFunction("___main____");
+
+	f = func;
+	func = f;
+
+	std::vector<Command> code;
+	code = func.getCommands();
+
+
+	boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+		(code[0].getFirstOperand());
+	boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+		(code[0].getSecondOperand());
+
+
+	BOOST_CHECK_EQUAL(pfArg -> isReadable(), true);
+	BOOST_CHECK_EQUAL(pfArg -> isWriteable(), true);
+	BOOST_CHECK_EQUAL(pfArg -> isConstant(), false);
+	BOOST_CHECK_EQUAL(pfArg -> isCast(), false);
+	BOOST_CHECK_EQUAL(pfArg -> getValue(), 70);
+
+	BOOST_CHECK_EQUAL(psArg -> isWriteable(), false);
+	BOOST_CHECK_EQUAL(psArg -> isReadable(), true);
+	BOOST_CHECK_EQUAL(psArg -> getValue(), 72);
+
+}
+
+
+BOOST_AUTO_TEST_SUITE_END();
