@@ -11,6 +11,40 @@ Function::~Function()
 }
 
 
+Function::Function(const Function &f)
+{
+	setName(f.m_name);
+	DataKeeper keeper;
+
+	std::list<std::string> names = f.getDataKeeperPtr() -> getValuesNames();
+	std::list<std::string>::const_iterator itrNames = names.begin();
+
+	for(;itrNames != names.end(); itrNames++)
+		keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
+
+	names = f.getDataKeeperPtr() -> getArraysNames();
+
+	for(itrNames = names.begin(); itrNames != names.end(); itrNames++)
+		keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
+
+	setDataKeeper(keeper);
+
+	m_args = f.m_args;
+	m_argsIsRefs = f.m_argsIsRefs;
+
+	m_code = f.codeCopy(getDataKeeperPtr(), f.m_code);
+ 	
+	if(f.exceptionHandlerIsExists(Exception::NumericError))
+		m_handlers[Exception::NumericError] = 
+			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::NumericError));
+
+	if(f.exceptionHandlerIsExists(Exception::ConstraintError))
+		m_handlers[Exception::ConstraintError] = 
+			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::ConstraintError));
+}
+
+
+
 void Function::setName(const std::string &name)
 {
 	m_name = name;
