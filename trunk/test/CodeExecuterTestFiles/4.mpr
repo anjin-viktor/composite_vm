@@ -1,0 +1,7 @@
+.name main
+.var
+	array uchar arr 5 1 2 3 4 5
+.begin
+	rsz arr, 10
+	mov arr[9], 0
+.end

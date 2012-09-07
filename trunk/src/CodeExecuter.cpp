@@ -89,6 +89,8 @@ Exception::Type CodeExecuter::exec_command()
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
 
 			if(pfArg -> isWriteable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
@@ -104,6 +106,9 @@ Exception::Type CodeExecuter::exec_command()
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
 
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
@@ -128,6 +133,10 @@ Exception::Type CodeExecuter::exec_command()
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
+
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
@@ -150,6 +159,9 @@ Exception::Type CodeExecuter::exec_command()
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
 
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
@@ -176,6 +188,9 @@ Exception::Type CodeExecuter::exec_command()
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
@@ -193,6 +208,9 @@ Exception::Type CodeExecuter::exec_command()
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
 
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
@@ -280,6 +298,9 @@ Exception::Type CodeExecuter::exec_command()
 			Array *parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand()) -> getArrayPtr();
 
+			if(parr == NULL)
+				return Exception::ConstraintError;
+
 			char *printingStr = new char[parr -> size() + 2];
 			printingStr[parr -> size()] = '\n';
 			printingStr[parr -> size()+1] = '\0';
@@ -300,6 +321,21 @@ Exception::Type CodeExecuter::exec_command()
 		}
 		case Command::RSZ:
 		{
+			Array *parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand()) -> getArrayPtr();
+
+			boost::shared_ptr<VarOperand> pval = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(parr == NULL || pval -> hasValue() == false)
+				return Exception::ConstraintError;
+
+			if(parr -> isWriteable() == false || pval -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			parr -> resize(pval -> getValue());
+
+			m_contexts.top().m_ip++;
 
 			break;
 		}
@@ -324,6 +360,9 @@ Exception::Type CodeExecuter::exec_command()
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
 			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+				return Exception::ConstraintError;
 
 			if(pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;

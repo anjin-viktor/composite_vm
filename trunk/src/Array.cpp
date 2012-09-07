@@ -74,7 +74,11 @@ void Array::resize(std::size_t size)
 		m_parr.reset();
 
 	for(int i=start; i<size; i++)
+	{
 		m_parr -> at(i).setType(m_type);
+		m_parr -> at(i).setReadable(false);
+		m_parr -> at(i).setWriteable(true);
+	}
 }
 
 

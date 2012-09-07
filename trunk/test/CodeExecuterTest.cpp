@@ -114,5 +114,24 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_3)
 
 
 
+/**
+Тест выполнения 4.mpr(команда rsz)
+*/
+BOOST_AUTO_TEST_CASE(CodeExecuter_4)
+{
+	Translator tr;
+	CodeExecuter exec;
+
+	tr.setInputFileName("CodeExecuterTestFiles/4.mpr");
+
+	std::ostringstream stream;
+	exec.setOutputStream(stream);
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	BOOST_CHECK_NO_THROW(exec.exec());
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END();
