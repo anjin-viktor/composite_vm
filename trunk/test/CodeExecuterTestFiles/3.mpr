@@ -1,0 +1,53 @@
+.name main
+.var
+	sint ch 72
+	schar ch_
+	array mod8 l1 "l1"
+	array mod8 l2 "l2"
+	array mod8 l3 "l3"
+	array mod8 l4 "l4"
+	array mod8 l5 "l5"
+	array mod8 l6 "l6"
+	array mod8 l7 "l7"
+	array mod8 l8 "l8"
+
+.begin
+	mov ch_, 10
+	jmp l2
+
+l1:
+	aout l1
+	cmp (sint)ch_, ch
+	jne l3
+
+l2:
+	aout l2
+	cmp (sint)ch_, ch
+	jl l1
+
+l3:
+	aout l3
+	cmp 72, ch
+	je l5
+
+l4:
+	aout l4
+	cmp 1, 1
+	je l6
+l5:
+	aout l5
+	cmp ch_, 0
+	jg l4
+l6:
+	aout l6
+	cmp ch_, 10
+	jne l8
+
+	aout l7
+	jmp l9
+l8:
+	aout l8
+l9:
+	cmp 1, 0
+	je l8
+.end

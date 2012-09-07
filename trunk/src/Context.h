@@ -21,6 +21,15 @@ class Context
 	friend class CodeExecuter;
 	public:
 /**
+@brief перечисление для представления результата команды cmp
+*/
+		enum CmpResult
+		{
+			Equal = 1,
+			Greater = 2,
+			NotDefined = 4
+		};
+/**
 Конструктор.
 */
 		Context();
@@ -83,7 +92,7 @@ class Context
 */
 		void execHandler(Exception::Type);
 
-
+	private:
 		Function 				m_function;
 		std::size_t				m_ip;
 		std::vector<Command>	m_code;
@@ -91,8 +100,8 @@ class Context
 Исполняемая часть. Exception::NoText - выполнение основного кода
 */
 		Exception::Type 		m_currentCode;
-	private:
 
+		int 					m_cmpRes;
 };
 
 

@@ -17,6 +17,7 @@ namespace Exception
 	{
 		NumericError,
 		ConstraintError,
+		ProgramError,
 		NoType
 	};
 

@@ -4,12 +4,14 @@ Context::Context()
 {
 	m_ip = 0;
 	m_currentCode = Exception::NoType;
+	m_cmpRes = NotDefined;
 }
 
 
 Context::Context(const Context &cntx)
 {
 	m_function = cntx.m_function.copy();
+	m_cmpRes = cntx.m_cmpRes;
 
 	m_currentCode = cntx.m_currentCode;
 	m_ip = cntx.m_ip;
@@ -37,6 +39,7 @@ void Context::init()
 	m_ip = 0;
 	m_code = m_function.getCommands();
 	m_currentCode = Exception::NoType;
+	m_cmpRes = NotDefined;
 }
 
 
@@ -89,6 +92,8 @@ Context &Context::operator =(const Context &cntx)
 			m_code = m_function.getCommands();
 	else
 		m_code = m_function.getExceptionHandlerCode(m_currentCode);
+
+	m_cmpRes = cntx.m_cmpRes;
 
 	return *this;
 }

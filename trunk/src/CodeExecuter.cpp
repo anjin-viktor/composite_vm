@@ -38,6 +38,14 @@ void CodeExecuter::exec()
 				exit(1);
 				break;
 			}
+
+			case Exception::ProgramError:
+			{
+				std::cerr << "ConstraintError\n";
+				exit(1);
+				break;
+			}
+
 			case Exception::NoType:
 			{
 				break;
@@ -199,26 +207,71 @@ Exception::Type CodeExecuter::exec_command()
 		}
 		case Command::JMP:
 		{
+			boost::shared_ptr<LabelOperand> plblArg = boost::dynamic_pointer_cast<LabelOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+			m_contexts.top().m_ip = plblArg -> getCommandOffset();
 
 			break;
 		}
 		case Command::JL:
 		{
+			if(m_contexts.top().m_cmpRes & Context::NotDefined)
+				return Exception::ProgramError;
+
+			boost::shared_ptr<LabelOperand> plblArg = boost::dynamic_pointer_cast<LabelOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+
+			if(!(m_contexts.top().m_cmpRes & Context::Equal) && !(m_contexts.top().m_cmpRes & Context::Greater))
+				m_contexts.top().m_ip = plblArg -> getCommandOffset();
+			else
+				m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::JE:
 		{
+			if(m_contexts.top().m_cmpRes & Context::NotDefined)
+				return Exception::ProgramError;
+
+			boost::shared_ptr<LabelOperand> plblArg = boost::dynamic_pointer_cast<LabelOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+			if(m_contexts.top().m_cmpRes & Context::Equal)
+				m_contexts.top().m_ip = plblArg -> getCommandOffset();
+			else
+				m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::JG:
 		{
+			if(m_contexts.top().m_cmpRes & Context::NotDefined)
+				return Exception::ProgramError;
+
+			boost::shared_ptr<LabelOperand> plblArg = boost::dynamic_pointer_cast<LabelOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+			if(m_contexts.top().m_cmpRes & Context::Greater)
+				m_contexts.top().m_ip = plblArg -> getCommandOffset();
+			else
+				m_contexts.top().m_ip++;
 
 			break;
 		}
 		case Command::JNE:
 		{
+			if(m_contexts.top().m_cmpRes & Context::NotDefined)
+				return Exception::ProgramError;
+
+			boost::shared_ptr<LabelOperand> plblArg = boost::dynamic_pointer_cast<LabelOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+			if(!(m_contexts.top().m_cmpRes & Context::Equal))
+				m_contexts.top().m_ip = plblArg -> getCommandOffset();
+			else
+				m_contexts.top().m_ip++;
 
 			break;
 		}
@@ -262,12 +315,30 @@ Exception::Type CodeExecuter::exec_command()
 		}
 		case Command::NOP:
 		{
-
+			m_contexts.top().m_ip++;
 			break;
 		}
 		case Command::CMP:
 		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
+			if(pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			m_contexts.top().m_cmpRes &= 0;
+
+			long long res = pfArg -> getValue();
+			res -= static_cast<long long>(psArg -> getValue());
+
+			if(res == 0)
+				m_contexts.top().m_cmpRes |= Context::Equal;
+			else if(res > 0)
+				m_contexts.top().m_cmpRes |= Context::Greater;
+
+			m_contexts.top().m_ip++;
 			break;
 		}
 		case Command::NONE:

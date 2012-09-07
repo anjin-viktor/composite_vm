@@ -85,4 +85,34 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_2)
 	);
 }
 
+
+/**
+Тест выполнения 3.mpr(сравнение, условные переходы)
+*/
+BOOST_AUTO_TEST_CASE(CodeExecuter_3)
+{
+	Translator tr;
+	CodeExecuter exec;
+
+	tr.setInputFileName("CodeExecuterTestFiles/3.mpr");
+
+	std::ostringstream stream;
+	exec.setOutputStream(stream);
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	BOOST_CHECK_NO_THROW(exec.exec());
+	BOOST_CHECK_EQUAL(stream.str(), "l2\n"
+									"l1\n"
+									"l3\n"
+									"l5\n"
+									"l4\n"
+									"l6\n"
+									"l7\n"
+						);
+}
+
+
+
+
 BOOST_AUTO_TEST_SUITE_END();
