@@ -41,7 +41,14 @@ void CodeExecuter::exec()
 
 			case Exception::ProgramError:
 			{
-				std::cerr << "ConstraintError\n";
+				std::cerr << "ProgramError\n";
+				exit(1);
+				break;
+			}
+
+			case Exception::StorageError:
+			{
+				std::cerr << "StorageError\n";
 				exit(1);
 				break;
 			}
@@ -333,7 +340,14 @@ Exception::Type CodeExecuter::exec_command()
 			if(parr -> isWriteable() == false || pval -> isReadable() == false)
 				return Exception::ConstraintError;
 
-			parr -> resize(pval -> getValue());
+			try
+			{
+				parr -> resize(pval -> getValue());
+			}
+			catch(std::bad_alloc allocError)
+			{
+				return Exception::StorageError;
+			}
 
 			m_contexts.top().m_ip++;
 

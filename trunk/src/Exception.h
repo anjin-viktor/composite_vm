@@ -18,6 +18,7 @@ namespace Exception
 		NumericError,
 		ConstraintError,
 		ProgramError,
+		StorageError,
 		NoType
 	};
 
