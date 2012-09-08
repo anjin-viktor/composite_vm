@@ -134,4 +134,35 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_4)
 
 
 
+
+/**
+Тест выполнения 5.mpr(команды call, ret)
+*/
+BOOST_AUTO_TEST_CASE(CodeExecuter_5)
+{
+	Translator tr;
+	CodeExecuter exec;
+
+	tr.setInputFileName("CodeExecuterTestFiles/5.mpr");
+
+	std::ostringstream stream;
+	exec.setOutputStream(stream);
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+
+//	BOOST_CHECK_NO_THROW(exec.exec());
+/*
+	BOOST_CHECK_EQUAL(stream.str(), "main\n"
+									"f\n"
+									"from f\n"
+									"FROm f\n"
+									"main\n"
+
+						);
+*/}
+
+
+
+
 BOOST_AUTO_TEST_SUITE_END();

@@ -239,11 +239,11 @@ BOOST_AUTO_TEST_CASE(testFunction_copy)
 	c.setOperationType(Command::CALL);
 	plcop -> setLabelName("call_name");
 	c.setFirstOperand(plcop);
-	pcop -> setArray(func.getDataKeeperPtr() -> getArray("arr"));
+	pcop -> setArrayPtr(&(func.getDataKeeperPtr() -> getArray("arr")));
 	c.setSecondOperand(pcop);
 
 	pcop = static_cast<boost::shared_ptr<CallOperand> >(new CallOperand);
-	pcop -> setValue(func.getDataKeeperPtr() -> getVarValue("val"));
+	pcop -> setValuePtr(&(func.getDataKeeperPtr() -> getVarValue("val")));
 	c.setOperand(3, pcop);
 
 	code.push_back(c);
@@ -451,7 +451,6 @@ BOOST_AUTO_TEST_CASE(testFunction_1)
 
 /**
 Тест копирования функции
-
 */
 BOOST_AUTO_TEST_CASE(testFunction_1_)
 {
@@ -489,6 +488,76 @@ BOOST_AUTO_TEST_CASE(testFunction_1_)
 	BOOST_CHECK_EQUAL(psArg -> getValue(), 72);
 
 }
+
+
+/**
+Тест копирования функции (2.mpr)
+*/
+BOOST_AUTO_TEST_CASE(testFunction_2_)
+{
+	Translator tr;
+
+	tr.setInputFileName("FunctionTestFiles/2.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	Function f, func;
+	func = Program::getInstance().getFunction("f").copy();
+
+
+	f = func;
+	func = f;
+
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> isArray("str"), true);
+
+	std::vector<Command> code;
+	code = func.getCommands();
+
+
+	boost::shared_ptr<CallOperand> parg = boost::dynamic_pointer_cast<CallOperand, Operand>
+		(code[0].getSecondOperand());
+
+/*	BOOST_CHECK_EQUAL(parg -> isArray(), true);
+	BOOST_CHECK_EQUAL(parg -> isValue(), false);
+*/
+	BOOST_CHECK(parg -> isArray() == true);
+	BOOST_CHECK(parg -> isValue() == false);
+
+}
+
+
+
+
+/**
+Тест копирования функции (3.mpr)
+*/
+BOOST_AUTO_TEST_CASE(testFunction_3_)
+{
+	Translator tr;
+
+	tr.setInputFileName("FunctionTestFiles/3.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	Function func, f_;
+	func = Program::getInstance().getFunction("f1").copy();
+
+
+	Function f(func);
+	f_ = f;
+
+	BOOST_CHECK_EQUAL(f_.getDataKeeperPtr() -> isArray("str"), true);
+
+	std::vector<Command> code;
+	code = f_.getCommands();
+
+
+	boost::shared_ptr<CallOperand> parg = boost::dynamic_pointer_cast<CallOperand, Operand>
+		(code[4].getSecondOperand());
+
+	BOOST_CHECK_EQUAL(parg -> isArray(), true);
+	BOOST_CHECK_EQUAL(parg -> isValue(), false);
+}
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END();

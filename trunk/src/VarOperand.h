@@ -151,6 +151,12 @@ class VarOperand: public Operand
 */
 		void initialize();
 
+/**
+Замена старых адресов новыми
+*/
+		void replace(Value *pold, Value *pnew);
+		void replace(Array *pold, Array *pnew);
+
 	private:
 		Value 				*m_pval;
 		Value::ValueType	m_type;

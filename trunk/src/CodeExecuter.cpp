@@ -21,7 +21,7 @@ void CodeExecuter::exec()
 	init();
 
 
-	for(;m_contexts.top().atEnd() == false;)
+	for(;m_contexts.empty() == false;)
 	{
 		switch(exec_command())
 		{
@@ -58,6 +58,9 @@ void CodeExecuter::exec()
 				break;
 			}
 		};
+
+		if(m_contexts.top().atEnd())
+			m_contexts.pop();
 	}
 }
 
@@ -355,12 +358,70 @@ Exception::Type CodeExecuter::exec_command()
 		}
 		case Command::CALL:
 		{
+			Command command = m_contexts.top().m_code[m_contexts.top().m_ip];
+			std::string lblName = boost::dynamic_pointer_cast<LabelOperand, Operand>
+				(command.getFirstOperand()) -> getLabelName();
+
+
+			Function newFunc = Program::getInstance().getFunction(lblName).copy();
+
+
+
+			std::list<std::string> argNames = newFunc.getArgsNames();
+			std::list<std::string>::const_iterator itr = argNames.begin();
+
+			for(std::size_t i=1, n=command.getNumberOfOperands(); i<n && itr != argNames.end(); i++, itr++)
+			{
+				boost::shared_ptr<CallOperand> pcallOp = boost::dynamic_pointer_cast<CallOperand, Operand>
+					(command.getOperand(i));
+
+
+				if(pcallOp -> isArray())
+				{
+					if(newFunc.argIsRef(*itr))
+					{
+						Array *pold = &(newFunc.getDataKeeperPtr() -> getArray(*itr));
+						newFunc.getDataKeeperPtr() -> getArray(*itr) = pcallOp -> getArray();
+						Array *pnew = &(newFunc.getDataKeeperPtr() -> getArray(*itr));
+						newFunc.replace(pold, pnew);
+					}
+					else
+					{
+						Array *pold = &(newFunc.getDataKeeperPtr() -> getArray(*itr));
+						newFunc.getDataKeeperPtr() -> getArray(*itr) = pcallOp -> getArray().createNoLink();
+						Array *pnew = &(newFunc.getDataKeeperPtr() -> getArray(*itr));
+						newFunc.replace(pold, pnew);
+					}
+				}
+				else
+				{
+					if(newFunc.argIsRef(*itr))
+					{
+						Value *pold = &(newFunc.getDataKeeperPtr() -> getVarValue(*itr));
+						newFunc.getDataKeeperPtr() -> getVarValue(*itr) = pcallOp -> getValue();
+						Value *pnew = &(newFunc.getDataKeeperPtr() -> getVarValue(*itr));
+						newFunc.replace(pold, pnew);
+					}
+					else
+						newFunc.getDataKeeperPtr() -> getVarValue(*itr).setValue(pcallOp -> getValue().getValue());					
+				}
+			}
+
+
+			Context cntx;
+			cntx.setFunction(newFunc);
+
+
+			cntx.init();
+
+			m_contexts.top().m_ip++;
+			m_contexts.push(cntx);
 
 			break;
 		}
 		case Command::RET:
 		{
-
+			m_contexts.pop();
 			break;
 		}
 		case Command::NOP:

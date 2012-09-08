@@ -59,6 +59,13 @@ class ArrayOperand: public Operand
 */
 	ArrayOperand convert(const DataKeeper *pold, DataKeeper *pnew) const;
 
+/**
+Замена старых адресов новыми
+*/
+		void replace(Array *pold, Array *pnew);
+
+
+
 	private:
 		Array 		*m_parr;
 };

@@ -317,11 +317,12 @@ class CodeTranslator
 					}
 
 					m_currentVar = VarOperand(&(m_pdata -> getVarValue(valName)));
+					m_callOp.setValuePtr(&(m_pdata -> getVarValue(valName)));
 				}
 				m_currentVar.setConstancy(true);
 				m_operandIsNumber = true;
 			
-				m_callOpVal = val;
+
 				m_callOpIsVal = true;
 			}
 
@@ -407,7 +408,7 @@ class CodeTranslator
 			
 					m_currentVar = VarOperand(&(m_pdata -> getVarValue(m_varName)));
 
-					m_callOpVal = m_pdata -> getVarValue(m_varName);
+					m_callOp.setValuePtr(&(m_pdata -> getVarValue(m_varName)));
 					m_callOpIsVal = true;
 
 				}
@@ -515,13 +516,13 @@ class CodeTranslator
 				{
 					if(m_pdata -> isVar(m_varName))
 					{
-						m_callOpVal = m_pdata -> getVarValue(m_varName);
+						m_callOp.setValuePtr(&(m_pdata -> getVarValue(m_varName)));
 						m_callOpIsVal = true;
 
 					}
 					else if(m_pdata -> isArray(m_varName))
 					{
-						m_callOpArr = m_pdata -> getArray(m_varName);
+						m_callOp.setArrayPtr(&(m_pdata -> getArray(m_varName)));
 						m_callOpIsVal = false;
 					}
 					else 
@@ -545,6 +546,8 @@ class CodeTranslator
 					m_callOpIsVal = true;
 					m_varIsArrayElement = true;
 
+					m_callOp.setArrayElement(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx);
+
 				}
 			}
 
@@ -560,37 +563,39 @@ class CodeTranslator
 				{
 					if(m_castType != Value::NO_TYPE)
 					{
-						m_callOpVal.setType(m_castType);
-						m_callOpVal.setWriteable(false);
+						m_callOp.setValueType(m_castType);
+						m_callOp.setWriteable(false);
 					}
 
 					if(m_operandIsConst || m_operandIsNumber)
-						m_callOpVal.setWriteable(false);
+						m_callOp.setWriteable(false);
 
-
+/*
 					if(m_varIsArrayElement)
 						op -> setArrayElement(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx);
 					else
 						op -> setValue(m_callOpVal);
-
+*/
 				}
 				else 
 				{
 					if(m_operandIsConst)
-						m_callOpArr.setWriteable(false);
+						m_callOp.setWriteable(false);
 
 
-					op -> setArray(m_callOpArr);
+//					op -> setArray(m_callOpArr);
 				}
+
+				*op = m_callOp;
 
 				m_pcommand -> setOperand(m_callOpNo, boost::shared_ptr<Operand>(op));
 				m_callOpNo++;
 				m_castType = Value::NO_TYPE;
 				m_operandIsConst = false;
-				m_callOpArr.setWriteable(true);
-				m_callOpVal.setWriteable(true);
+				m_callOp.setWriteable(true);
+//				m_callOpVal.setWriteable(true);
 				m_varIsArrayElement = false;
-
+//				m_callOpVal = Value();
 				m_arrName = "";
 			}
 
@@ -623,11 +628,12 @@ class CodeTranslator
 			Value::ValueType 						m_castType;
 			bool									m_operandIsConst;
 			bool									m_operandIsNumber;
-			Array 									m_callOpArr;
-			Value 									m_callOpVal;
+//			Array 									m_callOpArr;
+//			Value 									m_callOpVal;
 			bool									m_callOpIsVal;
 			std::size_t								m_callOpNo;
 			bool									m_varIsArrayElement;
+			CallOperand 							m_callOp;
 	};
 
 

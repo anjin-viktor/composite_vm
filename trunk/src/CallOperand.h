@@ -39,14 +39,14 @@ class CallOperand: public Operand
 Установка значения.
 @param val - добавляемое значение
 */
-		void setValue(const Value &val);
+		void setValuePtr(Value *pval);
 
 
 /**
 Установка массива
 @param arr - добавляемый массив
 */
-		void setArray(const Array &arr);
+		void setArrayPtr(Array *parr);
 
 
 /**
@@ -68,6 +68,17 @@ class CallOperand: public Operand
 */
 		Value getValue() const;
 
+/**
+Взятие числового значения операнда. Используется при передаче не по ссылке
+@return числовое значение операнда
+*/
+//		long long getVarValue() const;
+
+/**
+Установка типа, к которому приведётся операнд. Используется при передаче не по ссылке
+*/
+
+//		void setCastType(Value::ValueType type);
 
 /**
 Взятие массива у операнда. Имеет смысл только при isArray() == true;
@@ -96,29 +107,49 @@ class CallOperand: public Operand
 @param pnew - ноый хранитель
 @return операнд
 */
-	CallOperand convert(const DataKeeper *pold, DataKeeper *pnew) const;
+		CallOperand convert(const DataKeeper *pold, DataKeeper *pnew) const;
 
 
 /**
 Получение типа операнда. Имеет смысл, если операнд - переменная.
 @return тип операнда
 */
+		Value::ValueType getValueType() const;
 
-	Value::ValueType getValueType() const;
-
+/**
+Проверка на то, имеется ли значение у объекта
+*/
+		bool hasValue() const;
 
 /**
 Установка типа операнда. Используется для установки типа числового значения. Имеет смысл только при isValue() == true
 @param type - устанавливаемый тип
 */
-	void setValueType(Value::ValueType type); 
+		void setValueType(Value::ValueType type); 
+
+/**
+Замена старых адресов новыми
+*/
+		void replace(Array *pold, Array *pnew);
+
+/**
+Установка права на запись
+*/
+		void setWriteable(bool writeable);
+
+/**
+Проверка права на чтение
+*/
+		bool isWriteable() const;
 
 	private:
-		Value 		m_val;
-		Array		m_arr;
-		bool		m_fisValue;
-		bool		m_indx;
-		Array 		*m_parr;
+		Value 				*m_pval;
+		Array				*m_popArr;
+		bool				m_fisValue;
+		std::size_t			m_indx;
+		Array 				*m_parr;
+		Value::ValueType 	m_type;
+		bool				m_writeable;
 };
 
 

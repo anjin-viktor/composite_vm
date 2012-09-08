@@ -178,6 +178,12 @@ class Function
 */
 		bool argIsRef(const std::string &name) const;
 
+/**
+Замена старых адресов новыми
+*/
+		void replace(Value *pold, Value *pnew);
+		void replace(Array *pold, Array *pnew);
+
 
 
 /**

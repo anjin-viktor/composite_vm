@@ -1,0 +1,52 @@
+.name main
+.var
+	array uchar str "main"
+.begin
+	aout str
+	call f
+	aout str
+.end
+
+
+
+.name f
+.var
+	array uchar str "f" 
+	array mod8 str_ "from f"
+	uchar  n 70
+	uint  n_ 79
+	const uchar t 82
+
+.begin
+	aout str
+
+	call f1, str_, n, t, (uchar) n_
+
+	ret
+	aout str
+.end
+
+.name f1 array mod8 str, uchar &ch, uchar ch_, uchar ch__
+.var
+	uchar tmp
+	array mod8 s "hello"
+.begin
+	aout str
+	mov str[0], (mod8)ch
+	mov str[1], ch_
+	mov str[2], ch__
+
+
+	call f2, str
+	aout str
+.end
+
+
+
+
+
+.name f2 array mod8 str
+.var
+.begin
+.end
+

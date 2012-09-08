@@ -331,6 +331,7 @@ BOOST_AUTO_TEST_CASE(Translator_7_Test)
 	Translator tr;
 	tr.setInputFileName("TranslatorTestFiles/7.mpr");
 
+
 	BOOST_CHECK_NO_THROW(tr.translate());
 
 	BOOST_CHECK_EQUAL(Program::getInstance().numberOfFunctions(), 2);

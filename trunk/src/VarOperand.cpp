@@ -184,7 +184,7 @@ VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getValuesNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end()&& (&(pold -> getVarValue(*itr)) != m_pval); itr++);
+		for(;itr != names.end()&& !(pold -> getVarValue(*itr) == *m_pval); itr++);
 
 		if(itr == names.end())
 			return VarOperand();
@@ -208,7 +208,7 @@ VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getArraysNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end()&& (&(pold -> getArray(*itr)) != m_parr); itr++);
+		for(;itr != names.end()&& !(pold -> getArray(*itr) == *m_parr); itr++);
 
 		if(itr == names.end())
 			return VarOperand();
@@ -240,4 +240,18 @@ void VarOperand::setValue(long long val)
 		return m_parr -> operator[](m_indx).setValue(val);
 	else
 		throw std::logic_error("setting value from NULL-object");	
+}
+
+
+void VarOperand::replace(Value *pold, Value *pnew)
+{
+	if(m_pval == pold)
+		m_pval == pnew;
+}
+
+
+void VarOperand::replace(Array *pold, Array *pnew)
+{
+	if(m_parr == pold)
+		m_parr == pnew;
 }

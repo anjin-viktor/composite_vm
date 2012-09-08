@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(CallOperand_test_1)
 
 	Value val(1);
 
-	op.setValue(val);
+	op.setValuePtr(&val);
 
 	BOOST_CHECK_EQUAL(op.isValue(), true);
 	BOOST_CHECK_EQUAL(op.isArray(), false);
@@ -32,8 +32,8 @@ BOOST_AUTO_TEST_CASE(CallOperand_test_1)
 	BOOST_CHECK_EQUAL(op.getValue().getValue(), 2);
 	BOOST_CHECK_EQUAL(val.getValue(), 2);
 
-
-	op.setValue(val.createNoLink());
+	Value v = val.createNoLink();
+	op.setValuePtr(&(v));
 	BOOST_CHECK_EQUAL(op.isValue(), true);
 	BOOST_CHECK_EQUAL(op.getValue().getValue(), 2);
 	op.getValue().setValue(1);
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(CallOperand_test_2)
 	arr[1] = 2;
 	arr[2] = 3;
 
-	op.setArray(arr);
+	op.setArrayPtr(&arr);
 
 	BOOST_CHECK_EQUAL(op.isValue(), false);
 	BOOST_CHECK_EQUAL(op.isArray(), true);

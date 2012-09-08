@@ -1,0 +1,15 @@
+.name main
+.var
+	array uchar str "str" 
+.begin
+	call f, str
+
+.end
+
+.name f array uchar str
+.var
+	array mod8 s "hello"
+.begin
+	call f, str
+.end
+

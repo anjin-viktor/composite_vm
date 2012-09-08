@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_true)
 
 	BOOST_CHECK_EQUAL(keeper.isExists("name"), true);
 	BOOST_CHECK_EQUAL(keeper.isVar("name"), true);	
-	BOOST_CHECK_EQUAL(keeper.isArray("name"), false);	
+	BOOST_CHECK_EQUAL(keeper.isArray("name"), false);
 }
 
 
@@ -717,7 +717,7 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_call)
 	BOOST_CHECK_EQUAL(op -> getValue().getValue(), 1);
 	BOOST_CHECK_EQUAL(op -> getValue().isReadable(), true);
 	BOOST_CHECK_EQUAL(op -> getValue().isWriteable(), false);
-	BOOST_CHECK_EQUAL(op -> getValue().getType(), Value::UNSIGNED_INT);
+	BOOST_CHECK_EQUAL(op -> getValueType(), Value::UNSIGNED_INT);
 }
 
 

@@ -299,16 +299,16 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 			if(pop -> isArrayElement() == false)
 			{
 				if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
-						pop -> getValue().getType())
+						pop -> getValueType())
 					throw ParseError("incorrect operand type in call function " + callName);
 		
 				if(Program::getInstance().getFunction(callName).argIsRef(*itrNames) && 
 			    	Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable() == true &&
-			    	 pop -> getValue().isWriteable() == false
+			    	 pop -> isWriteable() == false
 			  	)
 					throw ParseError("incorrect operand type in call function " + callName);
 			}
-			else
+			else if(pop -> hasValue())
 			{
 				if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
 						pop -> getValueType())

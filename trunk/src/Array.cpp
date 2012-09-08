@@ -170,10 +170,25 @@ Array Array::createNoLink() const
 
 
 
+void Array::copyContents(Array &arr) const
+{
+	if(m_parr.use_count() > 0)
+	{
+		arr.m_parr = boost::shared_ptr<std::vector<Value> >(new std::vector<Value>(m_parr -> size()));
+		for(int i=0; i<m_parr -> size(); i++)
+			arr.m_parr -> at(i) = m_parr -> at(i).createNoLink();
+	}
+	else
+		arr.m_parr.reset();
+}
+
+
+
+
 bool Array::operator == (const Array &arr) const
 {
 	if(this == &arr)
 		return true;
 
-	return m_parr == arr.m_parr && m_isWriteable == arr.m_isWriteable && m_type == arr.m_type;
+	return m_parr == arr.m_parr;// && m_isWriteable == arr.m_isWriteable && m_type == arr.m_type;
 }
