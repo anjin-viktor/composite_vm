@@ -90,7 +90,7 @@ void CallOperand::setValueType(Value::ValueType type)
 
 CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 {
-	CallOperand op;
+	CallOperand op = *this;
 
 	if(m_pval != NULL)
 	{
@@ -109,6 +109,7 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 			return op;
 
 		op.m_pval = &(pnew -> getVarValue(*itr));
+
 		return op;
 	}
 	else if(m_parr != NULL)

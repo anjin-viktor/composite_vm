@@ -66,4 +66,40 @@ BOOST_AUTO_TEST_CASE(CallOperand_test_2)
 }
 
 
+/**
+Тест метода convert
+*/
+BOOST_AUTO_TEST_CASE(CallOperand_test_3)
+{
+	DataKeeper keeper, newKeeper;
+	keeper.addVar(Value(1, Value::MOD16, true, true), "var1");
+	keeper.addVar(Value(2, Value::MOD16, true, true), "var2");
+
+	newKeeper.addVar(Value(1, Value::MOD16, true, true), "var1");
+	newKeeper.addVar(Value(2, Value::MOD16, true, true), "var2");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(2, Value::MOD16, true, true);
+	array[2] = Value(3, Value::MOD16, true, true);
+
+	keeper.addArray(array, "arr1");
+	newKeeper.addArray(array, "arr1");
+
+	CallOperand cop;
+
+	cop.setValuePtr(&(keeper.getVarValue("var1")));
+	cop.getValue().setValue(3);
+	BOOST_CHECK_EQUAL(keeper.getVarValue("var1").getValue(), 3);
+
+	cop = cop.convert(&keeper, &newKeeper);
+
+	cop.getValue().setValue(4);
+	BOOST_CHECK_EQUAL(keeper.getVarValue("var1").getValue(), 3);
+	BOOST_CHECK_EQUAL(newKeeper.getVarValue("var1").getValue(), 4);
+}
+
+
+
+
 BOOST_AUTO_TEST_SUITE_END();

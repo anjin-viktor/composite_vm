@@ -12,6 +12,7 @@
 #include <vector>
 #include <list>
 #include <stdexcept>
+#include <algorithm>
 
 #include "Value.h"
 #include "Command.h"
@@ -44,7 +45,7 @@ class Function
 		~Function();
 
 /**
-Конструктор копирования.
+Конструктор копирования.  Изменение значение ссылочных аргументов влечёт изменения значений оригинала.
 @param f - копируемый объект
 */
 		Function(const Function &f);
@@ -187,12 +188,15 @@ class Function
 
 
 /**
-Копирование функции.
+Копирование функции. При таком копировании изменение копии не влечёт изменения оригинала.
 @return копия функции
 */
 		Function copy() const;
 
-
+/**
+Копирование функции. Изменение значение ссылочных аргументов копии влечёт изменения значений оригинала.
+@return копия функции
+*/
 		Function &operator =(const Function &);
 
 	private:

@@ -19,13 +19,28 @@ Function::Function(const Function &f)
 	std::list<std::string> names = f.getDataKeeperPtr() -> getValuesNames();
 	std::list<std::string>::const_iterator itrNames = names.begin();
 
+	std::map<std::string, bool>::const_iterator argsItr;
+
 	for(;itrNames != names.end(); itrNames++)
-		keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
+	{
+		argsItr = f.m_argsIsRefs.find(*itrNames);
+		if(argsItr == f.m_argsIsRefs.end() || argsItr -> second == false)
+			keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
+		else
+			keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames), *itrNames);
+	}
+
 
 	names = f.getDataKeeperPtr() -> getArraysNames();
 
 	for(itrNames = names.begin(); itrNames != names.end(); itrNames++)
-		keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
+	{
+		argsItr = f.m_argsIsRefs.find(*itrNames);
+		if(argsItr == f.m_argsIsRefs.end() || argsItr -> second == false)
+			keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
+		else
+			keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames), *itrNames);
+	}
 
 	setDataKeeper(keeper);
 
@@ -313,15 +328,29 @@ Function &Function::operator =(const Function & f)
 	std::list<std::string> names = f.getDataKeeperPtr() -> getValuesNames();
 	std::list<std::string>::const_iterator itrNames = names.begin();
 
-	for(;itrNames != names.end(); itrNames++)
-		keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
+	std::map<std::string, bool>::const_iterator argsItr;
 
+
+	for(;itrNames != names.end(); itrNames++)
+	{
+		argsItr = f.m_argsIsRefs.find(*itrNames);
+		if(argsItr == f.m_argsIsRefs.end() || argsItr -> second == false)
+			keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
+		else
+			keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames), *itrNames);
+	}
 
 	names = f.getDataKeeperPtr() -> getArraysNames();
 
 
 	for(itrNames = names.begin(); itrNames != names.end(); itrNames++)
-		keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
+	{
+		argsItr = f.m_argsIsRefs.find(*itrNames);
+		if(argsItr == f.m_argsIsRefs.end() || argsItr -> second == false)
+			keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
+		else
+			keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames), *itrNames);
+	}
 
 	setDataKeeper(keeper);
 
@@ -330,7 +359,7 @@ Function &Function::operator =(const Function & f)
 
 	m_code = f.codeCopy(getDataKeeperPtr(), f.m_code);
 
- 	
+ 
 	if(f.exceptionHandlerIsExists(Exception::NumericError))
 		m_handlers[Exception::NumericError] = 
 			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::NumericError));

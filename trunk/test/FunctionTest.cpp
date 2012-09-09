@@ -559,5 +559,89 @@ BOOST_AUTO_TEST_CASE(testFunction_3_)
 
 
 
+/**
+Тест копирования функции (4.mpr)
+*/
+BOOST_AUTO_TEST_CASE(testFunction_4_)
+{
+/*
+	ссылки - str и ch
+*/
+	Translator tr;
+
+	tr.setInputFileName("FunctionTestFiles/4.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	Function func;
+	func = Program::getInstance().getFunction("f").copy();
+
+
+	func.getDataKeeperPtr() -> getVarValue("ch").setValue(1);
+	func.getDataKeeperPtr() -> getVarValue("ch_").setValue(2);
+
+	func.getDataKeeperPtr() -> getArray("str").resize(1);
+	func.getDataKeeperPtr() -> getArray("str")[0].setValue(1);
+
+	func.getDataKeeperPtr() -> getArray("str_").resize(1);
+	func.getDataKeeperPtr() -> getArray("str_")[0].setValue(2);
+
+
+	Function f;
+	f = func;
+
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getVarValue("ch").getValue(), 1);
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getVarValue("ch_").getValue(), 2);
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getArray("str")[0].getValue(), 1);
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getArray("str_")[0].getValue(), 2);
+
+	f.getDataKeeperPtr() -> getVarValue("ch").setValue(3);
+	f.getDataKeeperPtr() -> getVarValue("ch_").setValue(4);
+	f.getDataKeeperPtr() -> getArray("str")[0].setValue(5);
+	f.getDataKeeperPtr() -> getArray("str_")[0].setValue(6);
+
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getVarValue("ch").getValue(), 3);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getVarValue("ch_").getValue(), 2);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getArray("str")[0].getValue(), 5);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getArray("str_")[0].getValue(), 2);
+
+	Function f1(func);
+
+	BOOST_CHECK_EQUAL(f1.getDataKeeperPtr() -> getVarValue("ch").getValue(), 3);
+	BOOST_CHECK_EQUAL(f1.getDataKeeperPtr() -> getVarValue("ch_").getValue(), 2);
+	BOOST_CHECK_EQUAL(f1.getDataKeeperPtr() -> getArray("str")[0].getValue(), 5);
+	BOOST_CHECK_EQUAL(f1.getDataKeeperPtr() -> getArray("str_")[0].getValue(), 2);
+
+	f1.getDataKeeperPtr() -> getVarValue("ch").setValue(1);
+	f1.getDataKeeperPtr() -> getVarValue("ch_").setValue(6);
+	f1.getDataKeeperPtr() -> getArray("str")[0].setValue(1);
+	f1.getDataKeeperPtr() -> getArray("str_")[0].setValue(7);
+
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getVarValue("ch").getValue(), 1);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getVarValue("ch_").getValue(), 2);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getArray("str")[0].getValue(), 1);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getArray("str_")[0].getValue(), 2);
+
+	f = func.copy();
+
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getVarValue("ch").getValue(), 1);
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getVarValue("ch_").getValue(), 2);
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getArray("str")[0].getValue(), 1);
+	BOOST_CHECK_EQUAL(f.getDataKeeperPtr() -> getArray("str_")[0].getValue(), 2);
+
+	f.getDataKeeperPtr() -> getVarValue("ch").setValue(3);
+	f.getDataKeeperPtr() -> getVarValue("ch_").setValue(4);
+	f.getDataKeeperPtr() -> getArray("str")[0].setValue(5);
+	f.getDataKeeperPtr() -> getArray("str_")[0].setValue(6);
+
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getVarValue("ch").getValue(), 1);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getVarValue("ch_").getValue(), 2);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getArray("str")[0].getValue(), 1);
+	BOOST_CHECK_EQUAL(func.getDataKeeperPtr() -> getArray("str_")[0].getValue(), 2);
+
+}
+
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END();

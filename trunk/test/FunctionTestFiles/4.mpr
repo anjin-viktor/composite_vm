@@ -1,0 +1,16 @@
+.name main
+.var
+	array uchar str "1"
+	array uchar str_ "2"
+
+	mod8 ch 1
+	mod8 ch_ 2
+
+.begin
+.end
+
+.name f array uchar &str, array uchar str_, mod8 &ch, mod8 ch_
+.var
+.begin
+.end
+
