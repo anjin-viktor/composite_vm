@@ -1,0 +1,53 @@
+.name main
+.var
+	array uchar constr "constraint"
+	array uchar numeric "numeric"
+	array uchar program "program"
+	uchar ch
+
+.begin
+	call f
+
+
+:when_program_error
+	aout program
+	call f3
+:when_numeric_error
+	aout numeric
+	mov ch, 100
+	mul ch, 3
+:when_constraint_error
+	aout constr
+
+.end
+
+
+.name f
+.var
+.begin
+	call f1
+.end
+
+
+
+.name f1
+.var
+.begin
+	je label
+label:
+.end
+
+
+.name f3
+.var
+	schar t
+	array uchar str "f3"
+.begin
+	mov t, 127
+	add t, 1
+
+:when_numeric_error
+	aout str
+	mov t, 100
+	add t, 29
+.end

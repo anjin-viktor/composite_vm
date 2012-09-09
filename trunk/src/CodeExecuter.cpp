@@ -3,7 +3,7 @@
 
 
 
-CodeExecuter::CodeExecuter(): m_poutput(&std::cout)
+CodeExecuter::CodeExecuter(): m_poutput(&std::cout), m_perrStream(&std::cerr)
 {
 }
 
@@ -23,43 +23,27 @@ void CodeExecuter::exec()
 
 	for(;m_contexts.empty() == false;)
 	{
-		switch(exec_command())
+		if(m_contexts.top().atEnd() == false)
 		{
-			case Exception::NumericError:
-			{
-				std::cerr << "NumericError\n";
-				exit(1);
-				break;
-			}
+			Exception::Type except = exec_command();
 
-			case Exception::ConstraintError:
-			{
-				std::cerr << "ConstraintError\n";
-				exit(1);
-				break;
-			}
 
-			case Exception::ProgramError:
+			if(except != Exception::NoType)
 			{
-				std::cerr << "ProgramError\n";
-				exit(1);
-				break;
-			}
+				if(m_contexts.top().currentCode() != Exception::NoType)
+					m_contexts.pop();
 
-			case Exception::StorageError:
-			{
-				std::cerr << "StorageError\n";
-				exit(1);
-				break;
-			}
+				for(;m_contexts.empty() == false && m_contexts.top().handlerIsExists(except) == false; m_contexts.pop());
 
-			case Exception::NoType:
-			{
-				break;
-			}
-		};
 
-		if(m_contexts.top().atEnd())
+				if(m_contexts.empty() == false)
+					m_contexts.top().execHandler(except);
+				else
+					defaultExceptionHandler(except);
+			}
+		}
+
+		if(m_contexts.empty() == false && m_contexts.top().atEnd())
 			m_contexts.pop();
 	}
 }
@@ -409,7 +393,6 @@ Exception::Type CodeExecuter::exec_command()
 				}
 			}
 
-
 			Context cntx;
 			cntx.setFunction(newFunc);
 
@@ -463,4 +446,20 @@ Exception::Type CodeExecuter::exec_command()
 	};
 
 	return Exception::NoType;
+}
+
+
+
+
+void CodeExecuter::setErrorStream(std::ostream &stream)
+{
+	m_perrStream = &stream;
+}
+
+
+
+void CodeExecuter::defaultExceptionHandler(Exception::Type except)
+{
+	*m_perrStream << "Program is interrupted with exception `" << Exception::exceptionTypeToStr(except) << "`"
+	<< std::endl;
 }

@@ -168,7 +168,30 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_5)
 }
 
 
+/**
+Тест на обработчики исключений (6.mpr)
+*/
+BOOST_AUTO_TEST_CASE(CodeExecuter_6)
+{
+	Translator tr;
+	CodeExecuter exec;
 
+	tr.setInputFileName("CodeExecuterTestFiles/6.mpr");
 
+	std::ostringstream stream;
+	std::ostringstream err;
+
+	exec.setOutputStream(stream);
+	exec.setErrorStream(err);
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+	BOOST_CHECK_NO_THROW(exec.exec());
+
+	BOOST_CHECK_EQUAL(stream.str(), "program\n"
+									"f3\n"
+									"numeric\n"
+						);
+	BOOST_CHECK_EQUAL(err.str(), "Program is interrupted with exception `numeric_error`\n");
+}
 
 BOOST_AUTO_TEST_SUITE_END();

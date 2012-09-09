@@ -60,4 +60,7 @@ label:;
 .begin
 	nop
 	rsz arr, n
+:when_program_error
+:when_storage_error
+:when_constraint_error
 .end

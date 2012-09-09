@@ -97,3 +97,11 @@ Context &Context::operator =(const Context &cntx)
 
 	return *this;
 }
+
+
+
+
+Exception::Type Context::currentCode() const
+{
+	return m_currentCode;
+}

@@ -92,6 +92,14 @@ class Context
 */
 		void execHandler(Exception::Type);
 
+
+/**
+Возвращает тип выполняемого кода(какое обрабатывается исключение, либо код функции).
+Exception::NoType - основной код модуля
+@return тип выполняемого коде.
+*/
+		Exception::Type currentCode() const;
+
 	private:
 		Function 				m_function;
 		std::size_t				m_ip;

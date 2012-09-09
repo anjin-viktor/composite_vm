@@ -57,6 +57,13 @@ Function::Function(const Function &f)
 		m_handlers[Exception::ConstraintError] = 
 			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::ConstraintError));
 
+	if(f.exceptionHandlerIsExists(Exception::ProgramError))
+		m_handlers[Exception::ProgramError] = 
+			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::ProgramError));
+
+	if(f.exceptionHandlerIsExists(Exception::StorageError))
+		m_handlers[Exception::StorageError] = 
+			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::StorageError));
 }
 
 
@@ -241,6 +248,14 @@ Function Function::copy() const
 		func.m_handlers[Exception::ConstraintError] = 
 				codeCopy(func.getDataKeeperPtr(), getExceptionHandlerCode(Exception::ConstraintError));
 
+	if(exceptionHandlerIsExists(Exception::ProgramError))
+		func.m_handlers[Exception::ProgramError] = 
+			codeCopy(func.getDataKeeperPtr(), getExceptionHandlerCode(Exception::ProgramError));
+
+	if(exceptionHandlerIsExists(Exception::StorageError))
+		func.m_handlers[Exception::StorageError] = 
+			codeCopy(func.getDataKeeperPtr(), getExceptionHandlerCode(Exception::StorageError));
+
 	return func;
 }
 
@@ -367,6 +382,14 @@ Function &Function::operator =(const Function & f)
 	if(f.exceptionHandlerIsExists(Exception::ConstraintError))
 		m_handlers[Exception::ConstraintError] = 
 			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::ConstraintError));
+
+	if(f.exceptionHandlerIsExists(Exception::ProgramError))
+		m_handlers[Exception::ProgramError] = 
+			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::ProgramError));
+
+	if(f.exceptionHandlerIsExists(Exception::StorageError))
+		m_handlers[Exception::StorageError] = 
+			f.codeCopy(getDataKeeperPtr(), f.getExceptionHandlerCode(Exception::StorageError));
 
 	return *this;
 }

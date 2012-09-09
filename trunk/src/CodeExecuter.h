@@ -46,6 +46,11 @@ class CodeExecuter
 */
 		void setOutputStream(std::ostream &stream);
 
+/**
+Установка выходного потока для сообщений об ошибках
+@param stream - устанавливаемый поток.
+*/
+		void setErrorStream(std::ostream &stream);
 
 /**
 Выполнение программы. Работает с оттранслированным кодом из Program
@@ -65,8 +70,15 @@ class CodeExecuter
 		Exception::Type exec_command();
 
 
+/**
+Обработчик исключительных ситуаций по-умолчанию.
+@param except - обрабатываемое исключение
+*/
+		void defaultExceptionHandler(Exception::Type except);
+
 		std::stack<Context>		m_contexts;
 		std::ostream 			*m_poutput;
+		std::ostream 			*m_perrStream;
 };
 
 
