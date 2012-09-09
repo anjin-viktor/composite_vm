@@ -1,0 +1,14 @@
+.name main
+.var
+	array uchar errMsg "constraint error"
+	array uchar arr 10
+	uchar ch 1
+
+.begin
+	mov arr[11], ch
+
+:when_constraint_error
+	aout errMsg
+.end
+
+

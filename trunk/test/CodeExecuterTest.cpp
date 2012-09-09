@@ -194,4 +194,27 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_6)
 	BOOST_CHECK_EQUAL(err.str(), "Program is interrupted with exception `numeric_error`\n");
 }
 
+/**
+Тест корректной работы
+*/
+
+BOOST_AUTO_TEST_CASE(CodeExecuter_7)
+{
+	Translator tr;
+	CodeExecuter exec;
+
+	std::ostringstream stream;
+	std::ostringstream err;
+
+	exec.setOutputStream(stream);
+	exec.setErrorStream(err);
+
+	tr.setInputFileName("CodeExecuterTestFiles/7.mpr");
+	BOOST_CHECK_NO_THROW(tr.translate());
+	BOOST_CHECK_NO_THROW(exec.exec());
+	BOOST_CHECK_EQUAL(err.str(), "");
+	BOOST_CHECK_EQUAL(stream.str(), "constraint error\n");
+}
+
+
 BOOST_AUTO_TEST_SUITE_END();
