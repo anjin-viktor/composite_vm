@@ -375,7 +375,6 @@ Exception::Type CodeExecuter::exec_command()
 				boost::shared_ptr<CallOperand> pcallOp = boost::dynamic_pointer_cast<CallOperand, Operand>
 					(command.getOperand(i));
 
-
 				if(pcallOp -> isArray())
 				{
 					if(newFunc.argIsRef(*itr))
@@ -384,6 +383,7 @@ Exception::Type CodeExecuter::exec_command()
 						newFunc.getDataKeeperPtr() -> getArray(*itr) = pcallOp -> getArray();
 						Array *pnew = &(newFunc.getDataKeeperPtr() -> getArray(*itr));
 						newFunc.replace(pold, pnew);
+
 					}
 					else
 					{
@@ -403,7 +403,9 @@ Exception::Type CodeExecuter::exec_command()
 						newFunc.replace(pold, pnew);
 					}
 					else
-						newFunc.getDataKeeperPtr() -> getVarValue(*itr).setValue(pcallOp -> getValue().getValue());					
+					{
+						newFunc.getDataKeeperPtr() -> getVarValue(*itr).setValue(pcallOp -> getValue().getValue());
+					}
 				}
 			}
 

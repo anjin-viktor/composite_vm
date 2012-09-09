@@ -36,9 +36,23 @@
 	mov str[1], ch_
 	mov str[2], ch__
 
+	aout str
 
 	call f2, str
 	aout str
+;	call f3, str
+;	aout str
+
+;	mov ch_, 102
+;	call f4, ch_
+;	mov str[5], (mod8)ch_
+;	aout str
+
+;	mov ch_, 102
+;	call f5, ch_
+;	mov str[5], (mod8)ch_
+;	aout str
+
 .end
 
 
@@ -48,5 +62,36 @@
 .name f2 array mod8 str
 .var
 .begin
+	mov str[3], 77
+	aout str
 .end
+
+
+
+
+.name f3 array mod8 &str
+.var
+.begin
+	mov str[3], 77
+	aout str
+.end
+
+
+
+
+.name f4 uchar char
+.var
+.begin
+	mov char, 70
+.end
+
+
+.name f5 uchar &char
+.var
+.begin
+	mov char, 70
+.end
+
+
+
 

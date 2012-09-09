@@ -89,4 +89,6 @@ BOOST_AUTO_TEST_CASE(ArrayTest_create)
 	arr_.resize(5);
 	BOOST_CHECK_EQUAL(arr.size(), 3);
 }
+
+
 BOOST_AUTO_TEST_SUITE_END();

@@ -20,7 +20,6 @@ CallOperand::~CallOperand()
 
 void CallOperand::setValuePtr(Value *pval)
 {
-	m_fisValue = true;
 	m_pval = pval;
 	m_parr = NULL;
 	m_popArr = NULL;
@@ -30,18 +29,19 @@ void CallOperand::setValuePtr(Value *pval)
 
 void CallOperand::setArrayElement(Array *parr, std::size_t indx)
 {
-	m_fisValue = true;
 	m_parr = parr;
 	m_indx = indx;
+	m_pval = NULL;
+	m_popArr = NULL;
 }
 
 
 
 void CallOperand::setArrayPtr(Array *parr)
 {
-	m_fisValue = false;
 	m_popArr = parr;
 	m_parr = NULL;
+	m_pval = NULL;
 }
 
 
@@ -60,6 +60,7 @@ Value CallOperand::getValue() const
 
 Array CallOperand::getArray() const
 {
+	assert(m_popArr != NULL);
 	return *m_popArr;
 }
 
@@ -67,14 +68,14 @@ Array CallOperand::getArray() const
 
 bool CallOperand::isValue() const
 {
-	return m_fisValue;
+	return m_pval != NULL || m_parr != NULL;;
 }
 
 
 
 bool CallOperand::isArray() const
 {
-	return !m_fisValue;
+	return m_popArr != NULL;
 }
 
 
@@ -90,50 +91,55 @@ void CallOperand::setValueType(Value::ValueType type)
 CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 {
 	CallOperand op;
-	if(m_fisValue)
+
+	if(m_pval != NULL)
 	{
-		if(m_parr == NULL)
-		{
-			std::list<std::string> names = pold -> getValuesNames();
-			std::list<std::string>::const_iterator itr = names.begin();
+		std::list<std::string> names = pold -> getValuesNames();
+		std::list<std::string>::const_iterator itr = names.begin();
 
-			for(;itr != names.end() && !(pold -> getVarValue(*itr) == *m_pval); itr++);
+		for(;itr != names.end() && !(&(pold -> getVarValue(*itr)) == m_pval); itr++);
 
-			if(itr == names.end())
-				return op;
+		assert(itr != names.end());
+		assert(pnew -> isVar(*itr) != false);
 
-			if(pnew -> isVar(*itr) == false)
-				return op;
-
-			op.m_pval = &(pnew -> getVarValue(*itr));
+		if(itr == names.end())
 			return op;
-		}
-		else
-		{
+			
+		if(pnew -> isVar(*itr) == false)
+			return op;
 
-			std::list<std::string> names = pold -> getArraysNames();
-			std::list<std::string>::const_iterator itr = names.begin();
-
-			for(;itr != names.end() && !(pold -> getArray(*itr) == *m_parr); itr++);
-
-			if(itr == names.end())
-				return op;
-
-			if(pnew -> isArray(*itr) == false)
-				return op;
-
-			op.m_parr = &(pnew -> getArray(*itr));
-			return op;	
-		}
+		op.m_pval = &(pnew -> getVarValue(*itr));
+		return op;
 	}
-	else
+	else if(m_parr != NULL)
 	{
 		std::list<std::string> names = pold -> getArraysNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end() && !(pold -> getArray(*itr) == *m_popArr); itr++);
+		for(;itr != names.end() && !(&(pold -> getArray(*itr)) == m_parr); itr++);
+
+		assert(itr != names.end());
+		assert(pnew -> isArray(*itr) != false);
+
+		if(itr == names.end())
+			return op;
+
+		if(pnew -> isArray(*itr) == false)
+			return op;
+
+		op.m_parr = &(pnew -> getArray(*itr));
+		return op;	
+	}
+	else if(m_popArr)
+	{
+		std::list<std::string> names = pold -> getArraysNames();
+		std::list<std::string>::const_iterator itr = names.begin();
+
+		for(;itr != names.end() && !(&(pold -> getArray(*itr)) == m_popArr); itr++);
 	
 
+		assert(itr != names.end());
+		assert(pnew -> isArray(*itr) != false);
 
 		if(itr == names.end())
 			return op;
@@ -144,7 +150,6 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		op.m_popArr = &(pnew -> getArray(*itr));
 		return op;
 	}
-
 }
 
 
@@ -193,15 +198,14 @@ void CallOperand::setWriteable(bool writeable)
 
 bool CallOperand::hasValue() const
 {
-	if(m_fisValue)
-	{
-		if(m_pval)
-			return true;
-
-		return m_parr != NULL && m_parr -> size() < m_indx;
-	}
+	if(m_pval)
+		return true;
+	else if(m_popArr)
+		return true;
+	else if(m_parr)
+		return m_indx < m_parr -> size();
 	else
-		return m_popArr != NULL;
+		return false;
 }
 
 

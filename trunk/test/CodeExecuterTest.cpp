@@ -150,18 +150,18 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_5)
 
 	BOOST_CHECK_NO_THROW(tr.translate());
 
+	BOOST_CHECK_NO_THROW(exec.exec());
 
-//	BOOST_CHECK_NO_THROW(exec.exec());
-/*
 	BOOST_CHECK_EQUAL(stream.str(), "main\n"
 									"f\n"
 									"from f\n"
 									"FROm f\n"
+									"FROM f\n"
+									"FROm f\n"
 									"main\n"
-
 						);
-*/}
 
+}
 
 
 

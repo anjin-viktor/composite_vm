@@ -145,7 +145,6 @@ class CallOperand: public Operand
 	private:
 		Value 				*m_pval;
 		Array				*m_popArr;
-		bool				m_fisValue;
 		std::size_t			m_indx;
 		Array 				*m_parr;
 		Value::ValueType 	m_type;

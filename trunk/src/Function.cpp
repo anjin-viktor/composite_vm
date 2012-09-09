@@ -272,18 +272,15 @@ std::vector<Command> Function::codeCopy(DataKeeper *pnewKeeper, const std::vecto
 			}
 			else if((boost::dynamic_pointer_cast<CallOperand, Operand>(code[i].getOperand(j))).get() != NULL)
 			{
-
-
 				pcop = boost::dynamic_pointer_cast<CallOperand, Operand>(code[i].getOperand(j));
 
-
 				CallOperand cop = pcop -> convert(getDataKeeperPtr(), pnewKeeper);
-
 
 				pcopNew = boost::shared_ptr<CallOperand>(new CallOperand());
 				*(pcopNew.get()) = cop;
 
 				newCode[i].setOperand(j, pcopNew);
+
 			}
 			else if((boost::dynamic_pointer_cast<LabelOperand, Operand>(code[i].getOperand(j))).get() != NULL)
 			{
@@ -310,7 +307,6 @@ Function &Function::operator =(const Function & f)
 		return *this;
 
 
-
 	setName(f.m_name);
 	DataKeeper keeper;
 
@@ -320,7 +316,9 @@ Function &Function::operator =(const Function & f)
 	for(;itrNames != names.end(); itrNames++)
 		keeper.addVar(f.getDataKeeperPtr() -> getVarValue(*itrNames).createNoLink(), *itrNames);
 
+
 	names = f.getDataKeeperPtr() -> getArraysNames();
+
 
 	for(itrNames = names.begin(); itrNames != names.end(); itrNames++)
 		keeper.addArray(f.getDataKeeperPtr() -> getArray(*itrNames).createNoLink(), *itrNames);
@@ -329,6 +327,7 @@ Function &Function::operator =(const Function & f)
 
 	m_args = f.m_args;
 	m_argsIsRefs = f.m_argsIsRefs;
+
 	m_code = f.codeCopy(getDataKeeperPtr(), f.m_code);
 
  	
@@ -348,6 +347,7 @@ Function &Function::operator =(const Function & f)
 
 void Function::replace(Value *pold, Value *pnew)
 {
+
 	for(std::size_t i=0, n=m_code.size(); i<n; i++)
 	{
 		for(std::size_t j=0, n=m_code[i].getNumberOfOperands(); j<n; j++)
@@ -366,6 +366,7 @@ void Function::replace(Value *pold, Value *pnew)
 
 void Function::replace(Array *pold, Array *pnew)
 {
+
 	for(std::size_t i=0, n=m_code.size(); i<n; i++)
 	{
 		for(std::size_t j=0, n=m_code[i].getNumberOfOperands(); j<n; j++)
@@ -373,6 +374,7 @@ void Function::replace(Array *pold, Array *pnew)
 			boost::shared_ptr<VarOperand> pvar = boost::dynamic_pointer_cast<VarOperand, Operand>(m_code[i].getOperand(j));
 			boost::shared_ptr<ArrayOperand> parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(m_code[i].getOperand(j));
 			boost::shared_ptr<CallOperand> pcall = boost::dynamic_pointer_cast<CallOperand, Operand>(m_code[i].getOperand(j));
+
 		
 			if(pvar.get())
 				pvar -> replace(pold, pnew);
