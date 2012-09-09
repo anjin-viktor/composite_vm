@@ -158,10 +158,16 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_5)
 									"FROm f\n"
 									"FROM f\n"
 									"FROm f\n"
+									"FROM f\n"
+									"FROM f\n"
+									"FROM f\n"
+									"FROM F\n"
 									"main\n"
 						);
 
 }
+
+
 
 
 

@@ -40,18 +40,18 @@
 
 	call f2, str
 	aout str
-;	call f3, str
-;	aout str
+	call f3, str
+	aout str
 
-;	mov ch_, 102
-;	call f4, ch_
-;	mov str[5], (mod8)ch_
-;	aout str
+	mov ch_, 102
+	call f4, ch_
+	mov str[5], (mod8)ch_
+	aout str
 
-;	mov ch_, 102
-;	call f5, ch_
-;	mov str[5], (mod8)ch_
-;	aout str
+	mov ch_, 102
+	call f5, ch_
+	mov str[5], (mod8)ch_
+	aout str
 
 .end
 

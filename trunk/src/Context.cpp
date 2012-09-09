@@ -10,7 +10,7 @@ Context::Context()
 
 Context::Context(const Context &cntx)
 {
-	m_function = cntx.m_function.copy();
+	m_function = cntx.m_function;
 	m_cmpRes = cntx.m_cmpRes;
 
 	m_currentCode = cntx.m_currentCode;
@@ -83,7 +83,7 @@ Context &Context::operator =(const Context &cntx)
 	if(this == &cntx)
 		return  *this;
 	
-	m_function = cntx.m_function.copy();
+	m_function = cntx.m_function;
 
 	m_currentCode = cntx.m_currentCode;
 	m_ip = cntx.m_ip;

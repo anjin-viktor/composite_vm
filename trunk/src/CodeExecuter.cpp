@@ -413,7 +413,6 @@ Exception::Type CodeExecuter::exec_command()
 			Context cntx;
 			cntx.setFunction(newFunc);
 
-
 			cntx.init();
 
 			m_contexts.top().m_ip++;
