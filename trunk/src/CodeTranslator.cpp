@@ -87,6 +87,12 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
 			op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getSecondOperand());
 
+/*Для отладки*/
+			if(op1 -> getAfterCastType() != Value::NO_TYPE)
+				if(op1 -> getAfterCastType() != op2 -> getAfterCastType() && op2 -> getAfterCastType() != Value::NO_TYPE)
+					throw ParseError("mismatch");
+
+
 			if(op1 -> hasValue() && op2 -> hasValue())
 			{
 				if(op1 -> isWriteable() == false)
@@ -94,9 +100,6 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 				if(op2 -> isReadable() == false)
 					throw ParseError("1variable does not have read permission");
-
-				if(op1 -> getAfterCastType() != op2 -> getAfterCastType() && op2 -> getAfterCastType() != Value::NO_TYPE)
-					throw ParseError("mismatch");
 
 				op1 -> initialize();
 			}
@@ -110,6 +113,9 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
 			op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getSecondOperand());
 
+			if(op1 -> getAfterCastType() != op2 -> getAfterCastType() &&  op2 -> getAfterCastType() != Value::NO_TYPE 
+				&&  op1 -> getAfterCastType() != Value::NO_TYPE)
+				throw ParseError("mismatch");
 
 			if(op1 -> hasValue() && op2 -> hasValue())
 			{
@@ -119,9 +125,7 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 				if(op2 -> isReadable() == false)
 					throw ParseError("variable does not have read permission");
 
-				if(op1 -> getAfterCastType() != op2 -> getAfterCastType() &&  op2 -> getAfterCastType() != Value::NO_TYPE 
-					&&  op1 -> getAfterCastType() != Value::NO_TYPE)
-					throw ParseError("mismatch");
+
 			}
 
 			break;

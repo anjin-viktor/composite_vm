@@ -1,0 +1,10 @@
+;is incorrect code
+
+.name main
+.var
+	array uchar arr 5
+	mod8 ch 1
+.begin
+	mov arr[5], ch
+.end
+

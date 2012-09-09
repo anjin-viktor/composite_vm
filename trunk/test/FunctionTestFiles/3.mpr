@@ -33,8 +33,8 @@
 .begin
 	aout str
 	mov str[0], (mod8)ch
-	mov str[1], ch_
-	mov str[2], ch__
+	mov str[1], (mod8)ch_
+	mov str[2], (mod8)ch__
 
 
 	call f2, str

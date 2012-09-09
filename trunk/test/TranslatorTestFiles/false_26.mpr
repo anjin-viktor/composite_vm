@@ -1,0 +1,14 @@
+;is incorrect code
+
+.name main
+.var
+	array mod8 arr 5
+.begin
+	call func, arr
+.end
+
+
+.name func array uchar arr
+.var
+.begin
+.end
