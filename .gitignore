@@ -7,3 +7,11 @@ trunk/test/CTestTestfile.cmake
 trunk/test/Makefile
 trunk/test/Testing/*
 trunk/test/cmake_install.cmake
+
+trunk/src/CMakeCache.txt
+trunk/src/CMakeFiles/*
+trunk/src/composite_vm
+trunk/src/CTestTestfile.cmake
+trunk/src/Makefile
+trunk/src/Testing/*
+trunk/src/cmake_install.cmake
