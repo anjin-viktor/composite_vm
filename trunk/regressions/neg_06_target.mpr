@@ -1,0 +1,6 @@
+.name foo
+.var
+    mod16 x
+.begin
+    mov x 0
+.end

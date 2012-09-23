@@ -2,6 +2,7 @@
 .name main
 .var
 .begin
+	nop
 .end
 
 
@@ -15,4 +16,5 @@
 .name func uchar ch
 .var
 .begin
+	nop
 .end

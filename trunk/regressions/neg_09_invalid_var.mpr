@@ -1,0 +1,5 @@
+.name main
+.var
+.begin
+    mov invalid_variable_foo, xxx
+.end

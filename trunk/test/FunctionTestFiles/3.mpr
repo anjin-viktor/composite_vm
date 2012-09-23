@@ -48,5 +48,6 @@
 .name f2 array mod8 str
 .var
 .begin
+	nop
 .end
 

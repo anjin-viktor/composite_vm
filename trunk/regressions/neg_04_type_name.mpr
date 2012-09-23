@@ -1,0 +1,5 @@
+.name foo
+.var
+    mod32 5my_value
+.begin
+.end

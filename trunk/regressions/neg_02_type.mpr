@@ -1,0 +1,5 @@
+.name foo
+.var
+    wrongtype blah
+.begin
+.end

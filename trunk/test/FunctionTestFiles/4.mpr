@@ -7,10 +7,12 @@
 	mod8 ch_ 2
 
 .begin
+	nop
 .end
 
 .name f array uchar &str, array uchar str_, mod8 &ch, mod8 ch_
 .var
 .begin
+	nop
 .end
 

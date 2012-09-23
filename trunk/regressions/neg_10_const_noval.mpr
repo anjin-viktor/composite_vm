@@ -1,0 +1,7 @@
+.name main
+.var
+    const mod32 c
+    mod32 v
+.begin
+    mov c, v
+.end

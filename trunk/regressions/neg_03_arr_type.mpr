@@ -1,0 +1,5 @@
+.name foo
+.var
+    array wrongtype blah no-matters
+.begin
+.end

@@ -1,0 +1,30 @@
+Result for neg_01_trash.mpr:
+Error: trash is there... not expected
+
+Result for neg_02_type.mpr:
+Error: stopped at: wrongtype blah
+
+Result for neg_03_arr_type.mpr:
+Error: stopped at: array wrongtype blah no-matters
+
+Result for neg_04_type_name.mpr:
+Error: stopped at: mod32 5my_value
+
+Result for neg_05_type_name.mpr:
+Error: stopped at: []
+
+Result for neg_06_target.mpr:
+Error: stopped at: mov x 0
+
+Result for neg_07_empty.mpr:
+Error: function `main` not exists
+
+Result for neg_08_empty_body.mpr:
+Error: function `foo` has empty body
+
+Result for neg_09_invalid_var.mpr:
+Error: variable with name invalid_variable_foo not exists
+
+Result for neg_10_const_noval.mpr:
+Error: variable does not have write permission
+

@@ -209,6 +209,11 @@ void Translator::translateFunction(const std::string &header)
 	{
 		throw ParseError("unexpected end of file");
 	}
+
+	if(codeTransl.getCommands().empty())
+	{
+		throw ParseError("function `" + funcName + "` has empty body");
+	}
 }
 
 
