@@ -28,3 +28,48 @@ Error: variable with name invalid_variable_foo not exists
 Result for neg_10_const_noval.mpr:
 Error: variable does not have write permission
 
+Result for neg_11_const_write.mpr:
+Error: variable does not have write permission
+
+Result for neg_12_f_dubledec.mpr:
+Error: function with name main already exists
+
+Result for neg_13_mov_x_x.mpr:
+Error: variable does not have read permission
+
+Result for neg_14_mov_x_x.mpr:
+Error: variable does not have read permission
+
+Result for neg_15_no_handler.mpr:
+Error: mismatch
+
+Result for neg_16_diff_types.mpr:
+Error: mismatch
+
+Result for neg_17_var_range.mpr:
+Error: variable `uc` can't fit value 300
+
+Result for neg_18_var_range.mpr:
+Error: first argument can't fit value 300
+
+Result for neg_19_fdecl.mpr:
+Error: stopped at: wrong_type value
+
+Result for neg_20_fdecl.mpr:
+Error: stopped at: mod32
+
+Result for neg_21_callnotype.mpr:
+Error: wrong number of operands
+
+Result for neg_22_callwrongtype.mpr:
+Error: incorrect operand type in call function `subFunction`
+
+Result for neg_23_callextratype.mpr:
+Error: wrong number of operands
+
+Result for neg_25.mpr:
+Error: mismatch
+
+Result for neg_26.mpr:
+Error: incorrect operand type in call function `func`
+

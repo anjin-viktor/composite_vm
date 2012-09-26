@@ -1,0 +1,11 @@
+.name main
+.var
+.begin
+    nop
+.end
+
+.name bar mod32 value1 mod32
+.var
+.begin
+    nop
+.end

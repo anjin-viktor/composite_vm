@@ -8,6 +8,7 @@
 
 #include <string>
 #include <utility>
+#include <sstream>
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/bind.hpp>
@@ -337,6 +338,12 @@ class VarTranslator
 			{
         if(m_pval)
         {
+          if(Value::isOverflow(val, m_pval -> getType()))
+          {
+            std::stringstream ss;
+            ss << "variable `" << *m_pname << "` can't fit value " << val;
+            throw ParseError(ss.str());
+          }
 				  m_pval -> setValue(val);
 				  m_pval -> setReadable(true);
 			  }

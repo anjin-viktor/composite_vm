@@ -1,0 +1,15 @@
+.name func mod8 ch
+.var
+.begin
+    nop
+.end
+
+
+.name main
+.var
+    uint ch 288
+    mod8 t
+
+.begin
+    call func, ch
+.end

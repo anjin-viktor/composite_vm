@@ -1,0 +1,22 @@
+.name foo
+.var
+    uchar u1
+.begin
+	nop
+.end
+
+.name main
+.var
+    uchar uc1
+    uchar uc2 1
+.begin
+    mov uc1, uc2
+.end
+
+.name main
+.var
+    uchar uc1
+    uchar uc2 1
+.begin
+    mov uc1, uc2
+.end

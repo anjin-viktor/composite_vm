@@ -95,11 +95,20 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 			if(op1 -> hasValue() && op2 -> hasValue())
 			{
+				if(op2 -> getAfterCastType() == Value::NO_TYPE)
+					if(Value::isOverflow(op2 -> getValue(), op1 -> getAfterCastType()))
+					{
+						std::stringstream ss;
+						ss << "first argument can't fit value " << op2 -> getValue();
+						throw ParseError(ss.str());
+					}
+
+
 				if(op1 -> isWriteable() == false)
 					throw ParseError("variable does not have write permission");
 
 				if(op2 -> isReadable() == false)
-					throw ParseError("1variable does not have read permission");
+					throw ParseError("variable does not have read permission");
 
 				op1 -> initialize();
 			}

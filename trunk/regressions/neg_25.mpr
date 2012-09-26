@@ -1,0 +1,8 @@
+.name main
+.var
+    uchar 	c
+    ushort	s
+.begin
+    mov s, 100
+    mov c, s
+.end

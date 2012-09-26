@@ -1,0 +1,8 @@
+.name main
+.var
+    uchar   uc
+    ushort  us
+.begin
+    mov us, 330
+    mov uc, us
+.end

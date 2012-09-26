@@ -1,0 +1,14 @@
+.name subFunction mod8 module
+.var
+.begin
+    nop
+.end
+
+.name main
+.var
+    uchar uc1 1
+    uchar uc2 2
+.begin
+    call subFunction, uc1, uc2
+    nop
+.end

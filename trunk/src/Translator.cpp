@@ -299,25 +299,25 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 		if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
 		{
 			if(pop -> isValue() == false)
-				throw ParseError("incorrect operand type in call function " + callName);
+				throw ParseError("incorrect operand type in call function `" + callName + "`");
 
 			if(pop -> isArrayElement() == false)
 			{
 				if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
 						pop -> getValueType())
-					throw ParseError("incorrect operand type in call function " + callName);
+					throw ParseError("incorrect operand type in call function `" + callName + "`");
 		
 				if(Program::getInstance().getFunction(callName).argIsRef(*itrNames) && 
 			    	Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).isWriteable() == true &&
 			    	 pop -> isWriteable() == false
 			  	)
-					throw ParseError("incorrect operand type in call function " + callName);
+					throw ParseError("incorrect operand type in call function `" + callName + "`");
 			}
 			else if(pop -> hasValue())
 			{
 				if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> getVarValue(*itrNames).getType() !=
 						pop -> getValueType())
-					throw ParseError("incorrect operand type in call function " + callName);		
+					throw ParseError("incorrect operand type in call function `" + callName + "`");
 			}
 
 		}

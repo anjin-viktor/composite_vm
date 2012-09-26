@@ -1,0 +1,6 @@
+.name main
+.var
+    uchar uc 300
+.begin
+    nop
+.end

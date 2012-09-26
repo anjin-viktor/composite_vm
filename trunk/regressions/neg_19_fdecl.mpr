@@ -1,0 +1,11 @@
+.name main
+.var
+.begin
+    nop
+.end
+
+.name bar wrong_type value
+.var
+.begin
+    nop
+.end

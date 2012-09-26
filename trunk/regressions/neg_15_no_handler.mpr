@@ -1,0 +1,7 @@
+.name main
+.var
+    uchar  uc
+    ushort ush 1
+.begin
+    mov uc, ush
+.end
