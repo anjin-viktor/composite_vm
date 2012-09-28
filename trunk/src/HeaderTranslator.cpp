@@ -114,7 +114,7 @@ bool HeaderTranslator::argIsRef(const std::string &name) const
     std::map<std::string, bool>::const_iterator itr = m_argsIsRefs.find(name);
 
     if(itr == m_argsIsRefs.end())
-        throw std::runtime_error(std::string("Argument with name ") + name + " not exists");
+        throw std::runtime_error(std::string("Argument with name `") + name + "` not exists");
 
     return itr -> second;
 }

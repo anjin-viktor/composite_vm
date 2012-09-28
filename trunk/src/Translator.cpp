@@ -40,7 +40,7 @@ bool Translator::readString(std::string &str)
 		m_in.open(m_inputFileName.c_str(), std::ifstream::in);
 
 	if(m_in.is_open() == false)
-		throw std::runtime_error("file " + m_inputFileName + " not exists");
+		throw std::runtime_error("file `" + m_inputFileName + "` not exists");
 
 
 	if(m_in.eof() == true)
@@ -265,7 +265,7 @@ void Translator::callCheck(Command command, const std::string &functionName) con
 
 
 	if(itrNames == lstNames.end())
-		throw ParseError("function with name " + callName + " not exists");
+		throw ParseError("function with name `" + callName + "` not exists");
 
 	std::list<std::string> funcArgsNames = Program::getInstance().getFunction(callName).getArgsNames();
 
@@ -368,10 +368,10 @@ std::string Translator::translateExceptionHandler(const std::string &header, con
     Exception::Type type = Exception::strToExceptionType(exceptionType);
 
     if(type == Exception::NoType)
-    	throw ParseError("incorrect exception handler name " + exceptionType);
+    	throw ParseError("incorrect exception handler name `" + exceptionType + "`");
 
     if(Program::getInstance().getFunction(funcName).exceptionHandlerIsExists(type))
-    	throw ParseError("in function " + funcName + " handler on exception " + exceptionType + " already exists");
+    	throw ParseError("in function `" + funcName + "` handler on exception `" + exceptionType + "` already exists");
 
 
     CodeBlockTranslator codeTransl;

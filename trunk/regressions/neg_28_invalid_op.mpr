@@ -1,0 +1,13 @@
+.name main
+.var
+    uchar v 100
+.begin
+    v, 100	;error
+
+    .exception numeric_error
+    .var
+    .begin
+        nop
+    .end
+
+.end

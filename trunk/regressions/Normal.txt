@@ -23,7 +23,7 @@ Result for neg_08_empty_body.mpr:
 Error: function `foo` has empty body
 
 Result for neg_09_invalid_var.mpr:
-Error: variable with name invalid_variable_foo not exists
+Error: variable with name `invalid_variable_foo` not exists
 
 Result for neg_10_const_noval.mpr:
 Error: variable does not have write permission
@@ -72,4 +72,49 @@ Error: mismatch
 
 Result for neg_26.mpr:
 Error: incorrect operand type in call function `func`
+
+Result for neg_27.mpr:
+Error: incorrect operand type in call function `func`
+
+Result for neg_28_invalid_op.mpr:
+Error: stopped at: v, 100	;error
+
+Result for neg_29_invalid_exception_name.mpr:
+Error: incorrect exception handler name `false`
+
+Result for neg_30_invalid_var_name_in_handler.mpr:
+Error: variable with name `v1` not exists
+
+Result for neg_31_invalid_var_name.mpr:
+Error: Variable or array with name `v` already exists
+
+Result for neg_32_invalid_var_name.mpr:
+Error: Variable or array with name `v` alredy exists
+
+Result for neg_33_invalid_arr_name.mpr:
+Error: Variable or array with name `v` alredy exists
+
+Result for neg_34_handler_redefenition.mpr:
+Error: in function `main` handler on exception `numeric_error` already exists
+
+Result for neg_35_access_error.mpr:
+Error: variable does not have read permission
+
+Result for neg_36_defaule_constraint_error_handler.mpr:
+Error: variable does not have read permission
+
+Result for neg_37_invalid_arr_name.mpr:
+Error: Variable or array with name `v1` alredy exists
+
+Result for neg_40_constraint_w.mpr:
+Error: variable does not have write permission
+
+Result for neg_41_cmp_error.mpr:
+Error: variable does not have read permission
+
+Result for neg_42_cmp_opps_error.mpr:
+Error: variable with name `ch2` not exists
+
+Result for neg_43_array_error.mpr:
+Program is interrupted with exception `constraint_error`
 

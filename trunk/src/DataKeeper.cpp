@@ -21,7 +21,7 @@ void DataKeeper::addVar(const Value &val, const std::string &name) throw(std::ru
 	if(isExists(name) == false)
 		m_vars[name] = val;
 	else
-		throw(std::runtime_error(std::string("Variable or array with name ") + name + " alredy exists"));
+		throw(std::runtime_error(std::string("Variable or array with name `") + name + "` alredy exists"));
 }
 
 
@@ -32,7 +32,7 @@ void DataKeeper::addArray(const Array &arr, const std::string &name) throw(std::
 	if(isExists(name) == false)
 		m_arrs[name] = arr;
 	else
-		throw(std::runtime_error(std::string("Variable or array with name ") + name + " alredy exists"));
+		throw(std::runtime_error(std::string("Variable or array with name `") + name + "` alredy exists"));
 }
 
 

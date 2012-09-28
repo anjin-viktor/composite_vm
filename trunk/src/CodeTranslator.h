@@ -286,7 +286,7 @@ class CodeTranslator
 
 				if(m_pdata)
 					if(m_pdata -> isArray(m_arrName) == false)
-						throw ParseError("array with name " + m_arrName + " not exists");
+						throw ParseError("array with name `" + m_arrName + "` not exists");
 					else
 						op -> setArrayPtr(&m_pdata -> getArray(m_arrName));
 
@@ -388,7 +388,7 @@ class CodeTranslator
 				if(m_pdata)
 				{
 					if(m_pdata -> isArray(m_arrName) == false)
-						throw ParseError("array with name " + m_arrName + " not exists");
+						throw ParseError("array with name `" + m_arrName + "` not exists");
 
 					m_currentVar = VarOperand(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx, Value::NO_TYPE);
 				}
@@ -405,7 +405,7 @@ class CodeTranslator
 				if(m_pdata)
 				{
 					if(m_pdata -> isVar(m_varName) == false)
-						throw ParseError("variable with name " + m_varName + " not exists");
+						throw ParseError("variable with name `" + m_varName + "` not exists");
 			
 					m_currentVar = VarOperand(&(m_pdata -> getVarValue(m_varName)));
 
@@ -527,7 +527,7 @@ class CodeTranslator
 						m_callOpIsVal = false;
 					}
 					else 
-						throw ParseError("variable with name " + m_varName + " not exists");
+						throw ParseError("variable with name `" + m_varName + "` not exists");
 				}				
 				m_varName = "";
 				m_arrName = "";
@@ -542,7 +542,7 @@ class CodeTranslator
 				if(m_pdata)
 				{
 					if(m_pdata -> isArray(m_arrName) == false)
-						throw ParseError("array with name " + m_arrName + " not exists");
+						throw ParseError("array with name `" + m_arrName + "` not exists");
 
 					m_callOpIsVal = true;
 					m_varIsArrayElement = true;

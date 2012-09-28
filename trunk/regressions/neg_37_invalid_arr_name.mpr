@@ -1,0 +1,15 @@
+.name function uint v1, uint v1
+.var
+.begin
+    nop
+.end
+
+.name main
+.var
+    uint v1
+    uint v2
+.begin
+    mov v1, 1
+    mov v2, 1
+    call function, v1, v2
+.end

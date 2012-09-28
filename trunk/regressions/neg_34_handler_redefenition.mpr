@@ -1,0 +1,11 @@
+.name main
+.var
+.begin
+    nop
+:when_numeric_error
+	nop
+
+:when_numeric_error
+nop
+
+.end

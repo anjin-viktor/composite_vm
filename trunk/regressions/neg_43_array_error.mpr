@@ -1,0 +1,6 @@
+.name main
+.var
+    array uchar arr 32
+.begin
+	mov arr[33], 1
+.end

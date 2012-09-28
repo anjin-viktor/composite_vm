@@ -1,0 +1,12 @@
+.name function uint v
+.var
+    uchar v
+.begin
+    nop
+.end
+
+.name main
+.var
+.begin
+    call function, 1
+.end

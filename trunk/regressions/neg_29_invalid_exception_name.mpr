@@ -1,0 +1,10 @@
+.name main
+.var
+    uchar v 100
+.begin
+    nop
+
+:when_false
+    nop
+
+.end

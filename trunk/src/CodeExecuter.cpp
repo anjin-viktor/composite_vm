@@ -3,7 +3,7 @@
 
 
 
-CodeExecuter::CodeExecuter(): m_poutput(&std::cout), m_perrStream(&std::cerr)
+CodeExecuter::CodeExecuter(): m_poutput(&std::cout), m_perrStream(&std::cout)
 {
 }
 

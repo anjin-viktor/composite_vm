@@ -1,0 +1,13 @@
+.name func const uchar &ch1
+.var
+.begin
+    nop
+    mov ch1, 1
+.end
+
+.name main
+.var
+    const uchar ch 1
+.begin
+    call func, ch
+.end

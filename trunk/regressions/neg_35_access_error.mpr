@@ -1,0 +1,7 @@
+.name main
+.var
+    uchar ch1
+    uchar ch2 11
+.begin
+    mov ch2, ch1
+.end

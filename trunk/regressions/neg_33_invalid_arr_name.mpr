@@ -1,0 +1,12 @@
+.name function uint v
+.var
+    array uchar v 14
+.begin
+    nop
+.end
+
+.name main
+.var
+.begin
+    call function 1
+.end

@@ -50,12 +50,7 @@ int main(int argc, char **argv)
 		std::cout << "Error: " << err.what() << std::endl;
 		return 1;
 	}
-/*	catch(std::constraint_error err)
-	{
-		std::cout << "Error: " << err.what() << std::endl;
-		return 1;		
-	}
-*/
+
 	if(out.is_open())
 		out.close();
 

@@ -1,0 +1,9 @@
+.name main
+.var
+    uchar ch1
+    uint ch2
+    array mod8 str "Hello 1\n"
+.begin
+    mov ch1, (uchar)ch2
+    aout str
+.end

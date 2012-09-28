@@ -1,0 +1,7 @@
+.name main
+.var
+    uchar v 100
+    uint v
+.begin
+    nop
+.end

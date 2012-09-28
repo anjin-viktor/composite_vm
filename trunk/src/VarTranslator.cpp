@@ -24,7 +24,7 @@ void VarTranslator::translate(std::string str)
     std::string name = getName();
 
     if(m_data.isExists(name))
-    	throw ParseError("Variable or array with name + " + name + " already exists");
+    	throw ParseError("Variable or array with name `" + name + "` already exists");
 
    	if(isArray())
    		m_data.addArray(getArray(), name);
