@@ -1,0 +1,19 @@
+.name func1 uchar ch
+.var
+.begin
+	nop
+.end
+
+.name func uchar &ch
+.var
+.begin
+	call func1, ch
+.end
+
+.name main
+.var
+    uchar ch
+.begin
+   call func, ch
+   nop
+.end

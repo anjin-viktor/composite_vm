@@ -106,6 +106,12 @@ Error: variable does not have read permission
 Result for neg_37_invalid_arr_name.mpr:
 Error: Variable or array with name `v1` alredy exists
 
+Result for neg_38_ref_constraint_r.mpr:
+Program is interrupted with exception `constraint_error`
+
+Result for neg_39_ref_constraint_r.mpr:
+Program is interrupted with exception `constraint_error`
+
 Result for neg_40_constraint_w.mpr:
 Error: variable does not have write permission
 
@@ -117,6 +123,11 @@ Error: variable with name `ch2` not exists
 
 Result for neg_43_array_error.mpr:
 Program is interrupted with exception `constraint_error`
+
+Result for neg_44.mpr:
+Program is interrupted with exception `constraint_error`
+
+Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
 

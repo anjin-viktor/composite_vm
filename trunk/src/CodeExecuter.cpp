@@ -27,7 +27,6 @@ void CodeExecuter::exec()
 		{
 			Exception::Type except = exec_command();
 
-
 			if(except != Exception::NoType)
 			{
 				if(m_contexts.top().currentCode() != Exception::NoType)
@@ -91,7 +90,15 @@ Exception::Type CodeExecuter::exec_command()
 			if(pfArg -> isWriteable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
-			pfArg -> setValue(psArg -> getValue());
+			try
+			{
+				pfArg -> setValue(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
 			m_contexts.top().m_ip++;
 
 			break;
@@ -109,8 +116,17 @@ Exception::Type CodeExecuter::exec_command()
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
-			long long res = pfArg -> getValue();
-			res += static_cast<long long>(psArg -> getValue());
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res += static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
 			
 			if(Value::isOverflow(res, pfArg -> getAfterCastType()))
 				return Exception::NumericError;
@@ -135,10 +151,19 @@ Exception::Type CodeExecuter::exec_command()
 
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
-
-			long long res = pfArg -> getValue();
-			res -= static_cast<long long>(psArg -> getValue());
 			
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res -= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
+
 			if(Value::isOverflow(res, pfArg -> getAfterCastType()))
 				return Exception::NumericError;
 
@@ -162,8 +187,17 @@ Exception::Type CodeExecuter::exec_command()
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
-			long long res = pfArg -> getValue();
-			res *= static_cast<long long>(psArg -> getValue());
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res *= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
 			
 
 			if(Value::isOverflow(res, pfArg -> getAfterCastType()))
@@ -190,8 +224,18 @@ Exception::Type CodeExecuter::exec_command()
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
-			long long res = pfArg -> getValue();
-			res /= static_cast<long long>(psArg -> getValue());
+
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res /= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
 
 			pfArg -> setValue(res);
 			m_contexts.top().m_ip++;
@@ -211,8 +255,16 @@ Exception::Type CodeExecuter::exec_command()
 			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
-			long long res = pfArg -> getValue();
-			res %= static_cast<long long>(psArg -> getValue());
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res %= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
 
 			pfArg -> setValue(res);
 			m_contexts.top().m_ip++;
@@ -306,7 +358,14 @@ Exception::Type CodeExecuter::exec_command()
 				if(parr -> operator[](i).isReadable() == false)
 					return Exception::ConstraintError;
 
-				printingStr[i] = static_cast<char>((parr -> operator[](i)).getValue());
+				try
+				{
+					printingStr[i] = static_cast<char>((parr -> operator[](i)).getValue());
+				}
+				catch(std::runtime_error)
+				{
+					return Exception::ConstraintError;
+				}
 			}
 
 			m_poutput -> write(printingStr, parr -> size()+1);
@@ -331,7 +390,14 @@ Exception::Type CodeExecuter::exec_command()
 
 			try
 			{
-				parr -> resize(pval -> getValue());
+				try
+				{
+					parr -> resize(pval -> getValue());
+				}
+				catch(std::runtime_error)
+				{
+					return Exception::ConstraintError;
+				}
 			}
 			catch(std::bad_alloc allocError)
 			{
@@ -390,7 +456,16 @@ Exception::Type CodeExecuter::exec_command()
 					}
 					else
 					{
-						newFunc.getDataKeeperPtr() -> getVarValue(*itr).setValue(pcallOp -> getValue().getValue());
+						if(pcallOp -> getValue().isReadable() == false)
+							return Exception::ConstraintError;
+						try
+						{
+							newFunc.getDataKeeperPtr() -> getVarValue(*itr).setValue(pcallOp -> getValue().getValue());
+						}
+						catch(std::runtime_error)
+						{
+							return Exception::ConstraintError;
+						}
 					}
 				}
 			}

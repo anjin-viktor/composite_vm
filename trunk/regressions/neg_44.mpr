@@ -1,0 +1,21 @@
+.name func_1 uchar &ch
+.var
+    uint ch1
+.begin
+    mov ch1, (uint)ch
+.end
+
+.name func uchar &ch
+.var
+    uchar ch1
+.begin
+    call func_1, ch1
+.end
+
+.name main
+.var
+    uchar ch
+    uchar ch1
+.begin
+    call func, ch
+.end
