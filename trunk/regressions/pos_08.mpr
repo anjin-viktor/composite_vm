@@ -1,0 +1,38 @@
+.name func mod8 ch
+.var
+    array mod8 str "abc"
+    mod8 ch2
+.begin
+
+    mov str[1], ch
+
+
+    aout str
+.end
+
+
+.name func2 mod8 ch
+.var
+    array mod8 str "abc"
+    mod8 ch2
+.begin
+
+    mov str[1], ch
+    aout str
+.end
+
+
+
+
+.name main
+.var
+    uint ch 288
+    mod8 t
+
+.begin
+    call func, (mod8)ch
+    mov t, 65
+    mov ch, (uint)t
+    call func, (mod8)ch
+    call func, t
+.end

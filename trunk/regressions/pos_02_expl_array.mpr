@@ -1,0 +1,13 @@
+.name main
+.var
+; a = {1, 1, 1, 1, 1}
+    array uint a 5 1
+
+; b = {1, 2 , 3, 4, 5}
+    array uint b 5 1 2 3 4 5
+
+; c = {1, 2 , 3, 1, 2, 3}
+    array uint c 6 1 2 3
+.begin
+    nop
+.end

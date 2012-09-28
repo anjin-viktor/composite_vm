@@ -118,3 +118,34 @@ Error: variable with name `ch2` not exists
 Result for neg_43_array_error.mpr:
 Program is interrupted with exception `constraint_error`
 
+Result for pos_02_expl_array.mpr:
+
+Result for pos_03_hello_bare.mpr:
+
+Result for pos_04_hello_bare.mpr:
+
+Result for pos_05_hello_bare.mpr:
+
+Result for pos_06_jmp.mpr:
+
+Result for pos_07_arr_tests.mpr:
+
+Result for pos_08.mpr:
+
+Result for pos_09_simple_exception_handl.mpr:
+
+Result for pos_10_numeric_error.mpr:
+
+Result for pos_11_defaule_numeric_error_handler.mpr:
+Program is interrupted with exception `numeric_error`
+
+Result for pos_12_numeric_error.mpr:
+
+Result for pos_14_constraint_error_handler.mpr:
+
+Result for pos_15_ref.mpr:
+
+Result for pos_16_je.mpr:
+
+Result for pos_17_cmp.mpr:
+

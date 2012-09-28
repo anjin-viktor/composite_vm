@@ -1,0 +1,14 @@
+.name main
+.var
+    array mod8 msg1 "msg 1"
+    array mod8 msg2 "msg 2"
+    uchar ch1 123
+    sint si 123
+
+.begin
+    cmp ch1, (uchar)si
+    je l1
+    aout msg1
+
+l1:    aout msg2
+.end

@@ -1,0 +1,14 @@
+.name main
+.var
+    uchar ch;
+    array mod8 str "Hello"
+    array mod8 str1 "Numeric error handling"
+.begin
+    mov ch, 255;
+    add ch, 2;
+    aout str
+
+
+:when_numeric_error
+	aout str1
+.end

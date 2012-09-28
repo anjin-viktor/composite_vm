@@ -1,0 +1,69 @@
+.name main
+.var
+    array sint ar 3
+    array mod8 arr 5
+    array mod8 str 3 97 124 97
+
+
+    mod8 m8
+    sint n
+    mod16 m16 1312
+
+    array sshort a 5 1 2 3 4 32
+
+.begin
+    aout str
+
+    mov m8, 32
+    mov n, 1312
+
+    mov arr[0], 32
+    mov arr[1], arr[0]
+    mov arr[2], m8
+
+    mov str[1], 32
+    aout str
+
+    mov str[1], arr[1]
+    aout str
+
+    mov str[1], m8
+    aout str
+
+    mov str[1], 32
+    aout str
+
+    mov str[1], (mod8)n
+    aout str
+
+    mov ar[0], 1312
+    mov ar[1], ar[0]
+    mov str[1], (mod8)ar[1]
+    aout str
+
+
+    mov str[1], (mod8)m16
+    aout str
+
+    mov str[1], (mod8)a[4]
+    aout str
+
+    add str[0], 3
+    aout str
+
+    sub str[0], 3
+    aout str
+
+    mov str[0], 59
+    mul str[0], 6
+    aout str
+
+    mov str[0], 200
+    div str[0], 2
+    aout str
+
+    mov str[0], 99
+    mod str[0], 200
+    aout str
+
+.end

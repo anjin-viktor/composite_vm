@@ -1,0 +1,46 @@
+.name test_func_2
+.var
+    uchar ch;
+    array mod8 str "Hello 3"
+.begin
+    mov ch, 255;
+    add ch, 2;
+    aout str
+.end
+
+.name test_func_1
+.var
+    array mod8 str "Hello 2"
+    array mod8 str1 "Numeric error handling1"
+.begin
+
+    call test_func_2
+    aout str
+
+:when_numeric_error
+	aout str1
+.end
+
+
+
+.name test_func
+.var
+    array mod8 str "Hello 1"
+    array mod8 str1 "Numeric error handling0"
+.begin
+
+    call test_func_1
+    aout str
+
+:when_numeric_error
+	aout str1
+.end
+
+
+.name main
+.var
+    array mod8 str "Hello 0"
+.begin
+    call test_func
+    aout str
+.end

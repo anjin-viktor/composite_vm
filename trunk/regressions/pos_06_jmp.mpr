@@ -1,0 +1,14 @@
+; hardware-level implementation
+
+.name main
+.var
+    array mod8 msg1 "msg 1"
+    array mod8 msg2 "msg 2"
+
+.begin
+		jmp l1
+		aout msg1
+
+l1:
+    aout msg2
+.end

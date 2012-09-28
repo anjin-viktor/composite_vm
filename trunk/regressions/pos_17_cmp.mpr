@@ -1,0 +1,33 @@
+.name main
+.var
+    array mod8 msg1 "msg 1"
+    array mod8 msg2 "msg 2"
+    array mod8 msg3 "msg 3"
+    array mod8 msg4 "msg 4"
+    array mod8 msg5 "msg 5"
+    array mod8 msg6 "msg 6"
+
+    uchar ch1 124
+    sint si 123
+
+.begin
+    cmp ch1, (uchar)si
+    je l1
+    aout msg1
+
+    cmp si, (sint)ch1
+    jl l2
+
+l1:    aout msg2
+l2:    aout msg3
+    cmp si, (sint)ch1
+    jg l3
+
+    aout msg5
+    cmp ch1, (uchar)si
+    jg l4
+
+l3:	aout msg4
+l4:	aout msg6
+
+.end

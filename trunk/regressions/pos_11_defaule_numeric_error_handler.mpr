@@ -1,0 +1,9 @@
+.name main
+.var
+    uchar ch
+    array mod8 str "Hello 1\n"
+.begin
+    mov ch, 255
+    add ch, 2
+    aout str
+.end

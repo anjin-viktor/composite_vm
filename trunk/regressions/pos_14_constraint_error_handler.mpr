@@ -1,0 +1,50 @@
+.name test_func_2
+.var
+    array mod8 arr 3
+    array mod8 str "Hello 3"
+.begin
+    mov arr[3], 0
+    aout str
+.end
+
+
+.name test_func_1
+.var
+    array mod8 str "Hello 2\n"
+    array mod8 str1 "Numeric error handling1"
+    array mod8 str2 "Error!\n"
+ 
+.begin
+
+    call test_func_2
+    aout str
+
+:when_constraint_error
+	aout str1
+    mov str[128], 1
+	aout str2
+.end
+
+
+
+.name test_func
+.var
+    array mod8 str "Hello 1\n"
+    array mod8 str1 "Numeric error handling0"
+.begin
+
+    call test_func_1
+    aout str
+
+:when_constraint_error
+	aout str1
+.end
+
+
+.name main
+.var
+    array mod8 str "Hello 0"
+.begin
+    call test_func
+    aout str
+.end

@@ -1,0 +1,10 @@
+; hardware-level implementation
+.name main
+.var
+    ; This is UTF-8 string
+    array mod8 My_String "Hello, World!"
+.begin
+    ; aout my_array; my_array must be one-byte array; [array out]
+    aout My_String
+    ; bout mod8/uchar/char; [byte out]
+.end

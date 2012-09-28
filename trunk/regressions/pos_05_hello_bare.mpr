@@ -1,0 +1,12 @@
+; hardware-level implementation
+
+.name main
+.var
+    array mod8 myStringBefore "Hello, World! (before)"
+    array mod8 My_String "Hello, World!"
+    array mod8 myStringAfter "Hello, World! (after)"
+.begin
+    aout myStringBefore
+    aout My_String
+    aout myStringAfter
+.end

@@ -148,11 +148,11 @@ class VarTranslator
         comment_expression = *qi::space >> comment;
 
        	var_expression %= *qi::space >> var_type >> +qi::space >> name >> -(+qi::space >> var_value) >> *qi::space >> -comment;
-       	name %= qi::char_("_a-zA-Z")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)] >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)];
+       	name %= qi::char_("_a-zA-Z")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)]
+              >> *qi::char_("_a-zA-Z0-9")[boost::bind(&(VarGrammar::addCharToVarName), this, _1)];
 
 
        	simple_type %= (
-       		qi::string("mod8") | 
        		qi::string("uchar") | 
        		qi::string("schar") |
           qi::string("mod16") |
@@ -160,7 +160,8 @@ class VarTranslator
           qi::string("sshort") |
           qi::string("mod32") |
           qi::string("uint") |
-          qi::string("sint")
+          qi::string("sint") |
+          qi::string("mod8")
        	) [boost::bind(&(VarGrammar::setValType), this, _1)];
 
        	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
