@@ -2,11 +2,11 @@ trunk/docs/html
 trunk/docs/latex
 trunk/test/CMakeCache.txt
 trunk/test/CMakeFiles/*
-trunk/test/COMPOZIT_VM_TESTS
 trunk/test/CTestTestfile.cmake
 trunk/test/Makefile
 trunk/test/Testing/*
 trunk/test/cmake_install.cmake
+trunk/test/COMPOZIT_VM_UNIT_TESTS
 
 trunk/src/CMakeCache.txt
 trunk/src/CMakeFiles/*
@@ -22,3 +22,9 @@ trunk/regressions/CMakeFiles/*
 trunk/regressions/CTestTestfile.cmake
 trunk/regressions/cmake_install.cmake
 trunk/src/liblib_composite_vm.a
+
+trunk/regressions/CMakeFiles/
+trunk/regressions/Makefile
+trunk/regressions/Results.txt
+trunk/regressions/*.Res
+trunk/regressions/Broken.diff

@@ -83,9 +83,9 @@ Exception::Type CodeExecuter::exec_command()
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
 
-
 			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
 				return Exception::ConstraintError;
+
 
 			if(pfArg -> isWriteable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
