@@ -15,3 +15,10 @@ trunk/src/CTestTestfile.cmake
 trunk/src/Makefile
 trunk/src/Testing/*
 trunk/src/cmake_install.cmake
+
+
+
+trunk/regressions/CMakeFiles/*	
+trunk/regressions/CTestTestfile.cmake
+trunk/regressions/cmake_install.cmake
+trunk/src/liblib_composite_vm.a

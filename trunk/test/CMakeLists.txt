@@ -1,30 +1,10 @@
-set (PROJECT 
-	COMPOZIT_VM_TESTS)
+set (TEST
+	COMPOZIT_VM_UNIT_TESTS)
  
-project (${PROJECT})
+project (${TEST})
 
  
 set (SOURCES
-	../src/Value.cpp
-	../src/LabelOperand.cpp
-	../src/VarOperand.cpp
-	../src/Command.cpp
-	../src/VarTranslator.cpp
-	../src/ParseError.cpp
-	../src/Array.cpp
-	../src/DataKeeper.cpp
-	../src/Label.cpp
-	../src/CodeTranslator.cpp
-	../src/ArrayOperand.cpp
-	../src/CodeBlockTranslator.cpp
-	../src/Function.cpp
-	../src/Translator.cpp
-	../src/HeaderTranslator.cpp
-	../src/Program.cpp
-	../src/CallOperand.cpp
-	../src/Exception.cpp
-	../src/Context.cpp
-	../src/CodeExecuter.cpp
 
 	ValueTest.cpp
 	LabelOperandTest.cpp
@@ -63,9 +43,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 find_package (Boost COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
 
 
-add_executable (${PROJECT} ${SOURCES})
+add_executable (${TEST} ${SOURCES})
 
-target_link_libraries (${PROJECT} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+target_link_libraries (${TEST} ${PROJECT_LIB} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} )
 
-enable_testing()
-add_test(${PROJECT} ${PROJECT})
+add_test(${TEST} ${TEST})

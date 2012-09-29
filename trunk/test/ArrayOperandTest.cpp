@@ -4,7 +4,7 @@
 #include <boost/test/unit_test.hpp>
 #include "../src/ArrayOperand.h"
 
-
+#define BOOST_TEST_MODULE tests
 
 /**
 @file ArrayOperandTest.cpp
