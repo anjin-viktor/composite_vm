@@ -1,0 +1,35 @@
+.name subFunction mod8 module
+.var
+.begin
+    mov module, 11
+    nop
+.end
+
+.name main
+.var
+    uchar  uc1
+    uchar  uc2
+    ushort ush
+    uint   iu
+    schar  sc
+    sshort ss
+    sint   si
+    mod8   m8
+    mod16  m16
+    mod32  m32
+    array  uchar my_string 5
+    array  mod32   m_arr 128
+.begin
+    mov uc1, 7
+    mov uc2, uc1
+    mov uc1, uc2
+
+    mov m32, 432
+    mov m_arr[0], m32
+    mov m_arr[1], m_arr[0]
+
+    mov m8, 1
+
+    call subFunction, m8
+    nop
+.end

@@ -28,3 +28,4 @@ trunk/regressions/Makefile
 trunk/regressions/Results.txt
 trunk/regressions/*.Res
 trunk/regressions/Broken.diff
+trunk/regressions/Testing/

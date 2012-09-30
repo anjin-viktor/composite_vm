@@ -46,7 +46,9 @@ ArrayOperand ArrayOperand::convert(const DataKeeper *pold, DataKeeper *pnew) con
 		std::list<std::string> names = pold -> getArraysNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end()&& !(pold -> getArray(*itr) == *m_parr); itr++);
+		for(;itr != names.end() && 
+			(!(pold -> getArray(*itr) == *m_parr) || (&(pold -> getArray(*itr)) != m_parr)); 
+			itr++);
 
 		if(itr == names.end())
 			return ArrayOperand();

@@ -1,0 +1,14 @@
+.name main
+.var
+
+    uchar  uc1
+    uchar  uc2
+    uchar  uc3
+    array uchar str "h h"
+.begin
+    mov uc1, 97
+    mov uc2, uc1
+    mov uc1, uc2
+    aout str
+    nop
+.end

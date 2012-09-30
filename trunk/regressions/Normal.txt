@@ -152,6 +152,8 @@ Program is interrupted with exception `numeric_error`
 
 Result for pos_12_numeric_error.mpr:
 
+Result for pos_13_access_to_pater_vars.mpr:
+
 Result for pos_14_constraint_error_handler.mpr:
 
 Result for pos_15_ref.mpr:
@@ -159,4 +161,8 @@ Result for pos_15_ref.mpr:
 Result for pos_16_je.mpr:
 
 Result for pos_17_cmp.mpr:
+
+Result for pos_18.mpr:
+
+Result for pos_19.mpr:
 

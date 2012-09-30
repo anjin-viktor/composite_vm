@@ -184,7 +184,9 @@ VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getValuesNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end()&& !(pold -> getVarValue(*itr) == *m_pval); itr++);
+		for(;itr != names.end() && 
+			(!(pold -> getVarValue(*itr) == *m_pval) || (&(pold -> getVarValue(*itr)) != m_pval));
+			 itr++);
 
 		if(itr == names.end())
 			return VarOperand();
@@ -208,7 +210,9 @@ VarOperand VarOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getArraysNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end()&& !(pold -> getArray(*itr) == *m_parr); itr++);
+		for(;itr != names.end() && 
+			(!(pold -> getArray(*itr) == *m_parr) || (&pold -> getArray(*itr) != m_parr)); 
+			itr++);
 
 		if(itr == names.end())
 			return VarOperand();

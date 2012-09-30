@@ -97,7 +97,9 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getValuesNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end() && !(&(pold -> getVarValue(*itr)) == m_pval); itr++);
+		for(;itr != names.end() && 
+			(!(pold -> getVarValue(*itr) == *m_pval) || (&(pold -> getVarValue(*itr)) != m_pval)); 
+			itr++);
 
 		assert(itr != names.end());
 		assert(pnew -> isVar(*itr) != false);
@@ -117,7 +119,9 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getArraysNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end() && !(&(pold -> getArray(*itr)) == m_parr); itr++);
+		for(;itr != names.end() && 
+			(!(&(pold -> getArray(*itr)) == m_parr) || !(pold -> getArray(*itr) == *m_parr)); 
+			itr++);
 
 		assert(itr != names.end());
 		assert(pnew -> isArray(*itr) != false);
@@ -136,7 +140,10 @@ CallOperand CallOperand::convert(const DataKeeper *pold, DataKeeper *pnew) const
 		std::list<std::string> names = pold -> getArraysNames();
 		std::list<std::string>::const_iterator itr = names.begin();
 
-		for(;itr != names.end() && !(&(pold -> getArray(*itr)) == m_popArr); itr++);
+		for(;itr != names.end() && 
+			(!(&(pold -> getArray(*itr)) == m_popArr) || !(pold -> getArray(*itr) == *m_popArr)); 
+			itr++);
+
 	
 
 		assert(itr != names.end());

@@ -1,0 +1,15 @@
+.name main
+.var
+    array mod8 str "hello!!!"
+    uchar ch
+    mod8 m8
+.begin
+    mov m8, 32
+    mov str[6], m8
+
+    mov ch, 255
+    add ch, 1
+
+:when_numeric_error
+	aout str
+.end
