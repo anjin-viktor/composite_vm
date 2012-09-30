@@ -125,11 +125,17 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_4)
 	tr.setInputFileName("CodeExecuterTestFiles/4.mpr");
 
 	std::ostringstream stream;
+	std::ostringstream err;
+
 	exec.setOutputStream(stream);
+	exec.setErrorStream(err);
 
 	BOOST_CHECK_NO_THROW(tr.translate());
 
 	BOOST_CHECK_NO_THROW(exec.exec());
+
+	BOOST_CHECK_EQUAL(stream.str(), "2\n");
+	BOOST_CHECK_EQUAL(err.str(), "Program is interrupted with exception `constraint_error`\n");
 }
 
 

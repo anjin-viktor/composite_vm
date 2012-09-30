@@ -1,0 +1,24 @@
+.name function array uchar &arr
+.var
+.begin
+    rsz arr, 5
+    mov arr[3], arr[2]
+    mov arr[4], 111
+    nop
+.end
+
+.name main
+.var
+    array  uchar str "hell"
+.begin
+    aout str
+    mov str[4], 111
+
+
+:when_constraint_error
+    rsz str, 3
+    aout str
+    call function, str 
+    aout str
+    mov str[6], 111
+.end

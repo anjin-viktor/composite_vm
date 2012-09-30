@@ -1,9 +1,15 @@
 .name main
 .var
 	array uchar arr 5 1 2 3 4 5
+	array mod8 str1 "1"
+	array mod8 str2 "2"
+	
 .begin
 	rsz arr, 10
 	mov arr[12], 0
+	aout str1
 :when_constraint_error
 	mov arr[9], 0
+	aout str2
+	mov arr[10], 0
 .end

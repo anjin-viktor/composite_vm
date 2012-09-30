@@ -392,7 +392,7 @@ Exception::Type CodeExecuter::exec_command()
 			{
 				try
 				{
-					parr -> resize(pval -> getValue());
+					parr -> resizeAndFillZeros(pval -> getValue());
 				}
 				catch(std::runtime_error)
 				{

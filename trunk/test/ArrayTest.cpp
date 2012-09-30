@@ -91,4 +91,35 @@ BOOST_AUTO_TEST_CASE(ArrayTest_create)
 }
 
 
+/**
+Тест resizeAndFillZeros
+*/
+BOOST_AUTO_TEST_CASE(ArrayTest_resizeAndFillZeros)
+{
+	Array arr;
+	BOOST_CHECK_EQUAL(arr.size(), 0);
+	BOOST_CHECK_EQUAL(arr.isWriteable(), true);
+
+	arr.resizeAndFillZeros(1000);
+	arr.setType(Value::MOD8);
+
+	BOOST_CHECK_EQUAL(arr[999].getType(), Value::MOD8);
+	BOOST_CHECK_EQUAL(arr[500].isReadable(), true);
+	BOOST_CHECK_EQUAL(arr[500].isWriteable(), true);
+	BOOST_CHECK_EQUAL(arr[500].getValue(), 0);
+
+	arr.setWriteableAll(false);
+	arr.setReadableAll(true);
+	BOOST_CHECK_EQUAL(arr[500].isReadable(), true);
+	BOOST_CHECK_EQUAL(arr[500].isWriteable(), false);
+
+	arr.resize(0);
+	arr.resize(5);
+	BOOST_CHECK_EQUAL(arr[0].getType(), Value::MOD8);
+
+	arr.setWriteable(false);
+	BOOST_CHECK_EQUAL(arr.isWriteable(), false);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END();

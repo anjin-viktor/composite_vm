@@ -83,6 +83,30 @@ void Array::resize(std::size_t size)
 
 
 
+void Array::resizeAndFillZeros(std::size_t size)
+{
+	int start = 0;
+	if(m_parr)
+		start = m_parr -> size();
+
+	if(m_parr == NULL)
+		m_parr = boost::shared_ptr<std::vector<Value> >(new std::vector<Value>(size));
+	else if(size > 0)
+		m_parr -> resize(size);
+	else
+		m_parr.reset();
+
+	for(int i=start; i<size; i++)
+	{
+		m_parr -> at(i).setType(m_type);
+		m_parr -> at(i).setReadable(true);
+		m_parr -> at(i).setValue(0);
+		m_parr -> at(i).setWriteable(true);
+	}
+}
+
+
+
 
 void Array::setWriteable(bool writeable)
 {

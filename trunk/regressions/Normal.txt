@@ -127,6 +127,9 @@ Program is interrupted with exception `constraint_error`
 Result for neg_44.mpr:
 Program is interrupted with exception `constraint_error`
 
+Result for neg_45_array_size_error.mpr:
+Program is interrupted with exception `constraint_error`
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -165,4 +168,7 @@ Result for pos_17_cmp.mpr:
 Result for pos_18.mpr:
 
 Result for pos_19.mpr:
+
+Result for pos_20_rsz.mpr:
+Program is interrupted with exception `constraint_error`
 
