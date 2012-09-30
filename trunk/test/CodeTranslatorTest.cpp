@@ -579,10 +579,10 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_accessPermitionsFalse)
 
 	array = Array(2, Value::MOD8);
 	array[0].setReadable(true);
-	array[1].setReadable(false);
+	array[1].setReadable(true);
 	keeper.addArray(array, "str");
 
-	BOOST_CHECK_THROW(translator.translate("aout str"), ParseError);
+	BOOST_CHECK_NO_THROW(translator.translate("aout str"));
 	keeper.getArray("str")[1].setReadable(true);
 	BOOST_CHECK_NO_THROW(translator.translate("aout str"));
 
@@ -627,7 +627,7 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_aout)
 	BOOST_CHECK_THROW(translator.translate("aout arr"), ParseError);
 
 	array[1].setReadable(false);
-	BOOST_CHECK_THROW(translator.translate("aout str"), ParseError);
+	BOOST_CHECK_NO_THROW(translator.translate("aout str"));
 
 	translator.translate("rsz arr, 5");
 	translator.translate("rsz arr, var2");

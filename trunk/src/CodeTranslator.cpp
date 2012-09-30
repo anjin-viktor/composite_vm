@@ -183,11 +183,11 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 				if(parr -> size() && parr -> operator[](0).getType() != Value::MOD8 && parr -> operator[](0).getType() != Value::UNSIGNED_CHAR)
 					throw ParseError("can not write an array");
-
+/*
 				for(int i=0; i<parr -> size(); i++)
 					if(parr -> operator[](i).isReadable() == false)
 						throw ParseError("variable does not have read permission");
-			}
+*/			}
 			
 			break;
 		}

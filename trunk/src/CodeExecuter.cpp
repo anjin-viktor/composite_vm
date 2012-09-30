@@ -90,9 +90,11 @@ Exception::Type CodeExecuter::exec_command()
 			if(pfArg -> isWriteable() == false || psArg -> isReadable() == false)
 				return Exception::ConstraintError;
 
+
 			try
 			{
 				pfArg -> setValue(psArg -> getValue());
+				pfArg -> initialize();
 			}
 			catch(std::runtime_error)
 			{
