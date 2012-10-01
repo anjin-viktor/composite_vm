@@ -518,6 +518,41 @@ Exception::Type CodeExecuter::exec_command()
 			m_contexts.top().m_ip++;
 			break;
 		}
+		case Command::GTEL:
+		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> ptArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getOperand(2));
+			boost::shared_ptr<ArrayOperand> psArg = boost::dynamic_pointer_cast<ArrayOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(psArg -> hasValue() == false || ptArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
+			if(pfArg -> isWriteable() == false || ptArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+
+			try
+			{
+				long long  n = ptArg -> getValue();
+				if(psArg -> getArrayPtr() -> size() <= n || n < 0)
+					return Exception::ConstraintError;
+
+				pfArg -> setValue((psArg -> getArrayPtr() -> operator[](n)).getValue());
+				pfArg -> initialize();
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
+			m_contexts.top().m_ip++;
+
+
+
+		}
 		case Command::NONE:
 		{
 			break;

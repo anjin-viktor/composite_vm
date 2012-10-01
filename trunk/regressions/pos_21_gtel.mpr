@@ -1,0 +1,38 @@
+.name main
+.var
+    array  uchar str "hello!"
+    array mod8 str_ 0
+    sint n
+    uchar ch
+.begin
+    rsz str_, 6
+
+    mov n, 0
+
+    gtel ch, str, n
+    mov str_[0], (mod8) ch
+
+
+    add n, 1
+    gtel ch, str, n
+    mov str_[1], (mod8) ch
+
+    add n, 1
+    gtel ch, str, n
+    mov str_[2], (mod8) ch
+
+    add n, 1
+    gtel ch, str, n
+    mov str_[3], (mod8) ch
+
+    add n, 1
+    gtel ch, str, n
+    mov str_[4], (mod8) ch
+
+    add n, 1
+    gtel ch, str, n
+    mov str_[5], (mod8) ch
+
+    aout str_
+
+.end

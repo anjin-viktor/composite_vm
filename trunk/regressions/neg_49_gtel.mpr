@@ -1,0 +1,10 @@
+.name main
+.var
+    array uchar arr 3
+    array mod8 arr_ 3
+
+    uchar ch
+.begin
+	mov arr[1], 1
+	gtel arr_[1], arr, 1
+.end

@@ -130,6 +130,21 @@ Program is interrupted with exception `constraint_error`
 Result for neg_45_array_size_error.mpr:
 Program is interrupted with exception `constraint_error`
 
+Result for neg_46_gtel.mpr:
+Program is interrupted with exception `constraint_error`
+
+Result for neg_47_gtel.mpr:
+Program is interrupted with exception `constraint_error`
+
+Result for neg_48_gtel.mpr:
+Error: out of range
+
+Result for neg_49_gtel.mpr:
+Error: mismatch
+
+Result for neg_50_gtel.mpr:
+Error: mismatch
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -171,4 +186,6 @@ Result for pos_19.mpr:
 
 Result for pos_20_rsz.mpr:
 Program is interrupted with exception `constraint_error`
+
+Result for pos_21_gtel.mpr:
 

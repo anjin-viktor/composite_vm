@@ -51,6 +51,7 @@ class Command
 		RET,
 		NOP,
 		CMP,
+		GTEL,
 		NONE
 	};
 

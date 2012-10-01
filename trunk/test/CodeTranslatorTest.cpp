@@ -721,4 +721,97 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_call)
 }
 
 
+
+
+/**
+Тест трансляции команды GTEL
+*/
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_gtel)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate("gtel v, arr, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl: gtel tmp , str, n ; "));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl: gtel tmp , str   , n; "));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl:gtel 	tmp,str,n"));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl:gtel 	tmp,str,1"));
+	BOOST_CHECK_NO_THROW(translator.translate("gtel v[1], arr, 1"));
+
+
+	BOOST_CHECK_THROW(translator.translate("lbl:gtel 1,str,n"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("lbl:gtel k,1,n"), ParseError);
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(125, Value::MOD16, false, true), "var1");
+	keeper.addVar(Value(100, Value::SIGNED_INT, true, false), "var2");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, false, false), "var3");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(1, Value::MOD16, false, false);
+	array[2];
+
+	keeper.addArray(array, "arr");
+	translator.setDataKeeperPtr(&keeper);
+
+	BOOST_CHECK_NO_THROW(translator.translate("gtel var1, arr, 1"));
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::GTEL);
+
+
+	boost::shared_ptr<ArrayOperand> parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(parr -> getArrayPtr(), &keeper.getArray("arr"));
+
+	boost::shared_ptr<VarOperand> op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(2));
+	BOOST_CHECK_EQUAL(op -> getValue(), 1);
+
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+	BOOST_CHECK_EQUAL(op -> hasValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue(), 125);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), true);
+
+
+	BOOST_CHECK_NO_THROW(translator.translate("gtel var1, arr, var2"));
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::GTEL);
+
+	parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(parr -> getArrayPtr(), &keeper.getArray("arr"));
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(2));
+	BOOST_CHECK_EQUAL(op -> getValue(), 100);
+
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+	BOOST_CHECK_EQUAL(op -> hasValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue(), 125);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), true);
+
+
+	BOOST_CHECK_THROW(translator.translate("gtel var2, arr, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("gtel var2, arr, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("gtel (mod16)var2, arr, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("gtel var1, arr, var3"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("gtel var1, arr, var4"), ParseError);
+
+	keeper.getVarValue("var2").setReadable(false);
+	BOOST_CHECK_THROW(translator.translate("gtel var1, arr, var2"), ParseError);
+	keeper.getVarValue("var2").setReadable(true);
+	keeper.getVarValue("var1").setReadable(false);
+	BOOST_CHECK_NO_THROW(translator.translate("gtel var1, arr, var2"));
+	keeper.getVarValue("var1").setWriteable(false);
+	BOOST_CHECK_THROW(translator.translate("gtel var1, arr, var2"), ParseError);
+}
+
+
+
+
+
 BOOST_AUTO_TEST_SUITE_END();

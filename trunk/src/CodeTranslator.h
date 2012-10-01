@@ -111,7 +111,7 @@ class CodeTranslator
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
                 						>> *qi::space >> -comment;
-		        operation = zero_operation | one_operation | two_operation | call_operation;
+		        operation = zero_operation | one_operation | two_operation | call_operation | gtel_operation;
 
                 var %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)];
@@ -167,10 +167,16 @@ class CodeTranslator
                 					 >> array[boost::bind(&(CodeGrammar::saveArrayOperand), this)] >>  *qi::space >> 
                 					 qi::char_(',') >> *qi::space >>  rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)];;
 
-
                 cmp_operation %= qi::string("cmp")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> 
                 					+qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >>
                 					 *qi::space >> qi::char_(',') >> *qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)]; 
+                gtel_operation %= qi::string("gtel")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >>
+                					+qi::space >> wr_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)]
+                					>> *qi::space >> qi::char_(',') >> *qi::space
+                					>> array[boost::bind(&(CodeGrammar::saveArraySecondOperand), this)] 
+                					>>  *qi::space >> qi::char_(',') >> *qi::space
+                					>> rd_operand[boost::bind(&(CodeGrammar::saveThirdOperand), this)];
+
                 label %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)] >> qi::char_(':');
                 comment = qi::char_(';') >> *qi::char_;
@@ -255,29 +261,7 @@ class CodeTranslator
 		private:
 
 /**
-Определяет имеет ли значение строемого операнда право быть записанными. Если операнд - константа генерируется исключение
-@throw ParseError - операнд не имеет право на запись.
-*/
-/*			void checkVarOperandForWriteable() const throw(ParseError)
-			{
-				if(m_currentVar.getValuePtr() && m_currentVar.getValuePtr() -> isWriteable() == false)
-					throw ParseError("variable does not have write permission");
-			}
-*/
-/**
-Определяет имеет ли значение строимого операнда право быть прочтённым. Если не - генерируется исключение
-@throw ParseError - операнд не имеет право на чтение.
-*/
-/*			void checkVarOperandForReadable() const throw(ParseError)
-			{
-				if(m_currentVar.getValuePtr() && m_currentVar.getValuePtr() -> isReadable() == false)
-					throw ParseError("variable does not have read permission");
-			}
-*/
-
-
-/**
-Оформляет рассматриваемый массив как операнд функции
+Оформляет рассматриваемый массив как первый операнд функции
 */
 
 			void saveArrayOperand()
@@ -293,6 +277,27 @@ class CodeTranslator
 				if(m_pcommand)
 					m_pcommand -> setFirstOperand(boost::shared_ptr<Operand>(op));
 			}
+
+
+
+/**
+Оформляет рассматриваемый массив как второй операнд функции
+*/
+
+			void saveArraySecondOperand()
+			{
+				ArrayOperand * op = new ArrayOperand();
+
+				if(m_pdata)
+					if(m_pdata -> isArray(m_arrName) == false)
+						throw ParseError("array with name `" + m_arrName + "` not exists");
+					else
+						op -> setArrayPtr(&m_pdata -> getArray(m_arrName));
+
+				if(m_pcommand)
+					m_pcommand -> setSecondOperand(boost::shared_ptr<Operand>(op));
+			}
+
 
 
 
@@ -378,6 +383,29 @@ class CodeTranslator
 				m_operandIsConst = false;
 
 			}
+
+
+
+/**
+Сохраняет текущий строимый операнд как третий операнд. Используется как семантическое действие грамматики.
+*/
+			void saveThirdOperand()
+			{
+				m_currentVar.setType(m_castType);
+
+				if(m_operandIsNumber == false)
+					m_currentVar.setConstancy(m_operandIsConst);
+
+
+				if(m_pcommand)
+					m_pcommand -> setOperand(2, boost::shared_ptr<Operand>(new VarOperand(m_currentVar)));
+
+				m_operandIsNumber = false;
+				m_castType = Value::NO_TYPE;
+				m_operandIsConst = false;
+
+			}
+
 
 /**
 Оформляет элемент массива как операнд. Используется как семантическое действие грамматики.
@@ -571,20 +599,11 @@ class CodeTranslator
 					if(m_operandIsConst || m_operandIsNumber)
 						m_callOp.setWriteable(false);
 
-/*
-					if(m_varIsArrayElement)
-						op -> setArrayElement(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx);
-					else
-						op -> setValue(m_callOpVal);
-*/
 				}
 				else 
 				{
 					if(m_operandIsConst)
 						m_callOp.setWriteable(false);
-
-
-//					op -> setArray(m_callOpArr);
 				}
 
 				*op = m_callOp;
@@ -594,9 +613,7 @@ class CodeTranslator
 				m_castType = Value::NO_TYPE;
 				m_operandIsConst = false;
 				m_callOp.setWriteable(true);
-//				m_callOpVal.setWriteable(true);
 				m_varIsArrayElement = false;
-//				m_callOpVal = Value();
 				m_arrName = "";
 			}
 
@@ -612,8 +629,8 @@ class CodeTranslator
 			}
 
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
-            one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation,
-            call_operand, call_operation, call_wr_operand;
+            one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation, 
+            call_operand, call_operation, call_wr_operand, gtel_operation;
 
             Command									*m_pcommand;
             std::list<std::string>					*m_plbls;

@@ -1,0 +1,7 @@
+.name main
+.var
+    array uchar arr 3
+    uchar ch
+.begin
+	gtel ch, arr, 0
+.end
