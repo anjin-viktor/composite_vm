@@ -812,6 +812,111 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_gtel)
 
 
 
+/**
+Тест трансляции команды STEL
+*/
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_stel)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate("stel v, arr, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl: stel tmp , str, n ; "));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl: stel tmp , str   , n; "));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl:stel 	tmp,str,n"));
+	BOOST_CHECK_NO_THROW(translator.translate("lbl:stel 	tmp,str,1"));
+	BOOST_CHECK_NO_THROW(translator.translate("stel v[1], arr, 1"));
+
+
+	BOOST_CHECK_THROW(translator.translate("lbl:stel k,1,n"), ParseError);
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(125, Value::MOD16, true, false), "var1");
+	keeper.addVar(Value(100, Value::SIGNED_INT, true, false), "var2");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, false, true), "var3");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(1, Value::MOD16, false, false);
+	array[2];
+
+	keeper.addArray(array, "arr");
+	translator.setDataKeeperPtr(&keeper);
+
+	BOOST_CHECK_NO_THROW(translator.translate("stel var1, arr, 1"));
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::STEL);
+
+
+	boost::shared_ptr<ArrayOperand> parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(parr -> getArrayPtr(), &keeper.getArray("arr"));
+
+	boost::shared_ptr<VarOperand> op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(2));
+	BOOST_CHECK_EQUAL(op -> getValue(), 1);
+
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+	BOOST_CHECK_EQUAL(op -> hasValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue(), 125);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), false);
+
+
+	BOOST_CHECK_NO_THROW(translator.translate("stel var1, arr, var2"));
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::STEL);
+
+	parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(parr -> getArrayPtr(), &keeper.getArray("arr"));
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(2));
+	BOOST_CHECK_EQUAL(op -> getValue(), 100);
+
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+	BOOST_CHECK_EQUAL(op -> hasValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue(), 125);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), false);
+
+
+	BOOST_CHECK_THROW(translator.translate("stel var2, arr, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("stel var2, arr, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("stel var1, arr, var3"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("stel var1, arr, var4"), ParseError);
+
+	keeper.getVarValue("var2").setReadable(false);
+	BOOST_CHECK_THROW(translator.translate("stel var1, arr, var2"), ParseError);
+	keeper.getVarValue("var2").setReadable(true);
+	keeper.getVarValue("var1").setReadable(false);
+	BOOST_CHECK_THROW(translator.translate("stel var1, arr, var2"), ParseError);
+	keeper.getVarValue("var1").setReadable(true);
+
+	keeper.getVarValue("var3").setReadable(true);
+
+	BOOST_CHECK_NO_THROW(translator.translate("stel (mod16)var3, arr, var1"));
+	parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(parr -> getArrayPtr(), &keeper.getArray("arr"));
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(2));
+	BOOST_CHECK_EQUAL(op -> getValue(), 125);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), false);
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+	BOOST_CHECK_EQUAL(op -> getValue(), 1);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), false);
+
+
+}
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END();

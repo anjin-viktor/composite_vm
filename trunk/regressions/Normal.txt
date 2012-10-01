@@ -145,6 +145,24 @@ Error: mismatch
 Result for neg_50_gtel.mpr:
 Error: mismatch
 
+Result for neg_51_stel.mpr:
+Program is interrupted with exception `constraint_error`
+
+Result for neg_52_stel.mpr:
+Error: variable does not have read permission
+
+Result for neg_53_stel.mpr:
+Program is interrupted with exception `constraint_error`
+
+Result for neg_54_stel.mpr:
+Error: mismatch
+
+Result for neg_55_const_param.mpr:
+Error: variable does not have write permission
+
+Result for neg_56_const_param.mpr:
+Error: variable does not have write permission
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -188,4 +206,8 @@ Result for pos_20_rsz.mpr:
 Program is interrupted with exception `constraint_error`
 
 Result for pos_21_gtel.mpr:
+
+Result for pos_22_stel.mpr:
+
+Result for pos_23_copy.mpr:
 

@@ -1,0 +1,9 @@
+.name main
+.var
+    array uchar arr 3
+    array uchar arr_ 3
+.begin
+	mov arr_[2], 1
+	stel arr_[2], arr, 3
+.end
+ 

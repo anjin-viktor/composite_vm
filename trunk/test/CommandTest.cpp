@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE(CommandTest_strToOperation)
 	BOOST_CHECK_EQUAL(Command::strToOperation("mov"), Command::MOV);
 	BOOST_CHECK_EQUAL(Command::strToOperation("MoV"), Command::MOV);
 
+	BOOST_CHECK_EQUAL(Command::strToOperation("STEL"), Command::STEL);
 	BOOST_CHECK_EQUAL(Command::strToOperation("GTEL"), Command::GTEL);
 	BOOST_CHECK_EQUAL(Command::strToOperation("ADD"), Command::ADD);
 	BOOST_CHECK_EQUAL(Command::strToOperation("SUB"), Command::SUB);

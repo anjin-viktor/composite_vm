@@ -1,0 +1,14 @@
+.name f const array mod8 &str
+.var
+.begin
+    rsz str, 1
+lend:
+.end
+
+
+.name main
+.var
+    array mod8 str "hello, world!!!"
+.begin
+    call f, str
+.end

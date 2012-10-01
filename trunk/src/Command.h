@@ -52,6 +52,7 @@ class Command
 		NOP,
 		CMP,
 		GTEL,
+		STEL,
 		NONE
 	};
 

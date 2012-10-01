@@ -130,6 +130,8 @@ Command::Operation Command::strToOperation(const std::string &str)
 		return Command::CMP;
 	else if(tmp == "gtel")
 		return Command::GTEL;
+	else if(tmp == "stel")
+		return Command::STEL;
 	else 
 		return Command::NONE;
 }
@@ -195,6 +197,9 @@ std::string Command::operationToStr(Command::Operation op)
 			break;
 		case Command::GTEL:
 			str = "GTEL";
+			break;
+		case Command::STEL:
+			str = "STEL";
 			break;
 		case Command::NONE:
 			str = "NONE";

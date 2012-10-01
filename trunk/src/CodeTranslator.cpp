@@ -208,12 +208,52 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 				if(op1 -> isWriteable() == false)
 					throw ParseError("variable does not have write permission");
 
-				if(op1 -> getAfterCastType() != (op2 -> getArrayPtr() -> getType()))
+
+				if(op1 -> getAfterCastType() != Value::NO_TYPE && op1 -> getAfterCastType() != (op2 -> getArrayPtr() -> getType()))
 					throw ParseError("mismatch");					
 			
 	 			op1 -> initialize();
 			}			
  			
+
+			break;
+		}
+
+
+		case Command::STEL:
+		{
+			boost::shared_ptr<ArrayOperand> op2;
+			boost::shared_ptr<VarOperand> op1;
+			boost::shared_ptr<VarOperand> op3;
+
+
+			op2 = boost::dynamic_pointer_cast<ArrayOperand, Operand>(m_command.getSecondOperand());
+			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
+			op3 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getOperand(2));
+
+
+			if(op1 -> getAfterCastType() != Value::NO_TYPE)
+				if(op1 -> getAfterCastType() != op2 -> getArrayPtr() -> getType())
+					throw ParseError("mismatch");
+
+
+			if(op1 -> hasValue() && op2 -> hasValue() && op3 -> hasValue())
+			{
+				if(op3 -> isReadable() == false)
+					throw ParseError("variable does not have read permission");
+
+				if(op1 -> isReadable() == false)
+					throw ParseError("variable does not have read permission");
+	
+				if(op1 -> getAfterCastType() == Value::NO_TYPE)
+					if(Value::isOverflow(op1 -> getValue(), op2 -> getArrayPtr() -> getType()))
+					{
+						std::stringstream ss;
+						ss << "first argument can't fit value " << op1 -> getValue();
+						throw ParseError(ss.str());
+					}
+			}	
+
 
 			break;
 		}

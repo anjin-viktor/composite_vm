@@ -111,7 +111,7 @@ class CodeTranslator
                 expression_operation = *qi::space >> -(*(label[boost::bind(&(CodeGrammar::endLabelName), this)] >> *qi::space)) 
                 						>> -operation[boost::bind(&(CodeGrammar::operationExists), this)] 
                 						>> *qi::space >> -comment;
-		        operation = zero_operation | one_operation | two_operation | call_operation | gtel_operation;
+		        operation = zero_operation | one_operation | two_operation | call_operation | gtel_operation | stel_operation;
 
                 var %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addVarNameChar), this, _1)];
@@ -176,6 +176,14 @@ class CodeTranslator
                 					>> array[boost::bind(&(CodeGrammar::saveArraySecondOperand), this)] 
                 					>>  *qi::space >> qi::char_(',') >> *qi::space
                 					>> rd_operand[boost::bind(&(CodeGrammar::saveThirdOperand), this)];
+
+                stel_operation %= qi::string("stel")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >>
+                					+qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)]
+                					>> *qi::space >> qi::char_(',') >> *qi::space
+                					>> array[boost::bind(&(CodeGrammar::saveArraySecondOperand), this)] 
+                					>>  *qi::space >> qi::char_(',') >> *qi::space
+                					>> rd_operand[boost::bind(&(CodeGrammar::saveThirdOperand), this)];
+
 
                 label %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)]
                 	>> *qi::char_("_a-zA-Z0-9")[boost::bind(&(CodeGrammar::addLabelChar), this, _1)] >> qi::char_(':');
@@ -630,7 +638,7 @@ class CodeTranslator
 
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
             one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation, 
-            call_operand, call_operation, call_wr_operand, gtel_operation;
+            call_operand, call_operation, call_wr_operand, gtel_operation, stel_operation;
 
             Command									*m_pcommand;
             std::list<std::string>					*m_plbls;
@@ -646,8 +654,6 @@ class CodeTranslator
 			Value::ValueType 						m_castType;
 			bool									m_operandIsConst;
 			bool									m_operandIsNumber;
-//			Array 									m_callOpArr;
-//			Value 									m_callOpVal;
 			bool									m_callOpIsVal;
 			std::size_t								m_callOpNo;
 			bool									m_varIsArrayElement;

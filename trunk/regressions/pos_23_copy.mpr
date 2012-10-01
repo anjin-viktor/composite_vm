@@ -1,0 +1,29 @@
+.name copy const array mod8 &str_src, array uchar &str_dst, uint size
+.var
+    mod8 tmp
+.begin
+    rsz str_dst, size
+
+l1:
+    cmp size, 0
+    je lend
+
+    sub size, 1
+    gtel tmp, str_src, size
+    stel (uchar)tmp, str_dst, size
+
+    jmp l1
+
+
+lend:
+.end
+
+
+.name main
+.var
+    array mod8 str "hello, world!!!"
+    array uchar str_ 0
+.begin
+    call copy, str, str_, 15
+    aout str_
+.end

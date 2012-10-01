@@ -1,0 +1,13 @@
+.name f const mod8 n
+.var
+.begin
+	mov n, 1
+lend:
+.end
+
+
+.name main
+.var
+.begin
+    call f, 1
+.end
