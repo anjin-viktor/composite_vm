@@ -1,0 +1,91 @@
+.name numberToStr uint n, array uchar &str_dst
+.var
+    uchar tmp
+    uint m
+    uint size 1
+    uint m_
+    array uchar str 0
+.begin
+    cmp n, 0
+    jne l1
+
+    rsz str_dst, 1
+    mov str_dst[0], 48
+    jmp lend
+
+
+l1:
+    rsz str, size
+
+    mov m, n
+    mod n, 10
+    add n, 48
+
+    sub size, 1
+    stel (uchar)n, str, size
+    add size, 2
+
+    mov n, m
+    div n, 10
+    cmp n, 0
+    jne l1 
+
+    sub size, 1
+    rsz str_dst, size
+
+    mov m, 0
+
+l2:
+    cmp m, size
+    je lend
+
+
+    mov m_, size
+    sub m_, m
+    sub m_, 1
+
+    gtel tmp, str, m_
+    stel tmp, str_dst, m
+
+    gtel tmp, str, m
+    stel tmp, str_dst, m_
+
+
+    add m, 1
+    jmp l2
+
+lend:
+.end
+
+
+.name main
+.var
+    array uchar str 0
+    uint t 1
+    sint l
+.begin
+    mov l, 100
+    mov t, 125
+
+    mod t, (uint)l
+    call numberToStr, t, str
+    aout str
+
+    mul t, 100
+    add t, 25
+    sub t, 300 
+
+    call numberToStr, t, str
+    aout str
+
+    add t, 1
+    mov l, 3000
+    div t, (uint) l
+
+    call numberToStr, t, str
+    aout str
+
+    mov t, 429496729
+    call numberToStr, t, str
+    aout str
+.end

@@ -211,3 +211,5 @@ Result for pos_22_stel.mpr:
 
 Result for pos_23_copy.mpr:
 
+Result for pos_24_numeric.mpr:
+
