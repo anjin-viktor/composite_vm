@@ -163,6 +163,12 @@ Error: variable does not have write permission
 Result for neg_56_const_param.mpr:
 Error: variable does not have write permission
 
+Result for neg_57_size.mpr:
+Error: variable does not have write permission
+
+Result for neg_58_size.mpr:
+Error: stopped at: size 1, str
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -212,4 +218,6 @@ Result for pos_22_stel.mpr:
 Result for pos_23_copy.mpr:
 
 Result for pos_24_numeric.mpr:
+
+Result for pos_25_size.mpr:
 

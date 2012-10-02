@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE(CommandTest_strToOperation)
 	BOOST_CHECK_EQUAL(Command::strToOperation("mov"), Command::MOV);
 	BOOST_CHECK_EQUAL(Command::strToOperation("MoV"), Command::MOV);
 
+	BOOST_CHECK_EQUAL(Command::strToOperation("SIZE"), Command::SIZE);
 	BOOST_CHECK_EQUAL(Command::strToOperation("STEL"), Command::STEL);
 	BOOST_CHECK_EQUAL(Command::strToOperation("GTEL"), Command::GTEL);
 	BOOST_CHECK_EQUAL(Command::strToOperation("ADD"), Command::ADD);
@@ -55,6 +56,36 @@ BOOST_AUTO_TEST_CASE(CommandTest_strToOperation)
 	BOOST_CHECK_EQUAL(Command::strToOperation("NOPP"), Command::NONE);
 	BOOST_CHECK_EQUAL(Command::strToOperation("NONE"), Command::NONE);
 	BOOST_CHECK_EQUAL(Command::strToOperation(" mov "), Command::NONE);	
+}
+
+
+/**
+Тест функции Command::operationToStr()
+*/
+
+BOOST_AUTO_TEST_CASE(CommandTest_operationToStr)
+{
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::MOV)), Command::MOV);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::ADD)), Command::ADD);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SUB)), Command::SUB);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::MUL)), Command::MUL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::DIV)), Command::DIV);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::MOD)), Command::MOD);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::CALL)), Command::CALL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::RET)), Command::RET);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::JMP)), Command::JMP);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::JE)), Command::JE);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::JL)), Command::JL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::JG)), Command::JG);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::JNE)), Command::JNE);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::NOP)), Command::NOP);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SIZE)), Command::SIZE);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::STEL)), Command::STEL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::GTEL)), Command::GTEL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::AOUT)), Command::AOUT);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::RSZ)), Command::RSZ);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::CMP)), Command::CMP);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::NONE)), Command::NONE);
 }
 
 

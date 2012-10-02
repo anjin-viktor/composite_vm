@@ -1,0 +1,59 @@
+.name function array mod8 str_, array uint arr, const array mod32 arr_
+.var
+    array uchar str 3
+    uint n
+    sint t
+.begin
+    size str[0], str_
+    add str[0], 48
+    size t, arr
+    mov str[1], (uchar) t
+    size n, arr_
+    add n, 48
+    mov str[2], (uchar) n
+    aout str
+
+.end
+
+
+.name function_ array mod8 &str_, const array uint &arr, const array mod32 &arr_
+.var
+    array uchar str 3
+    mod32 n
+    sshort t
+.begin
+    size str[0], str_
+    add str[0], 48
+    size t, arr
+    mov str[1], (uchar) t
+    size n, arr_
+    add n, 48
+    mov str[2], (uchar) n
+    aout str
+
+.end
+
+
+
+.name main
+.var
+    array uchar str 3
+    array mod8 str_ 9
+    const array uint arr 49
+    array mod32 arr_ 263
+    mod8 n
+    schar t
+.begin
+    size str[0], str_
+    add str[0], 48
+    size t, arr
+    mov str[1], (uchar) t
+    size n, arr_
+    add n, 48
+    mov str[2], (uchar) n
+    aout str
+
+    call function, str_, arr, arr_
+    call function_, str_, arr, arr_
+
+.end

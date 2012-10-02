@@ -1,0 +1,6 @@
+.name main
+.var
+	array mod8 str 10
+.begin
+	size 1, str
+.end

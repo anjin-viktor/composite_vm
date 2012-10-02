@@ -918,5 +918,54 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_stel)
 
 
 
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_size)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate("size var, arr"));
+	BOOST_CHECK_NO_THROW(translator.translate("size var,a;comment"));
+	BOOST_CHECK_THROW(translator.translate("size var,1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("size 1,arr"), ParseError);
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(125, Value::MOD16, false, true), "var1");
+	keeper.addVar(Value(100, Value::SIGNED_INT, true, true), "var2");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, true, false), "var3");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(1, Value::MOD16, false, false);
+	array[2];
+
+	keeper.addArray(array, "arr");
+	translator.setDataKeeperPtr(&keeper);
+
+	BOOST_CHECK_NO_THROW(translator.translate("size var1, arr"));
+
+	BOOST_CHECK_EQUAL(translator.getCommand().getOperationType(), Command::SIZE);
+
+	boost::shared_ptr<ArrayOperand> parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>(translator.getCommand().getOperand(1));
+	BOOST_CHECK_EQUAL(parr -> getArrayPtr(), &keeper.getArray("arr"));
+
+	boost::shared_ptr<VarOperand> op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+
+	BOOST_CHECK_EQUAL(op -> hasValue(), true);
+	BOOST_CHECK_EQUAL(op -> getValue(), 125);
+	BOOST_CHECK_EQUAL(op -> getAfterCastType(), Value::MOD16);
+	BOOST_CHECK_EQUAL(op -> isReadable(), true);
+	BOOST_CHECK_EQUAL(op -> isWriteable(), true);
+
+	BOOST_CHECK_NO_THROW(translator.translate("size var2, arr"));
+
+	op = boost::dynamic_pointer_cast<VarOperand, Operand>(translator.getCommand().getOperand(0));
+	BOOST_CHECK_EQUAL(op -> getValue(), 100);
+
+	BOOST_CHECK_THROW(translator.translate("size var3, arr"), ParseError);
+	BOOST_CHECK_NO_THROW(translator.translate("size arr[0], arr"));
+
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END();

@@ -53,6 +53,7 @@ class Command
 		CMP,
 		GTEL,
 		STEL,
+		SIZE,
 		NONE
 	};
 

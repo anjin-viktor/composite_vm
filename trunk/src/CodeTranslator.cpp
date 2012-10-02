@@ -258,6 +258,25 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			break;
 		}
 
+		case Command::SIZE:
+		{
+			boost::shared_ptr<ArrayOperand> op2;
+			boost::shared_ptr<VarOperand> op1;
+
+			op2 = boost::dynamic_pointer_cast<ArrayOperand, Operand>(m_command.getSecondOperand());
+			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
+
+			if(op1 -> hasValue())
+			{
+				if(op1 -> isWriteable() == false)
+					throw ParseError("variable does not have write permission");
+
+				op1 -> initialize();
+			}
+
+			break;
+		}
+
 
 		case Command::CALL:
 		case Command::RET:

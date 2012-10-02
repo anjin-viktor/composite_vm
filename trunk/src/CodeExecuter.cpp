@@ -587,6 +587,41 @@ Exception::Type CodeExecuter::exec_command()
 			break;
 		}
 
+		case Command::SIZE:
+		{
+			Array *parr = boost::dynamic_pointer_cast<ArrayOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand()) -> getArrayPtr();
+
+			boost::shared_ptr<VarOperand> pval = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+			if(parr == NULL)
+				return Exception::ConstraintError;
+
+			if(pval -> isWriteable() == false)
+				return Exception::ConstraintError;
+
+			try
+			{
+				try
+				{
+					pval -> setValue(parr -> size());
+				}
+				catch(std::runtime_error)
+				{
+					return Exception::ConstraintError;
+				}
+			}
+			catch(std::bad_alloc allocError)
+			{
+				return Exception::StorageError;
+			}
+
+			m_contexts.top().m_ip++;
+
+
+			break;
+		}
 
 		case Command::NONE:
 		{
