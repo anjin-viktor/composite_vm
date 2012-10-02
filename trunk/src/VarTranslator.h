@@ -164,7 +164,7 @@ class VarTranslator
           qi::string("mod8")
        	) [boost::bind(&(VarGrammar::setValType), this, _1)];
 
-       	var_value %= (qi::int_)[boost::bind(&(VarGrammar::setValue), this, _1)];
+       	var_value %= (qi::long_long)[boost::bind(&(VarGrammar::setValue), this, _1)];
 //       	const_ %= qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)];
        	var_type %= -(qi::string("const")[boost::bind(&(VarGrammar::setNoWriteable), this)] >> +qi::space) >> simple_type;
        	comment %= qi::char_(';') >> *qi::char_;
@@ -180,9 +180,9 @@ class VarTranslator
                         arr_size >> *(+qi::space >> arr_val) >>
                         *qi::space >> -comment;
 
-        arr_size %= qi::uint_[boost::bind(&(VarGrammar::setArrSize), this, _1)];
+        arr_size %= qi::ulong_[boost::bind(&(VarGrammar::setArrSize), this, _1)];
         arr_const %= qi::string("const")[boost::bind(&(VarGrammar::setArrConst), this)];
-        arr_val %= qi::int_[boost::bind(&(VarGrammar::addInitVal), this, _1)];
+        arr_val %= qi::long_long[boost::bind(&(VarGrammar::addInitVal), this, _1)];
 
         str_expression %= (*qi::space >> -(arr_const >> +qi::space) >> 
                         (qi::string("array") | qi::string("ARRAY")) >> +qi::space >> 

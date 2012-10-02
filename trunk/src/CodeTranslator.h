@@ -135,7 +135,7 @@ class CodeTranslator
                         qi::string("mod32")
                     )[boost::bind(&(CodeGrammar::setOperandType), this, _1)] >> *qi::space >> qi::char_(")");
                 rd_operand %= (-(cast >> *qi::space) >> (wr_operand |
-                				 qi::long_[boost::bind(&(CodeGrammar::setNubmerOperand), this, _1)])
+                				 qi::long_long[boost::bind(&(CodeGrammar::setNubmerOperand), this, _1)])
                 			  );
 
                 label_operand %= qi::char_("_a-zA-Z")[boost::bind(&(CodeGrammar::addLabelOperandChar), this, _1)] >>

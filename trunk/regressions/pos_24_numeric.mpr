@@ -63,6 +63,7 @@ lend:
     array uchar str 0
     uint t 1
     sint l
+    uint t_ 4294967295
 .begin
     mov l, 100
     mov t, 125
@@ -87,5 +88,12 @@ lend:
 
     mov t, 429496729
     call numberToStr, t, str
+    aout str
+
+    call numberToStr, t_, str
+    aout str
+
+    mov t_, 4294967294
+    call numberToStr, t_, str
     aout str
 .end
