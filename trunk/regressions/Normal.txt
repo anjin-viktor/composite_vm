@@ -221,3 +221,5 @@ Result for pos_24_numeric.mpr:
 
 Result for pos_25_size.mpr:
 
+Result for pos_26_factorial.mpr:
+

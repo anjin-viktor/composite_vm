@@ -1,0 +1,32 @@
+;
+
+
+.name test1
+.var
+	array mod8 arr 32000
+	sshort k 0
+	sshort m 0
+	mod8 tmp
+.begin
+m:
+	mov k, 0	
+l:
+	stel (mod8) k, arr, k
+	gtel tmp, arr, k
+	stel tmp, arr, k
+	add k, 1
+	cmp k, 32000
+	jne l
+
+	add m, 1
+	cmp m, 15
+	jne m
+.end
+
+
+
+.name main
+.var
+.begin
+	call test1
+.end

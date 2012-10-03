@@ -1,0 +1,54 @@
+;Повтрорение 1000 раз вычислений факториала от 0 до 12 включительно
+
+
+
+
+.name factorial uint &res, uchar n
+.var
+.begin
+	mov res, 1
+
+l:
+	cmp n, 0
+	je end
+
+	mul res, (uint)n
+	sub n, 1
+	jmp l
+
+end:
+.end
+
+
+
+.name function
+.var
+	uchar n
+	uint res 0
+	ushort k 1000;
+.begin
+
+	mov n, 0
+
+l:
+	call factorial, res, n
+
+
+	add n, 1
+	cmp n, 13
+	jne l
+
+	mov n, 0
+	sub k, 1
+	cmp k, 0
+	jne l
+
+.end
+
+
+
+.name main
+.var
+.begin
+	call function
+.end
