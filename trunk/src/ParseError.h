@@ -8,6 +8,9 @@
 
 #include <stdexcept>
 #include <string>
+#include <sstream>
+
+#include "TranslatedFileInfo.h"
 
 /**
 @class ParseError 

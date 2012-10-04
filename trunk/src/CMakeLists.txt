@@ -33,32 +33,11 @@ set (LIB_SOURCES
 		CodeExecuter.cpp
 		DataKeeper.cpp
 		Function.cpp
+		TranslatedFileInfo.cpp
 	)
 
 set (SOURCES main.cpp)
 
-#set (TESTS_SOURCES
-#		../test/ValueTest.cpp
-#		../test/LabelOperandTest.cpp
-#		../test/VarOperandTest.cpp
-#		../test/CommandTest.cpp
-#		../test/VarTranslatorTest.cpp
-#		../test/ParseErrorTest.cpp
-#		../test/ArrayTest.cpp
-#		../test/DataKeeperTest.cpp
-#		../test/LabelTest.cpp
-#		../test/CodeTranslatorTest.cpp
-#		../test/ArrayOperandTest.cpp
-#		../test/CodeBlockTranslatorTest.cpp
-#		../test/FunctionTest.cpp
-#		../test/TranslatorTest.cpp
-#		../test/HeaderTranslatorTest.cpp
-#		../test/ProgramTest.cpp
-#		../test/CallOperandTest.cpp
-#		../test/ExceptionTest.cpp
-#		../test/ContextTest.cpp
-#		../test/CodeExecuterTest.cpp
-#	)
 
 set (BOOST_COMPONENTS 
 		unit_test_framework

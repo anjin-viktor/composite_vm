@@ -23,6 +23,7 @@
 #include "Operand.h"
 #include "LabelOperand.h"
 #include "Exception.h"
+#include "TranslatedFileInfo.h"
 
 /**
 @class Translator

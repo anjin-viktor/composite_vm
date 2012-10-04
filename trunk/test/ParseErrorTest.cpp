@@ -23,8 +23,13 @@ BOOST_AUTO_TEST_SUITE(PARSEERROR_TEST_SUITE);
 
 BOOST_AUTO_TEST_CASE(ParseErrorTest)
 {
+	TranslatedFileInfo::getInstance().setFile("file");
+	TranslatedFileInfo::getInstance().clearLineNo();
+	TranslatedFileInfo::getInstance().incLineNo();
+	TranslatedFileInfo::getInstance().incLineNo();
+
 	ParseError err("error msg");
-	BOOST_CHECK_EQUAL(err.what(), "error msg");
+	BOOST_CHECK_EQUAL(err.what(), "error msg at file file: 2");
 
 	err.setMsg("msg");
 	BOOST_CHECK_EQUAL(err.what(), "msg");

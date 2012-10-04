@@ -1,92 +1,92 @@
 Result for neg_01_trash.mpr:
-Error: trash is there... not expected
+Error: trash is there... not expected at file neg_01_trash.mpr: 1
 
 Result for neg_02_type.mpr:
-Error: stopped at: wrongtype blah
+Error: stopped at: wrongtype blah at file neg_02_type.mpr: 3
 
 Result for neg_03_arr_type.mpr:
-Error: stopped at: array wrongtype blah no-matters
+Error: stopped at: array wrongtype blah no-matters at file neg_03_arr_type.mpr: 3
 
 Result for neg_04_type_name.mpr:
-Error: stopped at: mod32 5my_value
+Error: stopped at: mod32 5my_value at file neg_04_type_name.mpr: 3
 
 Result for neg_05_type_name.mpr:
-Error: stopped at: []
+Error: stopped at: [] at file neg_05_type_name.mpr: 3
 
 Result for neg_06_target.mpr:
-Error: stopped at: mov x 0
+Error: stopped at: mov x 0 at file neg_06_target.mpr: 5
 
 Result for neg_07_empty.mpr:
-Error: function `main` not exists
+Error: function `main` not exists at file neg_07_empty.mpr: 1
 
 Result for neg_08_empty_body.mpr:
-Error: function `foo` has empty body
+Error: function `foo` has empty body at file neg_08_empty_body.mpr: 4
 
 Result for neg_09_invalid_var.mpr:
-Error: variable with name `invalid_variable_foo` not exists
+Error: variable with name `invalid_variable_foo` not exists at file neg_09_invalid_var.mpr: 4
 
 Result for neg_10_const_noval.mpr:
-Error: variable does not have write permission
+Error: variable does not have write permission at file neg_10_const_noval.mpr: 6
 
 Result for neg_11_const_write.mpr:
-Error: variable does not have write permission
+Error: variable does not have write permission at file neg_11_const_write.mpr: 6
 
 Result for neg_12_f_dubledec.mpr:
 Error: function with name main already exists
 
 Result for neg_13_mov_x_x.mpr:
-Error: variable does not have read permission
+Error: variable does not have read permission at file neg_13_mov_x_x.mpr: 5
 
 Result for neg_14_mov_x_x.mpr:
-Error: variable does not have read permission
+Error: variable does not have read permission at file neg_14_mov_x_x.mpr: 5
 
 Result for neg_15_no_handler.mpr:
-Error: mismatch
+Error: mismatch at file neg_15_no_handler.mpr: 6
 
 Result for neg_16_diff_types.mpr:
-Error: mismatch
+Error: mismatch at file neg_16_diff_types.mpr: 7
 
 Result for neg_17_var_range.mpr:
-Error: variable `uc` can't fit value 300
+Error: variable `uc` can't fit value 300 at file neg_17_var_range.mpr: 3
 
 Result for neg_18_var_range.mpr:
-Error: first argument can't fit value 300
+Error: first argument can't fit value 300 at file neg_18_var_range.mpr: 5
 
 Result for neg_19_fdecl.mpr:
-Error: stopped at: wrong_type value
+Error: stopped at: wrong_type value at file neg_19_fdecl.mpr: 9
 
 Result for neg_20_fdecl.mpr:
-Error: stopped at: mod32
+Error: stopped at: mod32 at file neg_20_fdecl.mpr: 9
 
 Result for neg_21_callnotype.mpr:
-Error: wrong number of operands
+Error: wrong number of operands at file neg_21_callnotype.mpr: 13
 
 Result for neg_22_callwrongtype.mpr:
-Error: incorrect operand type in call function `subFunction`
+Error: incorrect operand type in call function `subFunction` at file neg_22_callwrongtype.mpr: 14
 
 Result for neg_23_callextratype.mpr:
-Error: wrong number of operands
+Error: wrong number of operands at file neg_23_callextratype.mpr: 15
 
 Result for neg_25.mpr:
-Error: mismatch
+Error: mismatch at file neg_25.mpr: 7
 
 Result for neg_26.mpr:
-Error: incorrect operand type in call function `func`
+Error: incorrect operand type in call function `func` at file neg_26.mpr: 16
 
 Result for neg_27.mpr:
-Error: incorrect operand type in call function `func`
+Error: incorrect operand type in call function `func` at file neg_27.mpr: 15
 
 Result for neg_28_invalid_op.mpr:
-Error: stopped at: v, 100	;error
+Error: stopped at: v, 100	;error at file neg_28_invalid_op.mpr: 5
 
 Result for neg_29_invalid_exception_name.mpr:
-Error: incorrect exception handler name `false`
+Error: incorrect exception handler name `false` at file neg_29_invalid_exception_name.mpr: 7
 
 Result for neg_30_invalid_var_name_in_handler.mpr:
-Error: variable with name `v1` not exists
+Error: variable with name `v1` not exists at file neg_30_invalid_var_name_in_handler.mpr: 9
 
 Result for neg_31_invalid_var_name.mpr:
-Error: Variable or array with name `v` already exists
+Error: Variable or array with name `v` already exists at file neg_31_invalid_var_name.mpr: 4
 
 Result for neg_32_invalid_var_name.mpr:
 Error: Variable or array with name `v` alredy exists
@@ -95,13 +95,13 @@ Result for neg_33_invalid_arr_name.mpr:
 Error: Variable or array with name `v` alredy exists
 
 Result for neg_34_handler_redefenition.mpr:
-Error: in function `main` handler on exception `numeric_error` already exists
+Error: in function `main` handler on exception `numeric_error` already exists at file neg_34_handler_redefenition.mpr: 8
 
 Result for neg_35_access_error.mpr:
-Error: variable does not have read permission
+Error: variable does not have read permission at file neg_35_access_error.mpr: 6
 
 Result for neg_36_defaule_constraint_error_handler.mpr:
-Error: variable does not have read permission
+Error: variable does not have read permission at file neg_36_defaule_constraint_error_handler.mpr: 7
 
 Result for neg_37_invalid_arr_name.mpr:
 Error: Variable or array with name `v1` alredy exists
@@ -113,13 +113,13 @@ Result for neg_39_ref_constraint_r.mpr:
 Program is interrupted with exception `constraint_error`
 
 Result for neg_40_constraint_w.mpr:
-Error: variable does not have write permission
+Error: variable does not have write permission at file neg_40_constraint_w.mpr: 5
 
 Result for neg_41_cmp_error.mpr:
-Error: variable does not have read permission
+Error: variable does not have read permission at file neg_41_cmp_error.mpr: 6
 
 Result for neg_42_cmp_opps_error.mpr:
-Error: variable with name `ch2` not exists
+Error: variable with name `ch2` not exists at file neg_42_cmp_opps_error.mpr: 6
 
 Result for neg_43_array_error.mpr:
 Program is interrupted with exception `constraint_error`
@@ -140,34 +140,34 @@ Result for neg_48_gtel.mpr:
 Error: out of range
 
 Result for neg_49_gtel.mpr:
-Error: mismatch
+Error: mismatch at file neg_49_gtel.mpr: 9
 
 Result for neg_50_gtel.mpr:
-Error: mismatch
+Error: mismatch at file neg_50_gtel.mpr: 9
 
 Result for neg_51_stel.mpr:
 Program is interrupted with exception `constraint_error`
 
 Result for neg_52_stel.mpr:
-Error: variable does not have read permission
+Error: variable does not have read permission at file neg_52_stel.mpr: 6
 
 Result for neg_53_stel.mpr:
 Program is interrupted with exception `constraint_error`
 
 Result for neg_54_stel.mpr:
-Error: mismatch
+Error: mismatch at file neg_54_stel.mpr: 8
 
 Result for neg_55_const_param.mpr:
-Error: variable does not have write permission
+Error: variable does not have write permission at file neg_55_const_param.mpr: 4
 
 Result for neg_56_const_param.mpr:
-Error: variable does not have write permission
+Error: variable does not have write permission at file neg_56_const_param.mpr: 4
 
 Result for neg_57_size.mpr:
-Error: variable does not have write permission
+Error: variable does not have write permission at file neg_57_size.mpr: 6
 
 Result for neg_58_size.mpr:
-Error: stopped at: size 1, str
+Error: stopped at: size 1, str at file neg_58_size.mpr: 5
 
 Result for pos_01_lint.mpr:
 

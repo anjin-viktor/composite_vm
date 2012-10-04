@@ -26,6 +26,7 @@ set (SOURCES
 	ExceptionTest.cpp
 	ContextTest.cpp
 	CodeExecuterTest.cpp
+	TranslatedFileInfoTest.cpp
 	)
  
 set (BOOST_COMPONENTS 

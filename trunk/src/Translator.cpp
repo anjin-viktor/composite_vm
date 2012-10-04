@@ -18,6 +18,8 @@ void Translator::setInputFileName(const std::string &fname)
 {
 	m_in.close();
 	m_inputFileName = fname;
+	TranslatedFileInfo::getInstance().setFile(fname);
+	TranslatedFileInfo::getInstance().clearLineNo();
 }
 
 
@@ -35,6 +37,8 @@ bool Translator::readString(std::string &str)
 {
 	m_lineNumb++;
 	char endLineChar;
+
+	TranslatedFileInfo::getInstance().incLineNo();
 
 	if(m_in.is_open() == false)
 		m_in.open(m_inputFileName.c_str(), std::ifstream::in);
