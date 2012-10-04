@@ -1,0 +1,20 @@
+.name func uchar &ch1, uchar ch2
+.var
+.begin
+    mov ch1, 32
+    mov ch2, 76
+	nop
+.end
+
+.name main
+.var
+   array mod8 str "AAA"
+    uchar c1
+    uchar c2 75
+.begin
+	nop
+    call func, c1, c2
+    mov str[1], (mod8)c1
+    mov str[0], (mod8)c2
+    aout str
+.end

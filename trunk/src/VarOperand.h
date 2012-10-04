@@ -157,6 +157,12 @@ class VarOperand: public Operand
 		void replace(Value *pold, Value *pnew);
 		void replace(Array *pold, Array *pnew);
 
+
+/**
+Может ли быть инициализированно входе работы
+*/
+	bool canBeInit() const;
+
 	private:
 		Value 				*m_pval;
 		Value::ValueType	m_type;

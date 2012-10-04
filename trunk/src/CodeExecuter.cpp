@@ -83,7 +83,7 @@ Exception::Type CodeExecuter::exec_command()
 				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
 
-			if(pfArg -> hasValue() == false || pfArg -> hasValue() == false)
+			if(pfArg -> hasValue() == false || psArg -> hasValue() == false)
 				return Exception::ConstraintError;
 
 
@@ -91,13 +91,17 @@ Exception::Type CodeExecuter::exec_command()
 				return Exception::ConstraintError;
 
 
+
 			try
 			{
+				psArg -> getValue();
 				pfArg -> setValue(psArg -> getValue());
+
 				pfArg -> initialize();
 			}
 			catch(std::runtime_error)
 			{
+
 				return Exception::ConstraintError;
 			}
 

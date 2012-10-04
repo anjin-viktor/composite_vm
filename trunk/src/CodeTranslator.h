@@ -557,6 +557,7 @@ class CodeTranslator
 					if(m_pdata -> isVar(m_varName))
 					{
 						m_callOp.setValuePtr(&(m_pdata -> getVarValue(m_varName)));
+						m_pdata -> getVarValue(m_varName).canBeInit();
 						m_callOpIsVal = true;
 
 					}
@@ -616,6 +617,7 @@ class CodeTranslator
 					if(m_operandIsConst)
 						m_callOp.setWriteable(false);
 				}
+
 
 				*op = m_callOp;
 

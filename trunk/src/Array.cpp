@@ -12,7 +12,13 @@ Array::Array()
 Array::Array(std::size_t size)
 {
 	if(size)
+	{
 		m_parr = boost::shared_ptr<std::vector<Value> >(new std::vector<Value>(size));
+
+		for(int i=0; i<size; i++)
+			m_parr -> at(i) = Value();
+	}
+
 	m_isWriteable = true;
 	m_type = Value::NO_TYPE;
 }
@@ -23,11 +29,15 @@ Array::Array(std::size_t size)
 Array::Array(std::size_t size, Value::ValueType type)
 {
 	if(size)
-		m_parr = boost::shared_ptr<std::vector<Value> >(new std::vector<Value>(size));
+			m_parr = boost::shared_ptr<std::vector<Value> >(new std::vector<Value>(size));
+	
 	m_isWriteable = true;
 
 	for(int i=0; i<size; i++)
+	{
+		m_parr -> at(i) = Value();
 		m_parr -> at(i).setType(type);
+	}
 
 	m_type = type;
 }
@@ -75,6 +85,7 @@ void Array::resize(std::size_t size)
 
 	for(int i=start; i<size; i++)
 	{
+		m_parr -> at(i) = Value();
 		m_parr -> at(i).setType(m_type);
 		m_parr -> at(i).setReadable(false);
 		m_parr -> at(i).setWriteable(true);
@@ -98,6 +109,7 @@ void Array::resizeAndFillZeros(std::size_t size)
 
 	for(int i=start; i<size; i++)
 	{
+		m_parr -> at(i) = Value();
 		m_parr -> at(i).setType(m_type);
 		m_parr -> at(i).setReadable(true);
 		m_parr -> at(i).setValue(0);
@@ -138,11 +150,7 @@ void Array::setWriteableAll(bool writeable)
 
 std::size_t Array::size() const
 {
-/*	if(m_parr.use_count())
-		std::cerr << "size: " << 0 << '\n';
-	else
-		std::cerr << "size: " << m_parr -> size() << '\n';
-*/	if(m_parr)
+	if(m_parr)
 		return m_parr -> size();
 	else
 		return 0;

@@ -172,15 +172,28 @@ return копию переменной
 */
 		static bool isOverflow(long long val, ValueType type);
 
+/**
+Указание что переменная может быть инициирована в другой функции.
+*/
+		void canBeInit();
+
+/**
+Может ли переменная быть инициализирована входе работы.
+*/
+		bool varCanBeInit() const;
+
+
 	private:
 /**
 Если значение не инициализировано указатель 
 */
 		boost::shared_ptr<long long>						m_pval;
+		boost::shared_ptr<bool>								m_pinit;
+		boost::shared_ptr<bool>								m_phasValue;
 		ValueType											m_type;
 		bool												m_isReadable;
 		bool												m_isWriteable;
-
+		bool												m_canBeInit;
 
 /**
 Определяет минимальный тип, достаточных для хранения значения. Если значение не помещается ни в один из возможных типов

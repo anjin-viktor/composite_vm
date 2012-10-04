@@ -2,9 +2,14 @@
 
 Value::Value()
 {
-	m_pval.reset();
+	m_pval = (boost::shared_ptr<long long>)(new long long);
 	m_type = NO_TYPE;
 	m_isReadable = m_isWriteable = false;
+	m_canBeInit = false;
+	m_pinit = (boost::shared_ptr<bool>)(new  bool);
+	*m_pinit = false;
+	m_phasValue = (boost::shared_ptr<bool>)(new  bool);
+	*m_phasValue = false;	
 }
 
 
@@ -14,6 +19,8 @@ Value::Value()
 
 Value::Value(long long val) throw(std::runtime_error)
 {
+	m_pinit = (boost::shared_ptr<bool>)(new  bool);
+	*m_pinit = false;
 	m_pval = (boost::shared_ptr<long long>)(new long long);
 	*m_pval = val;
 	m_type = Value::minTypeForValue(val);
@@ -21,6 +28,10 @@ Value::Value(long long val) throw(std::runtime_error)
 
 	if(m_type == Value::NO_TYPE)
 		throw(std::runtime_error("There is not a suitable type"));
+	m_canBeInit = false;
+
+	m_phasValue = (boost::shared_ptr<bool>)(new  bool);
+	*m_phasValue = true;
 }
 
 
@@ -28,6 +39,9 @@ Value::Value(long long val) throw(std::runtime_error)
 
 Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_error)
 {
+	m_pinit = (boost::shared_ptr<bool>)(new  bool);
+	*m_pinit = false;
+	m_canBeInit = false;
 	m_pval = (boost::shared_ptr<long long>)(new long long);
 	*m_pval = val;
 	m_type = Value::minTypeForValue(val);
@@ -36,6 +50,9 @@ Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_er
 
 	if(m_type == Value::NO_TYPE)
 		throw(std::runtime_error("There is not a suitable type"));
+
+	m_phasValue = (boost::shared_ptr<bool>)(new  bool);
+	*m_phasValue = true;
 }
 
 
@@ -43,6 +60,9 @@ Value::Value(long long val, bool readable, bool writeable) throw(std::runtime_er
 
 Value::Value(long long val, ValueType type, bool readable, bool writeable)
 {
+	m_pinit = (boost::shared_ptr<bool>)(new  bool);
+	*m_pinit = false;
+	m_canBeInit = false;
 	m_pval = (boost::shared_ptr<long long>)(new long long);
 	m_type = type;
 	m_isReadable = readable;
@@ -51,6 +71,9 @@ Value::Value(long long val, ValueType type, bool readable, bool writeable)
 		*m_pval = Value::longlongToType(val, type);
 	else
 		*m_pval = val;
+
+	m_phasValue = (boost::shared_ptr<bool>)(new  bool);
+	*m_phasValue = true;
 }
 
 
@@ -67,6 +90,13 @@ Value::~Value()
 
 bool Value::isReadable() const
 {
+/*
+Возможность чтения служит только для обнаружения доступа к неинициализированным переменным.
+Поэтому в рамках архитектуры такое можно делать.
+*/
+	if(*m_pinit == true)
+		return true;
+
 	return m_isReadable;
 }
 
@@ -82,6 +112,12 @@ bool Value::isWriteable() const
 void Value::setReadable(bool readable)
 {
 	m_isReadable = readable;
+
+/*
+Возможность чтения служит только для обнаружения доступа к неинициализированным переменным.
+Поэтому в рамках архитектуры такое можно делать.
+*/
+	*m_pinit = readable;
 }
 
 
@@ -97,7 +133,7 @@ void Value::setWriteable(bool writeable)
 
 void Value::setType(ValueType type)
 {
-	if(m_pval.use_count() > 0)
+	if(*m_phasValue)
 		*m_pval = Value::longlongToType(*m_pval, type);
 	m_type = type;
 }
@@ -115,7 +151,7 @@ Value::ValueType Value::getType() const
 
 long long Value::getValue(ValueType type) const throw(std::runtime_error)
 {
-	if(m_pval != NULL)
+	if(*m_phasValue)
 	{
 		if(type == Value::NO_TYPE)
 			return *m_pval;
@@ -123,7 +159,9 @@ long long Value::getValue(ValueType type) const throw(std::runtime_error)
 			return Value::longlongToType(*m_pval, type);
 	}
 	else
+	{
 		throw std::runtime_error("Value::getValue: value does not initialize");
+	}
 }
 
 
@@ -132,14 +170,12 @@ long long Value::getValue(ValueType type) const throw(std::runtime_error)
 
 void Value::setValue(long long val) throw(std::runtime_error)
 {
-	if(m_pval == NULL)
-		m_pval = (boost::shared_ptr<long long>)(new long long);
-
 	if(m_type == Value::NO_TYPE)
 		m_type = minTypeForValue(val);
 
-
 	*m_pval = longlongToType(val, m_type);
+
+	*m_phasValue = true;
 }
 
 
@@ -248,14 +284,16 @@ Value Value::createNoLink() const
 	val.m_type = m_type;
 	val.m_isReadable = m_isReadable;
 	val.m_isWriteable = m_isWriteable;
+	val.m_canBeInit = m_canBeInit;
 
-	if(m_pval.use_count() > 0)
+	if(*m_phasValue)
 	{
 		val.m_pval = (boost::shared_ptr<long long>)(new long long);
 		*val.m_pval = *m_pval;
 	}
-	else
-		val.m_pval.reset();
+
+	*val.m_phasValue = *m_phasValue;
+	*val.m_pinit = *m_pinit;
 
 	return val;
 }
@@ -296,4 +334,18 @@ bool Value::isOverflow(long long val, Value::ValueType type)
 		case Value::UNSIGNED_INT:
 			return (val < 0 || val > UINT_MAX);
 	};
+}
+
+
+
+
+void Value::canBeInit()
+{
+	m_canBeInit = true;
+}
+
+
+bool Value::varCanBeInit() const
+{
+	return m_canBeInit;
 }

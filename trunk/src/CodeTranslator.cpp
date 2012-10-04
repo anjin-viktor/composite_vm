@@ -107,7 +107,7 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 				if(op1 -> isWriteable() == false)
 					throw ParseError("variable does not have write permission");
 
-				if(op2 -> isReadable() == false)
+				if(op2 -> isReadable() == false && op2 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 
 				op1 -> initialize();
@@ -128,10 +128,10 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 			if(op1 -> hasValue() && op2 -> hasValue())
 			{
-				if(op1 -> isReadable() == false)
+				if(op1 -> isReadable() == false && op1 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 
-				if(op2 -> isReadable() == false)
+				if(op2 -> isReadable() == false && op2 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 
 
@@ -165,7 +165,7 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 				if(op1 -> getArrayPtr() -> isWriteable() == false)
 					throw ParseError("variable does not have write permission");
 
-				if(op2 -> isReadable() == false)
+				if(op2 -> isReadable() == false && op2 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 			}
 
@@ -202,7 +202,7 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 			if(op1 -> hasValue() && op2 -> hasValue() && op3 -> hasValue())
 			{
-				if(op3 -> isReadable() == false)
+				if(op3 -> isReadable() == false && op3 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 
 				if(op1 -> isWriteable() == false)
@@ -239,10 +239,10 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 
 			if(op1 -> hasValue() && op2 -> hasValue() && op3 -> hasValue())
 			{
-				if(op3 -> isReadable() == false)
+				if(op3 -> isReadable() == false && op3 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 
-				if(op1 -> isReadable() == false)
+				if(op1 -> isReadable() == false && op1 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 	
 				if(op1 -> getAfterCastType() == Value::NO_TYPE)
@@ -282,7 +282,7 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 		case Command::RET:
 		case Command::NOP:
 		case Command::NONE:
-			break;
+		break;
 
 	};
 }

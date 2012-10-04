@@ -150,10 +150,10 @@ bool VarOperand::isReadable() const
 void VarOperand::initialize()
 {
 	if(m_pval)
-		return m_pval -> setReadable(true);
+		m_pval -> setReadable(true);
 
 	if(m_parr)
-		return m_parr -> operator[](m_indx).setReadable(true);
+		m_parr -> operator[](m_indx).setReadable(true);
 }
 
 
@@ -258,4 +258,16 @@ void VarOperand::replace(Array *pold, Array *pnew)
 {
 	if(m_parr == pold)
 		m_parr == pnew;
+}
+
+
+
+bool VarOperand::canBeInit() const
+{
+	if(m_pval)
+		return m_pval -> varCanBeInit();
+	else if(m_parr)
+		return m_parr -> operator[](m_indx).varCanBeInit();
+	else
+		throw std::logic_error("VarOperand is a NULL-object");	
 }
