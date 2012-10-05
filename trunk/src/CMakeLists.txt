@@ -49,20 +49,15 @@ set (Boost_USE_STATIC_LIBS ON)
 add_library (${PROJECT_LIB} STATIC ${LIB_SOURCES})
 
 include_directories(${Boost_INCLUDE_DIRS})
-#include_directories(./)
 
 
 find_package (Boost COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
 
 
-#add_executable (${TEST} ${TESTS_SOURCES})
-#target_link_libraries (${TEST} ${PROJECT_LIB} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-
 add_executable (${PROJECT} ${SOURCES})
 target_link_libraries (${PROJECT} ${PROJECT_LIB} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 
 enable_testing()
-#add_test(${TEST} ${TEST})
 
 add_subdirectory(${TEST_DIR} ${TEST_DIR})
 add_subdirectory(${REGRESSION_DIR} ${REGRESSION_DIR})
