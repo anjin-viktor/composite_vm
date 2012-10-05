@@ -37,14 +37,14 @@ class CallOperand: public Operand
 
 /**
 Установка значения.
-@param val - добавляемое значение
+@param pval - указатель на добавляемое значение
 */
 		void setValuePtr(Value *pval);
 
 
 /**
-Установка массива
-@param arr - добавляемый массив
+Установка массива.
+@param parr - указатель на добавляемый массив
 */
 		void setArrayPtr(Array *parr);
 

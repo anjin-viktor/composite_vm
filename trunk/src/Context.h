@@ -79,9 +79,9 @@ class Context
 /**
 Оператор присвоения. Нужен для безопасного копирования m_code
 @param cntx
-@retval
+@retval результать операции присвоения (ссылка на новое значение)
 */
-		Context &operator =(const Context &);
+		Context &operator =(const Context &cntx);
 
 
 
