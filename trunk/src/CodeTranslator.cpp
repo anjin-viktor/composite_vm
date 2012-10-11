@@ -277,6 +277,32 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 			break;
 		}
 
+		case Command::SHL:
+		case Command::SHR:
+		case Command::SHLWO:
+		case Command::SHRWO:
+		case Command::ROL:
+		case Command::ROR:
+		{
+			boost::shared_ptr<VarOperand> op1, op2;
+			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
+			op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getSecondOperand());
+
+
+			if(op1 -> hasValue() && op2 -> hasValue())
+			{
+				if(op1 -> isReadable() == false && op1 -> canBeInit() == false)
+					throw ParseError("variable does not have read permission");
+
+				if(op1 -> isWriteable() == false)
+					throw ParseError("variable does not have write permission");
+
+				if(op2 -> isReadable() == false && op2 -> canBeInit() == false)
+					throw ParseError("variable does not have read permission");
+			}
+
+			break;
+		}
 
 		case Command::CALL:
 		case Command::RET:

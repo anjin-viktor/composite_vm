@@ -53,6 +53,14 @@ BOOST_AUTO_TEST_CASE(CommandTest_strToOperation)
 	BOOST_CHECK_EQUAL(Command::strToOperation("JG"), Command::JG);
 	BOOST_CHECK_EQUAL(Command::strToOperation("JNE"), Command::JNE);
 	BOOST_CHECK_EQUAL(Command::strToOperation("NOP"), Command::NOP);
+	BOOST_CHECK_EQUAL(Command::strToOperation("SHL"), Command::SHL);
+	BOOST_CHECK_EQUAL(Command::strToOperation("SHR"), Command::SHR);
+	BOOST_CHECK_EQUAL(Command::strToOperation("SHLWO"), Command::SHLWO);	
+	BOOST_CHECK_EQUAL(Command::strToOperation("SHRWO"), Command::SHRWO);
+	BOOST_CHECK_EQUAL(Command::strToOperation("shlwo"), Command::SHLWO);	
+	BOOST_CHECK_EQUAL(Command::strToOperation("shrwo"), Command::SHRWO);
+	BOOST_CHECK_EQUAL(Command::strToOperation("ROR"), Command::ROR);
+	BOOST_CHECK_EQUAL(Command::strToOperation("ROL"), Command::ROL);
 	BOOST_CHECK_EQUAL(Command::strToOperation("NOPP"), Command::NONE);
 	BOOST_CHECK_EQUAL(Command::strToOperation("NONE"), Command::NONE);
 	BOOST_CHECK_EQUAL(Command::strToOperation(" mov "), Command::NONE);	
@@ -85,6 +93,12 @@ BOOST_AUTO_TEST_CASE(CommandTest_operationToStr)
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::AOUT)), Command::AOUT);
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::RSZ)), Command::RSZ);
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::CMP)), Command::CMP);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SHR)), Command::SHR);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SHL)), Command::SHL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SHRWO)), Command::SHRWO);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SHLWO)), Command::SHLWO);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::ROL)), Command::ROL);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::ROR)), Command::ROR);
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::NONE)), Command::NONE);
 }
 

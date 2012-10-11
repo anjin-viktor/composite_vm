@@ -154,12 +154,18 @@ class CodeTranslator
                 one_operation %= jump_operation | aout_operation;
                 two_operation %= arith_operation | cmp_operation | arr_rsz_operation | arr_size_operation;
                 arith_operation %=  (
-                                            qi::string("mov") |
-                                            qi::string("add") |
-                                            qi::string("sub") |
-                                            qi::string("mul") |
-                                            qi::string("div") | 
-                                            qi::string("mod")
+                                            qi::string("mov")   |
+                                            qi::string("add")   |
+                                            qi::string("sub")   |
+                                            qi::string("mul")   |
+                                            qi::string("div")   | 
+                                            qi::string("mod")   |
+                                            qi::string("shrwo") |
+                                            qi::string("shlwo") |
+                                            qi::string("shr")   |
+                                            qi::string("shl")   |
+                                            qi::string("ror")   |
+                                            qi::string("rol") 
                                     )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> 
                                     wr_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >> 
                                     *qi::space >> qi::char_(',') >> *qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)];

@@ -223,4 +223,36 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_7)
 }
 
 
+/**
+Тест выполнения 8.mpr(команды сдвига)
+*/
+BOOST_AUTO_TEST_CASE(CodeExecuter_8)
+{
+	Translator tr;
+	CodeExecuter exec;
+
+	tr.setInputFileName("CodeExecuterTestFiles/8.mpr");
+
+	std::ostringstream stream;
+	std::ostringstream err;
+
+	exec.setOutputStream(stream);
+	exec.setErrorStream(err);
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	BOOST_CHECK_NO_THROW(exec.exec());
+
+	BOOST_CHECK_EQUAL(stream.str(), "hello, world!!!\n"
+									"Hello, world!!!\n"
+									"HEllo, world!!!\n"
+									"msg\n"
+									"numeric error\n"
+									"msg\n"
+		);
+	BOOST_CHECK_EQUAL(err.str(), "Program is interrupted with exception `numeric_error`\n");
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END();

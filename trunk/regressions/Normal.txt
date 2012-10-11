@@ -169,6 +169,18 @@ Error: variable does not have write permission at file neg_57_size.mpr: 6
 Result for neg_58_size.mpr:
 Error: stopped at: size 1, str at file neg_58_size.mpr: 5
 
+Result for neg_59_shifts.mpr:
+Error: stopped at: ror 1, 1 at file neg_59_shifts.mpr: 4
+
+Result for neg_60_shifts.mpr:
+Error: variable does not have read permission at file neg_60_shifts.mpr: 5
+
+Result for neg_61_shifts.mpr:
+Error: variable does not have write permission at file neg_61_shifts.mpr: 5
+
+Result for neg_62_shifts.mpr:
+Error: variable with name `arr` not exists at file neg_62_shifts.mpr: 6
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -224,4 +236,7 @@ Result for pos_25_size.mpr:
 Result for pos_26_factorial.mpr:
 
 Result for pos_27_ref.mpr:
+
+Result for pos_28_shifts.mpr:
+Program is interrupted with exception `numeric_error`
 

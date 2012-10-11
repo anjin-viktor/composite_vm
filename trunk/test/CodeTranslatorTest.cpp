@@ -968,4 +968,52 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_size)
 
 
 
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_shifts)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate("shl a, b"));
+	BOOST_CHECK_NO_THROW(translator.translate("shl a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("shr a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("shrwo a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("shlwo a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("rol a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("ror a, 1"));
+
+	BOOST_CHECK_THROW(translator.translate("ror 1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("ror a"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("ror 1"), ParseError);
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(125, Value::MOD16, false, true), "var1");
+	keeper.addVar(Value(100, Value::SIGNED_INT, true, true), "var2");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, true, false), "var3");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(1, Value::MOD16, false, false);
+	array[2];
+
+	keeper.addArray(array, "arr");
+	translator.setDataKeeperPtr(&keeper);
+
+
+	BOOST_CHECK_NO_THROW(translator.translate("shl var2, var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("shr var2, var2"));
+	BOOST_CHECK_NO_THROW(translator.translate("ror var2, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("rol var2, arr[0]"));
+	BOOST_CHECK_NO_THROW(translator.translate("shlwo arr[0], var2"));
+	BOOST_CHECK_NO_THROW(translator.translate("shrwo arr[0], var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("shl var2, 0"));
+
+	BOOST_CHECK_THROW(translator.translate("shl var1, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("shl var3, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("shl arr, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("shl 0, var2"), ParseError);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END();

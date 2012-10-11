@@ -54,6 +54,12 @@ class Command
 		GTEL,
 		STEL,
 		SIZE,
+		SHR,
+		SHL,
+		SHRWO,
+		SHLWO,
+		ROL,
+		ROR,
 		NONE
 	};
 

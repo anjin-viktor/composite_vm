@@ -134,6 +134,18 @@ Command::Operation Command::strToOperation(const std::string &str)
 		return Command::STEL;
 	else if(tmp == "size")
 		return Command::SIZE;
+	else if(tmp == "shr")
+		return Command::SHR;
+	else if(tmp == "shl")
+		return Command::SHL;
+	else if(tmp == "shrwo")
+		return Command::SHRWO;
+	else if(tmp == "shlwo")
+		return Command::SHLWO;
+	else if(tmp == "ror")
+		return  Command::ROR;
+	else if(tmp == "rol")
+		return Command::ROL;
 	else
 		return Command::NONE;
 }
@@ -205,6 +217,24 @@ std::string Command::operationToStr(Command::Operation op)
 			break;
 		case Command::SIZE:
 			str = "SIZE";
+			break;
+		case Command::SHL:
+			str = "SHL";
+			break;
+		case Command::SHR:
+			str = "SHR";
+			break;
+		case Command::SHRWO:
+			str = "SHRWO";
+			break;
+		case Command::SHLWO:
+			str = "SHLWO";
+			break;
+		case Command::ROR:
+			str = "ROR";
+			break;
+		case Command::ROL:
+			str = "ROL";
 			break;
 		case Command::NONE:
 			str = "NONE";

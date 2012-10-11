@@ -1,0 +1,6 @@
+.name main
+.var
+	const uchar ch 1
+.begin
+	shl ch, 1
+.end

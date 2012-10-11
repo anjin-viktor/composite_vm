@@ -1,0 +1,6 @@
+.name main
+.var
+	uchar ch
+.begin
+	shl ch, 1
+.end

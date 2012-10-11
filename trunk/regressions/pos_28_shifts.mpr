@@ -1,0 +1,47 @@
+.name func uchar &ch1, uchar ch2
+.var
+    sint k 4
+.begin
+    mov ch1, 32
+    shr ch1, 4
+    shl ch1, k
+    mov ch2, 76
+    mov k, 3
+    shlwo ch2, k
+    shrwo ch2, k
+    rol ch2, 39
+    ror ch2, 30
+    ror ch2, 10
+    rol ch2, 1
+	nop
+.end
+
+.name main
+.var
+    array mod8 str "AAA"
+    array mod8 numeric_err "numeric_error"
+    uchar c1
+    uchar c2 75
+.begin
+	nop
+    call func, c1, c2
+    mov str[1], (mod8)c1
+    mov str[0], (mod8)c2
+    aout str
+    shr str[0], 12
+    shr str[0], 15
+
+    mov c1, 32
+    shr c1, 12
+
+:when_numeric_error
+    cmp c1, 32
+    jne end
+    aout numeric_err
+    mov c1, 16
+    shr c1, 4
+    aout numeric_err
+    shr c1, 1
+
+end:
+.end

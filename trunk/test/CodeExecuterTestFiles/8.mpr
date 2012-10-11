@@ -1,0 +1,105 @@
+.name main
+.var
+	array uchar arr "hello, world!!!"
+	array mod8 err_str "error!!!"
+	array mod8 num_err "numeric error"
+	array uchar msg "msg"
+	uint n 1
+	uchar k
+.begin
+	mov k, 1
+	shlwo k, 7
+	cmp k, 128
+	jne err
+
+	shlwo k, 1
+	cmp k, 0
+	jne err
+
+	mov k, 255
+	shrwo k, 5
+	cmp k, 7
+	jne err
+
+	shrwo k, 2
+	cmp k, 1
+	jne err
+
+	shrwo k, 1
+	cmp k, 0
+	jne err
+
+	mov k, 155
+	mov n, 4909
+
+	rol k, n
+	ror k, 4909
+
+	cmp k, 155
+	jne err
+
+	mov k, 7
+	ror k, 6
+	ror k, 10
+	cmp k, 7
+	jne err
+
+	rol k, 2
+	rol k, 14
+	cmp k, 7
+	jne err
+
+
+	aout arr
+	mov n, 1
+	shl n, 3
+	mov k, 3
+	shl n, k
+	mov arr[0], (uchar) n
+	shr n, k
+	add arr[0], (uchar) n
+	aout arr
+
+	mov n, 1
+	shlwo n, 3
+	mov k, 3
+	shlwo n, k
+	mov arr[1], (uchar) n
+	shrwo n, k
+	shrwo n, 1
+	add arr[1], (uchar) n
+	shrwo n, 2
+	add arr[1], (uchar) n
+	aout arr
+
+	jmp end
+
+err:
+	aout err_str
+
+end:
+	mov n, 1
+	mov k, 1
+	shrwo n, 100
+	shlwo k, 100
+
+	mov n, 1
+	shl n, 31
+	aout msg
+
+	shl n, 1
+	aout err_str
+
+:when_numeric_error
+	aout num_err
+	mov n, 256
+	shr n, 8
+	cmp n, 1
+	jne ow_err
+	aout msg
+
+	shr n, 2434
+
+ow_err:
+
+.end

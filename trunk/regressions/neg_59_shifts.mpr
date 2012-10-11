@@ -1,0 +1,5 @@
+.name main
+.var
+.begin
+	ror 1, 1
+.end
