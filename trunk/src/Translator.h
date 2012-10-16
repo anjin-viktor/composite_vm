@@ -104,7 +104,7 @@ class Translator
 @param command - команда
 @param funcName - имя функции, содержащей команду
 */
-		void callCheck(Command command, const std::string &funcName) const;
+		void callCheck(Command command) const;
 
 		std::string		m_inputFileName;
 		std::ifstream	m_in;

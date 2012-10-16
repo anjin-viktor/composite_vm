@@ -59,13 +59,13 @@ Result for neg_20_fdecl.mpr:
 Error: stopped at: mod32 at file neg_20_fdecl.mpr: 9
 
 Result for neg_21_callnotype.mpr:
-Error: wrong number of operands3 at file neg_21_callnotype.mpr: 13
+Error: wrong number of operands at file neg_21_callnotype.mpr: 13
 
 Result for neg_22_callwrongtype.mpr:
 Error: incorrect operand type in call function `subFunction` at file neg_22_callwrongtype.mpr: 14
 
 Result for neg_23_callextratype.mpr:
-Error: wrong number of operands1 at file neg_23_callextratype.mpr: 15
+Error: wrong number of operands at file neg_23_callextratype.mpr: 15
 
 Result for neg_25.mpr:
 Error: mismatch at file neg_25.mpr: 7
@@ -261,4 +261,6 @@ Program is interrupted with exception `numeric_error`
 Result for pos_29_bits.mpr:
 
 Result for pos_30.mpr:
+
+Result for pos_31_bits.mpr:
 

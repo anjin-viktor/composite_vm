@@ -234,7 +234,7 @@ void Translator::callOperandsCheck() const
 
 		for(int i=0, size=code.size(); i<size; i++)
 			if(code[i].getOperationType() == Command::CALL)
-				callCheck(code[i], *itr);
+				callCheck(code[i]);
 
 		if(Program::getInstance().getFunction(*itr).exceptionHandlerIsExists(Exception::NumericError))
 		{
@@ -242,7 +242,7 @@ void Translator::callOperandsCheck() const
 
 			for(int i=0, size=code.size(); i<size; i++)
 				if(code[i].getOperationType() == Command::CALL)
-					callCheck(code[i], *itr);
+					callCheck(code[i]);
 		}
 
 		if(Program::getInstance().getFunction(*itr).exceptionHandlerIsExists(Exception::ConstraintError))
@@ -251,7 +251,25 @@ void Translator::callOperandsCheck() const
 
 			for(int i=0, size=code.size(); i<size; i++)
 				if(code[i].getOperationType() == Command::CALL)
-					callCheck(code[i], *itr);
+					callCheck(code[i]);
+		}
+
+		if(Program::getInstance().getFunction(*itr).exceptionHandlerIsExists(Exception::ProgramError))
+		{
+			code = Program::getInstance().getFunction(*itr).getExceptionHandlerCode(Exception::ProgramError);
+
+			for(int i=0, size=code.size(); i<size; i++)
+				if(code[i].getOperationType() == Command::CALL)
+					callCheck(code[i]);
+		}
+
+		if(Program::getInstance().getFunction(*itr).exceptionHandlerIsExists(Exception::StorageError))
+		{
+			code = Program::getInstance().getFunction(*itr).getExceptionHandlerCode(Exception::StorageError);
+
+			for(int i=0, size=code.size(); i<size; i++)
+				if(code[i].getOperationType() == Command::CALL)
+					callCheck(code[i]);
 		}
 	}
 }
@@ -261,7 +279,7 @@ void Translator::callOperandsCheck() const
 
 
 
-void Translator::callCheck(Command command, const std::string &functionName) const
+void Translator::callCheck(Command command) const
 {
 	std::list<std::string> lstNames = Program::getInstance().getFunctionNames();
 	std::string callName = boost::dynamic_pointer_cast<LabelOperand, Operand>(command.getFirstOperand()) -> getLabelName();
@@ -279,14 +297,14 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 	if(funcArgsNames.size() != (command.getNumberOfOperands() - 1))
 	{
 		if(funcArgsNames.size() != 0)
-			throw ParseError("wrong number of operands1");						
+			throw ParseError("wrong number of operands");						
 
 
 		if(command.getSecondOperand().get() != NULL)
-			throw ParseError("wrong number of operands2");
+			throw ParseError("wrong number of operands");
 	}
 	else if(funcArgsNames.size() == 1 && command.getSecondOperand().get() == NULL)
-		throw ParseError("wrong number of operands3");
+		throw ParseError("wrong number of operands");
 
 	itrNames = funcArgsNames.begin();
 
@@ -303,7 +321,7 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 		if(Program::getInstance().getFunction(callName).getDataKeeperPtr() -> isVar(*itrNames))
 		{
 			if(pop -> isValue() == false)
-				throw ParseError("incorrect operand type in call function `" + callName + "`");
+				throw ParseError("incorrect operand type in call function`" + callName + "`");
 
 			if(pop -> isArrayElement() == false)
 			{

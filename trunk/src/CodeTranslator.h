@@ -442,6 +442,12 @@ class CodeTranslator
 						throw ParseError("array with name `" + m_arrName + "` not exists");
 
 					m_currentVar = VarOperand(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx, Value::NO_TYPE);
+
+
+					m_callOpIsVal = true;
+					m_varIsArrayElement = true;
+
+					m_callOp.setArrayElement(&(m_pdata -> getArray(m_arrName)), m_arrElementIndx);
 				}
 				m_varName = "";
 				m_arrName = "";
