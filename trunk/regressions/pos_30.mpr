@@ -1,0 +1,32 @@
+.name func uchar t
+.var
+    array mod8 str "I am func"
+.begin
+    aout str
+    nop
+
+.end
+
+.name f
+.var
+    array mod8 str "I am f"
+.begin
+    nop
+    aout str
+.end
+
+.name function uchar t, uchar t_, uchar t__
+.var
+    array mod8 str "I am function"
+.begin
+    aout str
+.end
+
+.name main
+.var
+.begin
+    call func, 1 
+    call f
+    call function, 1, 2, 3
+    call f
+.end

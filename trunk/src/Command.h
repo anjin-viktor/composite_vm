@@ -189,6 +189,12 @@ class Command
 */
 		std::size_t getNumberOfOperands() const;
 
+
+/**
+Очистка операндов
+*/
+		void clearOperands();
+
 	private:
 		Command::Operation 						 		m_opType;
 		std::vector<boost::shared_ptr<Operand> >		m_operands;

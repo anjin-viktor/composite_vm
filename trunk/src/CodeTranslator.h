@@ -216,7 +216,10 @@ class CodeTranslator
 			void clear()
 			{
 				if(m_pcommand)
+				{
 					m_pcommand -> setOperationType(Command::NONE);
+					m_pcommand -> clearOperands();
+				}
 
 				if(m_plbls)
 					m_plbls -> clear();

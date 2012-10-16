@@ -279,14 +279,14 @@ Command::getNumberOfOperands() имеет смысл только при чис�
 	if(funcArgsNames.size() != (command.getNumberOfOperands() - 1))
 	{
 		if(funcArgsNames.size() != 0)
-			throw ParseError("wrong number of operands");						
+			throw ParseError("wrong number of operands1");						
 
 
 		if(command.getSecondOperand().get() != NULL)
-			throw ParseError("wrong number of operands");
+			throw ParseError("wrong number of operands2");
 	}
 	else if(funcArgsNames.size() == 1 && command.getSecondOperand().get() == NULL)
-		throw ParseError("wrong number of operands");
+		throw ParseError("wrong number of operands3");
 
 	itrNames = funcArgsNames.begin();
 

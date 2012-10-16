@@ -1,6 +1,8 @@
 #include "Command.h"
 
 
+#include <iostream>
+
 Command::Command()
 {
 	m_opType = Command::NONE;
@@ -296,4 +298,13 @@ bool Command::operator !=(const Command &command)
 std::size_t Command::getNumberOfOperands() const
 {
 	return m_operands.size();
+}
+
+
+
+void Command::clearOperands()
+{
+	m_operands.resize(2);
+	m_operands[0] = static_cast<boost::shared_ptr<Operand> > (static_cast<Operand*>(NULL));
+	m_operands[1] = static_cast<boost::shared_ptr<Operand> > (static_cast<Operand*>(NULL));
 }
