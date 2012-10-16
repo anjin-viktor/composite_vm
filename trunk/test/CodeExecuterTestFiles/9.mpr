@@ -1,0 +1,68 @@
+.name main
+.var
+	array uchar arr "hello, world!!!"
+	array mod8 err_str "error!!!"
+	array uchar msg "exiting"
+	uint n 1
+	uchar k
+	schar t
+.begin
+	aout arr
+	mov k, 1
+
+	and k, (uchar)n
+	cmp k, 1
+	jne err
+
+	and k, 1
+	cmp k, 1
+	jne err
+
+	and k, 2
+	cmp 0, k
+	jne err
+
+
+	mov k, 8
+	mov n, 7
+	or k, (uchar) n
+
+	mov t, 8
+	xor t, (schar)n
+
+	cmp k, (uchar) t
+	jne err
+
+	xor k, k
+	cmp k, 0
+	jne err
+
+	cmp t, 0
+	je err
+
+	mov k, (uchar) t
+
+	or t, 0
+	cmp (schar) k, (schar) t
+	jne err
+
+	xor t, 0
+	cmp (schar) k, (schar) t
+	jne err
+
+	and k, 255
+	cmp (schar) k, (schar) t
+	jne err
+
+	jmp exit
+
+err:
+	aout err_str
+	jmp exit_
+
+exit:
+	aout msg
+
+exit_:
+
+.end

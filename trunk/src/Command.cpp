@@ -146,6 +146,12 @@ Command::Operation Command::strToOperation(const std::string &str)
 		return  Command::ROR;
 	else if(tmp == "rol")
 		return Command::ROL;
+	else if(tmp == "and")
+		return Command::AND;
+	else if(tmp == "or")
+		return Command::OR;
+	else if(tmp == "xor")
+		return Command::XOR;
 	else
 		return Command::NONE;
 }
@@ -235,6 +241,15 @@ std::string Command::operationToStr(Command::Operation op)
 			break;
 		case Command::ROL:
 			str = "ROL";
+			break;
+		case Command::AND:
+			str = "AND";
+			break;
+		case Command::OR:
+			str = "OR";
+			break;
+		case Command::XOR:
+			str = "XOR";
 			break;
 		case Command::NONE:
 			str = "NONE";

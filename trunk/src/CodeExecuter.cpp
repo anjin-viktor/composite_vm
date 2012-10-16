@@ -899,7 +899,101 @@ Exception::Type CodeExecuter::exec_command()
 			break;
 		}
 
+		case Command::OR:
+		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
 
+			if(pfArg -> hasValue() == false || psArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res |= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
+			pfArg -> setValue(res);
+
+			m_contexts.top().m_ip++;
+
+			break;
+		}
+
+
+		case Command::XOR:
+		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> hasValue() == false || psArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res ^= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
+			pfArg -> setValue(res);
+
+			m_contexts.top().m_ip++;
+
+			break;
+		}
+
+
+
+		case Command::AND:
+		{
+			boost::shared_ptr<VarOperand> pfArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+			boost::shared_ptr<VarOperand> psArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getSecondOperand());
+
+			if(pfArg -> hasValue() == false || psArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
+			if(pfArg -> isWriteable() == false || pfArg -> isReadable() == false || psArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res;
+			try
+			{
+				res = pfArg -> getValue();
+				res &= static_cast<long long>(psArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
+			pfArg -> setValue(res);
+
+			m_contexts.top().m_ip++;
+
+			break;
+		}
 
 
 		case Command::NONE:

@@ -181,6 +181,24 @@ Error: variable does not have write permission at file neg_61_shifts.mpr: 5
 Result for neg_62_shifts.mpr:
 Error: variable with name `arr` not exists at file neg_62_shifts.mpr: 6
 
+Result for neg_63_bits.mpr:
+Error: Error: function `main` not exists at file neg_63_bits.mpr: 1 not expected at file neg_63_bits.mpr: 1
+
+Result for neg_64_bits.mpr:
+Error: variable does not have write permission at file neg_64_bits.mpr: 6
+
+Result for neg_65_bits.mpr:
+Error: variable does not have write permission at file neg_65_bits.mpr: 6
+
+Result for neg_66_bits.mpr:
+Error: stopped at: and 1, ch at file neg_66_bits.mpr: 5
+
+Result for neg_67_bits.mpr:
+Error: variable with name `arr` not exists at file neg_67_bits.mpr: 6
+
+Result for neg_68_bits.mpr:
+Error: mismatch at file neg_68_bits.mpr: 6
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -239,4 +257,6 @@ Result for pos_27_ref.mpr:
 
 Result for pos_28_shifts.mpr:
 Program is interrupted with exception `numeric_error`
+
+Result for pos_29_bits.mpr:
 

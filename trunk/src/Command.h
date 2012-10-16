@@ -60,6 +60,9 @@ class Command
 		SHLWO,
 		ROL,
 		ROR,
+		AND,
+		OR,
+		XOR,
 		NONE
 	};
 

@@ -165,7 +165,10 @@ class CodeTranslator
                                             qi::string("shr")   |
                                             qi::string("shl")   |
                                             qi::string("ror")   |
-                                            qi::string("rol") 
+                                            qi::string("rol")   |
+                                            qi::string("and")   |
+                                            qi::string("or")    |
+                                            qi::string("xor")
                                     )[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> 
                                     wr_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)] >> 
                                     *qi::space >> qi::char_(',') >> *qi::space >> rd_operand[boost::bind(&(CodeGrammar::saveSecondOperand), this)];

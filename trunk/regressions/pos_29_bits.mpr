@@ -1,0 +1,36 @@
+
+.name func uchar &ch1, mod8 t
+.var
+    uchar ch2
+.begin
+    mov ch2, (uchar) t
+    nop
+    mov ch1, 0
+    or ch1, ch2
+    xor ch1, ch2
+    xor ch1, ch2
+    and ch1, ch2
+    or ch1, 0
+    xor ch1, 0
+    and ch1, 255
+.end
+
+
+
+.name main
+.var
+    array mod8 str "aAA"
+    uchar c1
+    mod8 t
+.begin
+    aout str
+    call func, c1, str[1]
+    mov str[0], (mod8)c1
+    aout str
+
+    and str[1], 0
+    or str[1], 0
+    xor str[1], 0
+    add str[1], str[2]
+    aout str
+.end

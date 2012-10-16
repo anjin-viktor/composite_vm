@@ -255,4 +255,32 @@ BOOST_AUTO_TEST_CASE(CodeExecuter_8)
 
 
 
+
+/**
+Тест выполнения 9.mpr(битовые операции)
+*/
+BOOST_AUTO_TEST_CASE(CodeExecuter_9)
+{
+	Translator tr;
+	CodeExecuter exec;
+
+	tr.setInputFileName("CodeExecuterTestFiles/9.mpr");
+
+	std::ostringstream stream;
+	std::ostringstream err;
+
+	exec.setOutputStream(stream);
+	exec.setErrorStream(err);
+
+	BOOST_CHECK_NO_THROW(tr.translate());
+
+	BOOST_CHECK_NO_THROW(exec.exec());
+
+	BOOST_CHECK_EQUAL(stream.str(), "hello, world!!!\n"
+									"exiting\n"
+		);
+	BOOST_CHECK_EQUAL(err.str(), "");
+}
+
+
 BOOST_AUTO_TEST_SUITE_END();

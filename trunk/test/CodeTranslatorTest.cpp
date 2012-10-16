@@ -1016,4 +1016,71 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_shifts)
 }
 
 
+
+
+BOOST_AUTO_TEST_CASE(CodeTranslatorTest_bits)
+{
+	CodeTranslator translator;
+
+	BOOST_CHECK_NO_THROW(translator.translate("and a, b"));
+	BOOST_CHECK_NO_THROW(translator.translate("xor a, b"));
+	BOOST_CHECK_NO_THROW(translator.translate("or a, b"));
+	BOOST_CHECK_NO_THROW(translator.translate("or a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("and a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("xor a, 1"));
+	BOOST_CHECK_NO_THROW(translator.translate("and a[1], b"));
+	BOOST_CHECK_NO_THROW(translator.translate("xor a[0], b"));
+	BOOST_CHECK_NO_THROW(translator.translate("or a[3], b"));
+	BOOST_CHECK_NO_THROW(translator.translate("and a[1], b[0]"));
+	BOOST_CHECK_NO_THROW(translator.translate("xor a[0], b[0]"));
+	BOOST_CHECK_NO_THROW(translator.translate("or a[3], b[0]"));
+
+
+	BOOST_CHECK_THROW(translator.translate("or 1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("xor 1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("and 1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("or a"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("and 1"), ParseError);
+
+
+	DataKeeper keeper;
+	keeper.addVar(Value(125, Value::MOD16, false, true), "var1");
+	keeper.addVar(Value(100, Value::MOD16, true, true), "var2");
+	keeper.addVar(Value(1, Value::MOD16, true, false), "var3");
+	keeper.addVar(Value(1, Value::UNSIGNED_INT, true, true), "var4");
+
+	Array array(3, Value::MOD16);
+	array[0] = Value(1, Value::MOD16, true, true);
+	array[1] = Value(1, Value::MOD16, false, false);
+	array[2];
+
+	keeper.addArray(array, "arr");
+	translator.setDataKeeperPtr(&keeper);
+
+
+
+	BOOST_CHECK_NO_THROW(translator.translate("and var2, var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("and var4, (uint) var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("or var2, var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("or var4, (uint) var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("xor var2, var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("xor var4, (uint) var3"));
+
+
+
+	BOOST_CHECK_THROW(translator.translate("and var1, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("and var3, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("and arr, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("and 0, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("or var1, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("or var3, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("or arr, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("or 0, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("xor var1, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("xor var3, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("xor arr, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("xor 0, var2"), ParseError);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END();

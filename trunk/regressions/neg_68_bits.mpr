@@ -1,0 +1,7 @@
+.name main
+.var
+	uchar ch 1
+	mod8 ch_ 1
+.begin
+	xor ch, ch_
+.end

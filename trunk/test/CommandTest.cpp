@@ -61,6 +61,9 @@ BOOST_AUTO_TEST_CASE(CommandTest_strToOperation)
 	BOOST_CHECK_EQUAL(Command::strToOperation("shrwo"), Command::SHRWO);
 	BOOST_CHECK_EQUAL(Command::strToOperation("ROR"), Command::ROR);
 	BOOST_CHECK_EQUAL(Command::strToOperation("ROL"), Command::ROL);
+	BOOST_CHECK_EQUAL(Command::strToOperation("AND"), Command::AND);
+	BOOST_CHECK_EQUAL(Command::strToOperation("OR"), Command::OR);
+	BOOST_CHECK_EQUAL(Command::strToOperation("XOR"), Command::XOR);
 	BOOST_CHECK_EQUAL(Command::strToOperation("NOPP"), Command::NONE);
 	BOOST_CHECK_EQUAL(Command::strToOperation("NONE"), Command::NONE);
 	BOOST_CHECK_EQUAL(Command::strToOperation(" mov "), Command::NONE);	
@@ -99,6 +102,9 @@ BOOST_AUTO_TEST_CASE(CommandTest_operationToStr)
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::SHLWO)), Command::SHLWO);
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::ROL)), Command::ROL);
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::ROR)), Command::ROR);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::AND)), Command::AND);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::OR)), Command::OR);
+	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::XOR)), Command::XOR);
 	BOOST_CHECK_EQUAL(Command::strToOperation(Command::operationToStr(Command::NONE)), Command::NONE);
 }
 

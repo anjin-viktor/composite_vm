@@ -77,11 +77,6 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 	switch(m_command.getOperationType())
 	{
 		case Command::MOV:
-		case Command::ADD:
-		case Command::SUB:
-		case Command::MUL:
-		case Command::DIV:
-		case Command::MOD:
 		{
 			boost::shared_ptr<VarOperand> op1, op2;
 			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
@@ -108,6 +103,50 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 					throw ParseError("variable does not have write permission");
 
 				if(op2 -> isReadable() == false && op2 -> canBeInit() == false)
+					throw ParseError("variable does not have read permission");
+
+				op1 -> initialize();
+			}
+			break;
+		}
+
+		case Command::ADD:
+		case Command::SUB:
+		case Command::MUL:
+		case Command::DIV:
+		case Command::MOD:
+		case Command::AND:
+		case Command::OR:
+		case Command::XOR:
+		{
+			boost::shared_ptr<VarOperand> op1, op2;
+			op1 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
+			op2 = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getSecondOperand());
+
+/*Для отладки*/
+			if(op1 -> getAfterCastType() != Value::NO_TYPE)
+				if(op1 -> getAfterCastType() != op2 -> getAfterCastType() && op2 -> getAfterCastType() != Value::NO_TYPE)
+					throw ParseError("mismatch");
+
+
+			if(op1 -> hasValue() && op2 -> hasValue())
+			{
+				if(op2 -> getAfterCastType() == Value::NO_TYPE)
+					if(Value::isOverflow(op2 -> getValue(), op1 -> getAfterCastType()))
+					{
+						std::stringstream ss;
+						ss << "first argument can't fit value " << op2 -> getValue();
+						throw ParseError(ss.str());
+					}
+
+
+				if(op1 -> isWriteable() == false)
+					throw ParseError("variable does not have write permission");
+
+				if(op2 -> isReadable() == false && op2 -> canBeInit() == false)
+					throw ParseError("variable does not have read permission");
+
+				if(op1 -> isReadable() == false && op1 -> canBeInit() == false)
 					throw ParseError("variable does not have read permission");
 
 				op1 -> initialize();

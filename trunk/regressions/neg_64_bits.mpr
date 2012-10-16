@@ -1,0 +1,7 @@
+.name main
+.var
+	uchar ch 1
+	const uchar ch_ 2 
+.begin
+	xor ch_, ch
+.end
