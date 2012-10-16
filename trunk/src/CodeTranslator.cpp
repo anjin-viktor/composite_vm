@@ -180,6 +180,23 @@ void CodeTranslator::checkCorrectness() const throw(ParseError)
 		}
 
 
+		case Command::NOT:
+		{
+			boost::shared_ptr<VarOperand> op;
+			op = boost::dynamic_pointer_cast<VarOperand, Operand>(m_command.getFirstOperand());
+
+			if(op -> hasValue())
+			{
+				if(op -> isWriteable() == false)
+					throw ParseError("variable does not have write permission");
+
+				if(op -> isReadable() == false && op -> canBeInit() == false)
+					throw ParseError("variable does not have read permission");
+			}
+
+			break;
+		}
+
 		case Command::JMP:
 		case Command::JL:
 		case Command::JE:

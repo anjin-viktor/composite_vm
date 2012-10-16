@@ -199,6 +199,12 @@ Error: variable with name `arr` not exists at file neg_67_bits.mpr: 6
 Result for neg_68_bits.mpr:
 Error: mismatch at file neg_68_bits.mpr: 6
 
+Result for neg_69_bits.mpr:
+Error: variable does not have write permission at file neg_69_bits.mpr: 5
+
+Result for neg_70_bits.mpr:
+Error: variable does not have write permission at file neg_70_bits.mpr: 5
+
 Result for pos_01_lint.mpr:
 
 Result for pos_02_expl_array.mpr:
@@ -262,5 +268,5 @@ Result for pos_29_bits.mpr:
 
 Result for pos_30.mpr:
 
-Result for pos_31_bits.mpr:
+Result for pos_31.mpr:
 

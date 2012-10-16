@@ -33,4 +33,10 @@
     xor str[1], 0
     add str[1], str[2]
     aout str
+
+    not str[2]
+    xor str[2], str[1]
+    and str[2], str[0]
+    aout str
+
 .end

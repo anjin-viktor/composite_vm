@@ -1,0 +1,6 @@
+.name main
+.var
+	const array const mod8 arr 3 1 2 3
+.begin
+	not arr[0]
+.end

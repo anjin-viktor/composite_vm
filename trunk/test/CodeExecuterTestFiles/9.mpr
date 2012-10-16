@@ -54,6 +54,31 @@
 	cmp (schar) k, (schar) t
 	jne err
 
+	mov k, 255
+	not k
+	cmp k, 0
+	jne err
+
+	mov k, 0
+	not k
+	cmp 255, k
+	jne err
+
+	mov k, 127
+	not k
+	cmp k, 128
+	jne err
+
+	mov k, 170
+	not k
+	cmp k, 85
+	jne err
+
+	mov k, 42
+	not k
+	cmp k, 213
+	jne err
+
 	jmp exit
 
 err:

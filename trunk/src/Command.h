@@ -63,6 +63,7 @@ class Command
 		AND,
 		OR,
 		XOR,
+		NOT,
 		NONE
 	};
 

@@ -1,0 +1,18 @@
+.name func uchar t
+.var
+    array mod8 str "bAA"
+.begin
+    mov str[0], (mod8) t
+    aout str
+.end
+
+
+
+.name main
+.var
+    array mod8 str "aAA"
+    uchar c1 1
+    mod8 t
+.begin
+    call func, (uchar) str[1]
+.end

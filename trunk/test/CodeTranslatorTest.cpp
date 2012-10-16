@@ -1034,13 +1034,20 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_bits)
 	BOOST_CHECK_NO_THROW(translator.translate("and a[1], b[0]"));
 	BOOST_CHECK_NO_THROW(translator.translate("xor a[0], b[0]"));
 	BOOST_CHECK_NO_THROW(translator.translate("or a[3], b[0]"));
+	BOOST_CHECK_NO_THROW(translator.translate("not a"));
+	BOOST_CHECK_NO_THROW(translator.translate("not a[0]"));
 
 
+
+	BOOST_CHECK_THROW(translator.translate("or (mod8) a, 1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("or 1, 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("or 1, a"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("xor 1, 1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("and 1, 1"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("or a"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("and 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("not 1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("not (mod8) a"), ParseError);
 
 
 	DataKeeper keeper;
@@ -1065,6 +1072,9 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_bits)
 	BOOST_CHECK_NO_THROW(translator.translate("or var4, (uint) var3"));
 	BOOST_CHECK_NO_THROW(translator.translate("xor var2, var3"));
 	BOOST_CHECK_NO_THROW(translator.translate("xor var4, (uint) var3"));
+	BOOST_CHECK_NO_THROW(translator.translate("not var2"));
+	BOOST_CHECK_NO_THROW(translator.translate("not var4"));
+	BOOST_CHECK_NO_THROW(translator.translate("not arr[0]"));
 
 
 
@@ -1080,6 +1090,9 @@ BOOST_AUTO_TEST_CASE(CodeTranslatorTest_bits)
 	BOOST_CHECK_THROW(translator.translate("xor var3, var2"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("xor arr, var2"), ParseError);
 	BOOST_CHECK_THROW(translator.translate("xor 0, var2"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("not var1"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("not var3"), ParseError);
+	BOOST_CHECK_THROW(translator.translate("not arr[1]"), ParseError);
 }
 
 

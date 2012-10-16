@@ -151,7 +151,7 @@ class CodeTranslator
                                      >> +qi::space >> label_operand[boost::bind(&(CodeGrammar::saveJumpOperation), this)];
                 aout_operation %= qi::string("aout")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> +qi::space >> 
                 				array[boost::bind(&(CodeGrammar::saveArrayOperand), this)];
-                one_operation %= jump_operation | aout_operation;
+                one_operation %= jump_operation | aout_operation | neg_operation;
                 two_operation %= arith_operation | cmp_operation | arr_rsz_operation | arr_size_operation;
                 arith_operation %=  (
                                             qi::string("mov")   |
@@ -208,6 +208,9 @@ class CodeTranslator
 					[boost::bind(&(CodeGrammar::setCallOperandToConst), this)]); 
 				call_wr_operand = (array_element[boost::bind(&(CodeGrammar::saveCallArrayElementOperand), this)] |
                 					var[boost::bind(&(CodeGrammar::saveVarOrArrOperand), this)]);
+			
+				neg_operation = qi::string("not")[boost::bind(&(CodeGrammar::setOperation), this, _1)] >> 
+					+qi::space >> wr_operand[boost::bind(&(CodeGrammar::saveFirstOperand), this)];
 			}
 
 /**
@@ -661,7 +664,7 @@ class CodeTranslator
 
 			qi::rule<Iterator> expression, command, var, array, operation, array_element, rd_operand, wr_operand, cast, zero_operation, label_operand,
             one_operation, jump_operation, aout_operation, arith_operation, cmp_operation, two_operation, label, comment, expression_operation, arr_rsz_operation, 
-            call_operand, call_operation, call_wr_operand, gtel_operation, stel_operation, arr_size_operation;
+            call_operand, call_operation, call_wr_operand, gtel_operation, stel_operation, arr_size_operation, neg_operation;
 
             Command									*m_pcommand;
             std::list<std::string>					*m_plbls;

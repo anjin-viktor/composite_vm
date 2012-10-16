@@ -996,6 +996,38 @@ Exception::Type CodeExecuter::exec_command()
 		}
 
 
+
+
+		case Command::NOT:
+		{
+			boost::shared_ptr<VarOperand> pArg = boost::dynamic_pointer_cast<VarOperand, Operand>
+				(m_contexts.top().m_code[m_contexts.top().m_ip].getFirstOperand());
+
+			if(pArg -> hasValue() == false)
+				return Exception::ConstraintError;
+
+			if(pArg -> isWriteable() == false || pArg -> isReadable() == false)
+				return Exception::ConstraintError;
+
+			long long res;
+			try
+			{
+				res = ~(pArg -> getValue());
+			}
+			catch(std::runtime_error)
+			{
+				return Exception::ConstraintError;
+			}
+
+			pArg -> setValue(res);
+
+			m_contexts.top().m_ip++;
+
+			break;
+		}
+
+
+
 		case Command::NONE:
 		{
 			break;

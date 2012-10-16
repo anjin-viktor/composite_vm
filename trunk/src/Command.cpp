@@ -154,6 +154,8 @@ Command::Operation Command::strToOperation(const std::string &str)
 		return Command::OR;
 	else if(tmp == "xor")
 		return Command::XOR;
+	else if(tmp == "not")
+		return Command::NOT;
 	else
 		return Command::NONE;
 }
@@ -252,6 +254,9 @@ std::string Command::operationToStr(Command::Operation op)
 			break;
 		case Command::XOR:
 			str = "XOR";
+			break;
+		case Command::NOT:
+			str = "NOT";
 			break;
 		case Command::NONE:
 			str = "NONE";

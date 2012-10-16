@@ -6,7 +6,7 @@ set (PROJECT
 set (TEST_DIR ../test/)
 set (REGRESSION_DIR ../regressions/)
 
-set (PROJECT_LIB lib_${PROJECT})
+set (PROJECT_LIB ${PROJECT}_lib)
 
 project (${PROJECT})
 
